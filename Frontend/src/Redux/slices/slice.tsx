@@ -8,7 +8,7 @@ export interface UserCred {
     password : String
 }
 
-//structure of state
+//structure of state 
 export interface UserState{
     userCred : UserCred | null;
 }
@@ -19,18 +19,20 @@ const initialState : UserState = {
 
 
 export const userSlice = createSlice({
-    name : 'auth',
+    name : 'user',
     initialState , 
     reducers : {
-        login : (state , action: PayloadAction <UserCred | null>) => {
+
+
+        setUserInfo : (state , action: PayloadAction <UserCred | null>) => {
             state.userCred = action.payload
         }, 
 
         logout : (state) => {
             state.userCred = null;
-        }
+        },
     }
 })
 
-export const {login , logout} = userSlice.actions;
+export const { setUserInfo, logout} = userSlice.actions;
 export default userSlice.reducer;

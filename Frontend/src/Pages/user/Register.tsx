@@ -1,5 +1,8 @@
 import {useState } from 'react';
 import {useNavigate , Link} from 'react-router-dom';
+import { axiosInstance } from '../../api/axiosInstance';
+import { toast , Toaster} from 'react-hot-toast';
+
 
 const Register = () => {
     const [name , setName] = useState<string>('');
@@ -11,10 +14,26 @@ const Register = () => {
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        axiosInstance.post('/auth/register' , {name , email , role , password}).then((res) => {
+          console.log(res , ': Registered user Data');
+
+          if(res.data.message){
+            toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+
+            setTimeout(() => {
+              navigate('/login');
+            }, 3000);
+          } else {
+            toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+          }
+        }).catch(error => console.log(error , 'Axios register error')
+        )
     }
 
   return (
     <>
+    <Toaster position='top-right'/>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 laptop:px-8">
         <div className="mobile:mx-auto mobile:w-full mobile:max-w-sm">
           <img
@@ -60,9 +79,9 @@ const Register = () => {
                   onChange={(e) => setRole(e.target.value)}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
-                <option value="">Select a Role</option>
-                <option value="role1">Candidate</option>
-                <option value="role2">Company</option>
+                <option >Select a Role</option>
+                <option >Candidate</option>
+                <option>Company</option>
                 </select>
               </div>
             </div>
@@ -115,7 +134,7 @@ const Register = () => {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-violet-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                Sign Up
               </button>
             </div>
           </form>
