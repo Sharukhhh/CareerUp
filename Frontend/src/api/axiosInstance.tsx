@@ -6,4 +6,13 @@ export const axiosInstance = axios.create({
     headers : {
         
     }
-})
+});
+
+
+export const adminAxiosInstance = axios.create({
+    baseURL : 'http://localhost:3000/admin' , 
+
+    headers : {
+
+    }
+});

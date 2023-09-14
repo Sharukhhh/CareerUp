@@ -28,7 +28,40 @@ const userSchema = mongoose.Schema({
     isBlocked : {
         type : Boolean,
         default : false
+    },
+
+    location : String,
+
+    headline : String,
+
+    skills : String,
+
+    profileImage : String,
+
+    education : [
+        {
+            institute : String ,
+            fieldOfStudy : String,
+            location : String,
+            from : Date,
+            to : Date
+        }
+    ],
+
+    profession : [
+        {
+            companyName : String,
+            location : String,
+            position : String,
+        }
+    ],
+
+    resume : {
+        data : Buffer,
+        contentType : String
     }
+
+    
 })
 
 const userModel = mongoose.model('users' , userSchema);

@@ -21,17 +21,17 @@ const Login = () => {
         
         dispatch(setUserInfo(res.data.userTokenData));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-        // setTimeout(() => {
-        //   navigate('/profile');
-        // }, 3000);
+        setTimeout(() => {
+          navigate('/profile');
+        }, 3000);
 
       } else if(res.data.companyTokenData){
 
         dispatch(setUserInfo(res.data.companyTokenData));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-        // setTimeout(() => {
-        //   navigate('/profile');
-        // }, 3000);
+        setTimeout(() => {
+          navigate('/profile');
+        }, 3000);
       }
 
       if(res.data.error){
@@ -105,9 +105,20 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-violet-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-light-blue-900 hover:bg-light-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Login
+              </button>
+            </div>
+
+            <p className='lg:text-lg font-semibold text-center py-1 dark:text-black'>OR</p>
+
+            <div>
+              <button
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                Continue With Google
               </button>
             </div>
           </form>

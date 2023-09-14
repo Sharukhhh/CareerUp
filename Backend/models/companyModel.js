@@ -27,7 +27,18 @@ const companySchema = mongoose.Schema({
     isBlocked : {
         type : Boolean,
         default : false
-    }
+    },
+
+    verify : {
+        type : Boolean , 
+        default : false
+    },
+
+    location : String,
+
+    headline : String,
+
+    profileImage : String,
 });
 
 const companyModel = mongoose.model('companies' , companySchema);

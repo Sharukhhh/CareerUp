@@ -1,16 +1,36 @@
 import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { adminAxiosInstance } from '../../api/axiosInstance';
+import toast, { Toaster } from 'react-hot-toast';
 
 const Adminlogin = () => {
     const [adminEmail , setAdminEmail] = useState<string>('');
     const [adminPassword , setAdminPassword] = useState<string>('');
 
+    const navigate = useNavigate();
+
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        adminAxiosInstance.post('/adminLogin' , {email:adminEmail , password:adminPassword}).then((res) =>{
+          
+          if(res.data.message){
+            toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+            // setTimeout(() => {
+            //   navigate('');
+            // }, 3000);
+          } 
+
+          if(res.data.error){
+            toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+          }
+        }).catch((err) => console.log(err , 'axios catch error while admin login')
+        )
     }
 
   return (
     <>
+    <Toaster position='top-right'/>
     <div className=" border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 laptop:px-8">
         <div className="mobile:mx-auto mobile:w-full mobile:max-w-sm">
           <img
@@ -48,7 +68,7 @@ const Adminlogin = () => {
               <div className="flex items-center justify-between">
                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-black border-gray-200">
                   Password
-                </label>
+                </label>  
                 {/* <div className="text-sm">
                   <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
@@ -72,7 +92,7 @@ const Adminlogin = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-violet-900 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-light-blue-900 hover:bg-light-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Login
               </button>

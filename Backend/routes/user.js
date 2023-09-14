@@ -1,10 +1,10 @@
 import express from 'express';
 const router = express.Router();
 import { verify } from '../middlewares/userAuth.js';
-import { userProfile } from '../controllers/userController.js';
+import { userProfile } from '../controllers/user/userController.js';
 
 
-router.get('/profile' , verify, userProfile);
+router.get('/profile/:id' ,  userProfile);
 
 
 

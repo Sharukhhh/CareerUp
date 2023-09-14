@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import userModel from '../models/userModel.js';
-import companyModel from '../models/companyModel.js';
+import userModel from '../../models/userModel.js';
+import companyModel from '../../models/companyModel.js';
 
 
 
@@ -81,7 +81,7 @@ export const login = async (req, res) => {
             const token = jwt.sign({userId : company.id , email : company.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
             return res.status(200).json({message : 'Login successfully' ,
             companyTokenData : {
-                username : company.name, useremail : company.email , token
+                username : company.name, useremail : company.email , role : company.role, token
             }});
         }
 
@@ -99,7 +99,7 @@ export const login = async (req, res) => {
         const token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
         return res.status(200).json({message : 'Login successfully' ,
         userTokenData : {
-            username : user.name, useremail : user.email , token
+            username : user.name, useremail : user.email , role: user.role, token
         }});
 
         
