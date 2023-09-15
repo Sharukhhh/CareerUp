@@ -6,6 +6,8 @@ import Register from './Pages/user/Register';
 import Login from './Pages/user/Login';
 import Profile from './Pages/user/Profile';
 import Adminlogin from './Pages/admin/Adminlogin';
+import UsersList from './Pages/admin/UsersList';
+import CompanyList from './Pages/admin/CompanyList';
 
 function App() {
 
@@ -26,6 +28,8 @@ function App() {
 
 
         <Route path='/admin' element={<Adminlogin/>}/>
+        <Route path='/admin/users' element={<UsersList/>} />
+        <Route path='/admin/companies' element={<CompanyList/>} />
       </Routes>
     </>
   )

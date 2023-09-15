@@ -2,6 +2,7 @@ import {useState } from 'react';
 import {useNavigate , Link} from 'react-router-dom';
 import { axiosInstance } from '../../api/axiosInstance';
 import { toast , Toaster} from 'react-hot-toast';
+import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
 
 
 const Register = () => {
@@ -33,9 +34,10 @@ const Register = () => {
 
   return (
     <>
+    <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
     <Toaster position='top-right'/>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 laptop:px-8">
-        <div className="mobile:mx-auto mobile:w-full mobile:max-w-sm">
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
             src="public/Cropped1-Logo.png"
@@ -46,7 +48,7 @@ const Register = () => {
           </h2>
         </div>
 
-        <div className="border-2 rounded-md border-violet-950 p-5 bg-gray-50 mt-10 mobile:mx-auto mobile:w-full mobile:max-w-sm">
+        <div className="border-2 rounded-md border-violet-950 p-5 bg-gray-50 mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit} method="POST">
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -139,13 +141,35 @@ const Register = () => {
             </div>
             <p className='lg:text-lg font-semibold text-center py-1 dark:text-black'>OR</p>
             
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-              >
-                Continue With Google
-              </button>
+            <div className='flex w-full justify-center'>
+              <GoogleLogin 
+                onSuccess={credRes => {
+                  axiosInstance.post('/auth/google' , credRes).then((res) => {
+                    if(res.data){
+                      toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+
+                      setTimeout(() => {
+                        navigate('/login');
+                      }, 3000);
+                    }
+                  }).catch((err) => console.log(err, 'axios catch err google signup')
+                  )
+                }}
+
+                onError={() => {
+                  console.log('ggogle login failed');
+                }}
+
+                type='standard'
+                theme='filled_black'
+                size='large'
+                text='continue_with'
+                shape='square'
+                logo_alignment='center'
+                ux_mode='popup'
+                
+                
+              />
             </div>
           </form>
 
@@ -157,6 +181,7 @@ const Register = () => {
           </p>
         </div>
       </div>
+      </GoogleOAuthProvider>
     </>
   )
 }

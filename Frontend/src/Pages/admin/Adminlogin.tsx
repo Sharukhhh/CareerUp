@@ -12,13 +12,14 @@ const Adminlogin = () => {
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        adminAxiosInstance.post('/adminLogin' , {email:adminEmail , password:adminPassword}).then((res) =>{
+        adminAxiosInstance.post('/' , {email:adminEmail , password:adminPassword}).then((res) =>{
           
           if(res.data.message){
+            localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
             toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-            // setTimeout(() => {
-            //   navigate('');
-            // }, 3000);
+            setTimeout(() => {
+              navigate('/admin/users');
+            }, 3000);
           } 
 
           if(res.data.error){
@@ -31,8 +32,8 @@ const Adminlogin = () => {
   return (
     <>
     <Toaster position='top-right'/>
-    <div className=" border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 laptop:px-8">
-        <div className="mobile:mx-auto mobile:w-full mobile:max-w-sm">
+    <div className=" border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
             src="public/admin.jpg"
@@ -43,7 +44,7 @@ const Adminlogin = () => {
           </h2>
         </div>
 
-        <div className="border-2 rounded-md border-violet-950 p-5 bg-gray-300 mt-10 mobile:mx-auto mobile:w-full mobile:max-w-sm">
+        <div className="border-2 rounded-md border-violet-950 p-5 bg-gray-300 mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit} method="POST">
 
             <div>

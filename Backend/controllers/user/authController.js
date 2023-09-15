@@ -116,3 +116,55 @@ export const logout = async (req, res) => {
         console.log(error);
     }
 }
+
+
+
+export const googleSignup = async (req, res) => {
+    try {
+        const token = req.body.credential;
+
+        const decodedData = jwt.decode(token);
+
+        const {name , email , picture , jti} = decodedData;
+
+        const newUser = new userModel({
+            name , email , profileImage : picture , password : jti , role : 'Candidate' ,
+        });
+
+        await newUser.save();
+
+        res.status(201).json({message: 'user saved succesfully'});
+
+    } catch (error) {
+        console.log(error, 'back catch'); 
+        res.json({error : ''})
+    }
+}
+
+
+export const googleLogin = async (req, res) => {
+    try {
+        const token = req.body.credential;
+
+        const decodedData = jwt.decode(token);
+
+        const {name , email , profileImage , jti} = decodedData;
+
+        const user = await userModel.findOne({email : email});
+
+        if(user){
+
+            if (user.isBlocked) {
+                return res.json({ error: 'Account is blocked' });
+            }
+
+            let token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET, {expiresIn: '1h'});
+            res.status(200).json({message : 'Login Successfull' , user, token});
+
+        } else {
+            res.json({error : 'User not found'});
+        }
+    } catch (error) {
+        console.log(error, 'backend google login err');
+    }
+}
