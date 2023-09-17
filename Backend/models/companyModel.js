@@ -4,6 +4,12 @@ const companySchema = mongoose.Schema({
     name : {
         type : String,
         required : true,
+        validate : {
+            validator : (value) => {
+                return /[a-zA-Z]/.test(value)
+            },
+            message : 'Invalid Name entry'
+        } 
     },
 
     email : {

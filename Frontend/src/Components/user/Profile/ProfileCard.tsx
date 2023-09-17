@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import {LiaEditSolid} from 'react-icons/lia';
-import {BsPersonFillAdd , BsBriefcase} from 'react-icons/bs'
+import {BsPersonFillAdd , BsBriefcase} from 'react-icons/bs';
 import {CiLocationOn} from 'react-icons/ci';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
@@ -11,6 +11,7 @@ const ProfileCard = () => {
 
   return (
     <>
+    <div>
         <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4'>
             <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
                  <Link to='' className='flex gap-2'>
@@ -22,41 +23,61 @@ const ProfileCard = () => {
                         </p>
 
                         <span className='text-ascent-2'>
-                            {user?.useremail}
+                            {/* {user?.useremail} */}
                         </span>
                     </div>
                  </Link>
 
                  <div className=''>
-                    <LiaEditSolid />
+                    <LiaEditSolid className='text-blue cursor-pointer hover:text-light-blue-300' />
                  </div>
             </div>
 
             <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
                 <div className='flex gap-2 items-center text-ascent-2'>
-                    <CiLocationOn />
+                    <CiLocationOn className='text-blue ' />
                     <span>
                         Location here
                     </span>
                 </div>
 
-                <div className='flex gap-2 items-center text-ascent-2'>
+                {/* <div className='flex gap-2 items-center text-ascent-2'>
                     <BsBriefcase />
                     <span>
-                        Profession here
+                    {user?.useremail}
                     </span>
-                </div>
+                </div> */}
             </div>
+
+            {user?.role === 'Candidate' ? (
+                <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
+                    <button className='w-full mb-2 p-1 bg-light-blue-800 text-white rounded-sm'>Add Education</button>
+                    <button className='w-full p-1 bg-light-blue-800 text-white rounded-sm'>Add Profession</button>
+                </div> 
+            ) : (
+                <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
+                    <button className='w-full mb-2 p-1 bg-light-blue-800 text-white rounded-sm'>Post Your Job</button>
+                </div> 
+            )}   
 
             <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
-                <p className='text-xl text-ascent-1 font-semibold'>total connections</p>
+                <p className='text-ascent-1'>Connections</p>
 
                 <div className='flex items-center justify-between'>
-                    <span>Who viewed your profile</span>
+                    {/* <span className='text-ascent-1'>Who viewed your profile</span> */}
                     <span></span>
                 </div>
+
+                <div className='flex items-center justify-between'>
+                    <span className='text-ascent-2'></span>
+                </div>
+            </div>   
+
+            <div className='w-full flex flex-col gap-4 py-4 pb-6'>
+                <p></p>
             </div>
         </div>
+    </div>    
     </>
   )
 }

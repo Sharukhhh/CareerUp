@@ -25,7 +25,7 @@ const Register = () => {
             setTimeout(() => {
               navigate('/login');
             }, 3000);
-          } else {
+          } else if(res.data.error) {
             toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
           }
         }).catch(error => console.log(error , 'Axios register error')
@@ -40,7 +40,7 @@ const Register = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="public/Cropped1-Logo.png"
+            src="/Cropped1-Logo.png"
             alt="Logo"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

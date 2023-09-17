@@ -41,7 +41,7 @@ const Hero = () => {
                 <div className="relative mt-16 h-80 lg:mt-8">
                     <img
                     className="absolute left-0 top-0 w-[35rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
-                    src="public/job_portal.png"
+                    src="/job_portal.png"
                     alt="Img"
                     width={1824}
                     height={1080}

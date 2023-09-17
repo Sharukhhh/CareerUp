@@ -36,7 +36,7 @@ export const getUsers = async (req, res) => {
         if(users){
             res.status(200).json({users});
         } else {
-            res.json({error : 'No users registered'});
+            res.status(404).json({error : 'No users registered'});
         }
 
     } catch (error) {
@@ -53,10 +53,10 @@ export const blockUser = async (req, res) => {
             );
 
         if(!updateUser){
-            return res.json({error : 'User not found'});
+            return res.status(404).json({error : 'User not found'});
         }
 
-        res.status(200).json({message : `Blocked ${updateUser.name} successfully`});
+        res.status(200).json({message : `Blocked ${updateUser.name}`});
 
     } catch (error) {
         console.log(error);
@@ -72,10 +72,10 @@ export const unBlockUser = async (req, res) => {
             );
 
         if(!updateUser){
-            return res.json({error : 'User not found'});
+            return res.status(404).json({error : 'User not found'});
         }
 
-        res.status(200).json({message : `Unblocked ${updateUser.name} successfully`});
+        res.status(200).json({message : `Unblocked ${updateUser.name}`});
     } catch (error) {
         console.log(error);
     }
@@ -91,28 +91,71 @@ export const getCompanies = async(req, res) => {
         if(companies){
             res.status(200).json({companies});
         } else {
-            res.json({error: 'no companies registered'});
+            res.status(404).json({error: 'no companies registered'});
         }
         
     } catch (error) {
         console.log(error);
     }
-}
+} 
 
 export const verifyCompany = async (req, res) => {
     try {
         const companyId = req.params.id;
+
+        if(!companyId){
+            return res.status(404).json({error : 'Company not found'});
+        }
 
         const updateCompany = await companyModel.findByIdAndUpdate(companyId,
                 {verify : true} , {new : true}
         );
 
         if(!updateCompany){
-            return res.json({error : 'Company not Found'});
+            return res.json({error : 'Not Properly Updated'});
         }
         
         res.status(200).json({message : 'Verified Successfully'});
 
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export const blockCompany = async (req, res) => {
+    try {
+        const companyId = req.params.id;
+
+        if(!companyId){
+            return res.status(404).json({error : 'Company not found'});
+        }
+
+        const updateCompany = await companyModel.findByIdAndUpdate(companyId,
+            {isBlocked : true} , {new : true}
+        );
+
+        res.json({message : `Blocked ${updateCompany.name}!!`});
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const unBlockCompany = async (req, res) => {
+    try {
+        const companyId = req.params.id;
+
+        if(!companyId){
+            return res.status(404).json({error : 'Company not found'});
+        }
+
+        const updateCompany = await companyModel.findByIdAndUpdate(companyId,
+            {isBlocked : false} , {new : true}
+        );
+
+        res.json({message : `UnBlocked ${updateCompany.name}!!`});
+        
     } catch (error) {
         console.log(error);
     }

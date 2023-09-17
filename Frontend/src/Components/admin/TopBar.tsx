@@ -11,18 +11,8 @@ const TopBar = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    useEffect(() => {
-        const adminToken = localStorage.getItem('adminToken');
-
-        if(adminToken){
-            console.log(adminToken, 'admin in');
-        } else {   
-            navigate('/admin');
-        }
-    }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('adminToken');
         navigate('/admin');
 
         toast.success('Logout successfully', {duration : 4000 , style : {color : '#fff' , background : 'black'}});

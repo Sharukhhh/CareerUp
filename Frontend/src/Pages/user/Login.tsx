@@ -50,7 +50,7 @@ const Login = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="public/Cropped1-Logo.png"
+            src="/Cropped1-Logo.png"
             alt="Logo"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -113,7 +113,7 @@ const Login = () => {
               </button>
             </div>
 
-            <p className='lg:text-lg font-semibold text-center py-1 dark:text-black'>OR</p>
+            <p className='lg:text-lg font-semibold text-center py-1 text-black'>OR</p>
 
             <div className='flex w-full justify-center'>
               <GoogleLogin
@@ -122,7 +122,7 @@ const Login = () => {
                   axiosInstance.post('/auth/google/login' , credRes).then((res) => {
 
                     if(res.data.message){
-                      dispatch(setUserInfo(res.data.user));
+                      dispatch(setUserInfo(res.data.userData));
                       toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
                       setTimeout(() => {
                         navigate('/profile');

@@ -15,7 +15,7 @@ const Adminlogin = () => {
         adminAxiosInstance.post('/' , {email:adminEmail , password:adminPassword}).then((res) =>{
           
           if(res.data.message){
-            localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
+            // localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
             toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
             setTimeout(() => {
               navigate('/admin/users');
@@ -36,7 +36,7 @@ const Adminlogin = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"
-            src="public/admin.jpg"
+            src="/admin.jpg"
             alt="Logo"
           />
           <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

@@ -1,31 +1,107 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
+import toast, { Toaster } from 'react-hot-toast';
 
 const CompanyTable = () => {
     const [companies , setCompanies] = useState<any>([]);
 
-    adminAxiosInstance.get('/companies').then((res) => {
-        if(res.data){
-            setCompanies(res.data.companies);
-        }
-    }).catch((error) => console.log(error, 'axios get companies err')
-    )
+    useEffect(() => {
+        adminAxiosInstance.get('/companies').then((res) => {
+            if(res.data){
+                setCompanies(res.data.companies);
+            }
+        }).catch((error) => console.log(error, 'axios get companies err')
+        )
+    }, []);
+
+    //company verification
+    const verify = (companyId : string) => {
+        
+            adminAxiosInstance.patch(`/verify/${companyId}`).then((res) => {
+                if(res.data.message){
+                    toast.success(res.data.message ,{duration : 3000 , style : {color : '#fff' , background : 'black'}});
+
+                    setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
+                        if(company._id === companyId ){
+                            return {...company , verify : true}
+                        }
+                        return company;
+                    }) )
+                }
+
+                if(res.data.error){
+                    toast.error(res.data.error , {duration : 3000 , style : {color : '#fff' , background : 'red'}} );
+                }
+            }).catch((err) => console.log(err , 'verify cmpny axios err')
+            )
+    }
+
+    //block-company
+    const block = (companyId : string) => {
+
+        adminAxiosInstance.patch(`/blockcompany/${companyId}`).then((res) => {
+
+            if(res.data.message){
+                toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+
+                setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
+
+                    if(company._id === companyId){
+                        return {...company , isBlocked : true}
+                    }
+                    return company;
+                }))
+            }
+
+            if(res.data.error){
+                toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'red'}});
+            }
+        }).catch((err) => console.log(err , 'axios block company err')
+        )
+    }
+
+    //unblock-company
+    const unblock = (companyId : string) => {
+
+        adminAxiosInstance.patch(`/unblockcompany/${companyId}`).then((res) => {
+
+            if(res.data.message){
+                toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+
+                setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
+
+                    if(company._id === companyId){
+                        return {...company , isBlocked : false}
+                    }
+                    return company;
+                }))
+            }
+
+            if(res.data.error){
+                toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'red'}});
+            }
+        }).catch((err) => console.log(err , 'axios block company err')
+        )
+
+    }
 
   return (
     <>
+    <Toaster position='top-center' />
     <div className="overflow-hidden rounded-lg border mt-12 border-gray-200 shadow-md m-5">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-800">
                 <tr>
-                    <th scope="col" className="px-6 py-4 font-medium text-gray-900">Name</th>
-                    <th scope="col" className="px-6 py-4 font-medium text-gray-900">Role</th>
-                    <th scope="col" className="px-6 py-4 font-medium text-gray-900">Team</th>
-                    <th scope="col" className="px-6 py-4 font-medium text-gray-900">Actions</th>
+                    <th scope="col" className="px-6 py-4 font-semibold text-white">Name</th>
+                    <th scope="col" className="px-6 py-4 font-semibold text-white">Role</th>
+                    {/* <th scope="col" className="px-6 py-4 font-semibold text-white">Team</th> */}
+                    <th scope="col" className="px-6 py-4 font-semibold text-white">Actions</th>
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                {companies.map((company : any ) => {
-                    <tr className="hover:bg-gray-50">
+                {companies.map((company : any , index : number ) => {
+                    return (
+                    <tr key={index} className="hover:bg-gray-50">
                         <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                             <div className="relative h-10 w-10">
                                 <img
@@ -35,12 +111,12 @@ const CompanyTable = () => {
                                 {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
                             </div>
                             <div className="text-sm">
-                                <div className="font-medium text-gray-700">{company.name}</div>
-                                <div className="text-gray-400">{company.email}</div>
+                                <div className="font-semibold text-gray-700">{company.name}</div>
+                                <div className="font-medium text-gray-500">{company.email}</div>
                             </div>
                         </th>
                         <td className="px-6 py-4">{company.role}</td>
-                        <td className="px-6 py-4">
+                        {/* <td className="px-6 py-4">
                             <div className="flex gap-2">
                                 <span
                                 className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600"
@@ -58,25 +134,36 @@ const CompanyTable = () => {
                                 Develop
                                 </span>
                             </div>
-                        </td>
+                        </td> */}
                         <td className="px-6 py-4">
-                            <div className="flex justify-end gap-4">
-                                <a x-data="{ tooltip: 'Delete' }" href="#">
-                                <span
-                                    className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-600"
-                                >
-                                    Verify
-                                </span>
-                                </a>
+                            <div className="flex justify-start gap-4">
+                                {!company.verify ? (
+                                    <button onClick={() => verify(company._id)}
+                                        className="inline-flex items-center gap-1 rounded-full bg-red-100 px-4 py-2 text-xs font-semibold text-red-600"
+                                    >
+                                        Verify
+                                    </button>
+                                ) : (
+                                    <button className='inline-flex items-center gap-1 rounded-full bg-green-100 px-4 py-2 text-xs font-semibold text-green-600'>
+                                        Verified
+                                    </button>
+                                )}
 
-                                <a x-data="{ tooltip: 'Delete' }" href="#">
-                                    <svg className="h-8 w-8 text-red-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                    </svg>
-                                </a>
+                                {!company.isBlocked ? (
+                                    <button onClick={() => block(company._id)}
+                                    className='inline-flex items-center gap-1 rounded-full bg-red-100 px-4 py-2 text-xs font-semibold text-red-700'>
+                                        Block 
+                                    </button>
+                                ) : (
+                                    <button onClick={() => unblock(company._id)}
+                                    className='inline-flex items-center gap-1 rounded-full bg-light-blue-100 px-4 py-2 text-xs font-semibold text-light-blue-700'>
+                                        UnBlock 
+                                    </button>
+                                )}
                             </div>
                         </td>
                     </tr>
+                    );
                 })}
             </tbody>
         </table>

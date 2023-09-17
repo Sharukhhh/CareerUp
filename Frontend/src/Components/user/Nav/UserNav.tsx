@@ -2,7 +2,6 @@ import React , {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
-import RootState from '../../../Redux/rootstate/rootState';
 import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
 import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
@@ -13,15 +12,13 @@ import toast from 'react-hot-toast';
 const UserNav = () => {
   const {theme} = useSelector((state : ThemeRootState) => state.theme);
 
-  const user = useSelector((state : RootState) => state.user.userCred);
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // useEffect(() => {
   //   if (theme === 'dark') {
-  //     document.body.classList.add('dark');
+  //     document.body.classList.add('dark');    dark:bg-[#0C0C0C]
   //   } else {
   //     document.body.classList.remove('dark');
   //   }
@@ -41,7 +38,7 @@ const UserNav = () => {
   }
      
   return (
-    <div className='w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary dark:bg-black'>
+    <div className='w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary'>
       <Link to='/feed' className='flex gap-2 items-center'>
         <div className='p-1 md:p-2 text-[#065ad8] rounded font-extrabold  text-xl'>
           <span>CareerUp</span>

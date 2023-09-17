@@ -13,7 +13,7 @@ const hashPassword = async (password) => {
     return hash;
 }  
 
-export const register = async (req, res) => {
+export const register = async (req, res , next) => {
     try {
         const {name , email , role , password} = req.body;
 
@@ -21,7 +21,7 @@ export const register = async (req, res) => {
         const existingCompany = await companyModel.findOne({email});
 
         if(existingUser || existingCompany){
-            return res.json({error : 'Account already exists'});
+            return res.status(400).json({error : 'Account already exists'});
         }
 
         const bcryptedpassword = await hashPassword(password);
@@ -48,14 +48,13 @@ export const register = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
-        res.json({error : 'Unexpected Error'})
+        next(error);
+        
     }
 }
 
 
-
-export const login = async (req, res) => {
+export const login = async (req, res , next) => {
     try {
         const {email , password} = req.body;
 
@@ -65,18 +64,18 @@ export const login = async (req, res) => {
             const company = await companyModel.findOne({email});
 
             if(!company){
-                return res.json({error : 'Account Does not exist'});
+                return res.status(401).json({error : 'Account Does not exist'});
             }
 
             if (company.isBlocked) {
-                return res.json({ error: 'Account is blocked' });
+                return res.status(401).json({ error: 'Account is blocked' });
             }
 
             //if company - password verify
             const matchPassword = await bcrypt.compare(password , company.password);
 
             if(!matchPassword){
-                return res.json({error : 'Inavlid Password (c)'});
+                return res.status(401).json({error : 'Inavlid Password'});
             }
             const token = jwt.sign({userId : company.id , email : company.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
             return res.status(200).json({message : 'Login successfully' ,
@@ -86,14 +85,14 @@ export const login = async (req, res) => {
         }
 
         if (user.isBlocked) {
-            return res.json({ error: 'Account is blocked' });
+            return res.status(401).json({ error: 'Account is blocked' });
         }
 
         //if user - password verify
         const matchPassword = await bcrypt.compare(password , user.password);
 
         if(!matchPassword){
-            return res.json({error : 'Invalid Password'});
+            return res.status(401).json({error : 'Invalid Password'});
         }
 
         const token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
@@ -104,22 +103,15 @@ export const login = async (req, res) => {
 
         
     } catch (error) {
-        console.log(error);
+        next(error);
     }
 }
 
 
-export const logout = async (req, res) => {
-    try {
-        
-    } catch (error) {
-        console.log(error);
-    }
-}
+// *********************************************************************************
+// *********************************************************************************
 
-
-
-export const googleSignup = async (req, res) => {
+export const googleSignup = async (req, res , next) => {
     try {
         const token = req.body.credential;
 
@@ -136,13 +128,12 @@ export const googleSignup = async (req, res) => {
         res.status(201).json({message: 'user saved succesfully'});
 
     } catch (error) {
-        console.log(error, 'back catch'); 
-        res.json({error : ''})
+        next(error);
     }
 }
 
 
-export const googleLogin = async (req, res) => {
+export const googleLogin = async (req, res , next) => {
     try {
         const token = req.body.credential;
 
@@ -155,16 +146,22 @@ export const googleLogin = async (req, res) => {
         if(user){
 
             if (user.isBlocked) {
-                return res.json({ error: 'Account is blocked' });
+                return res.status(401).json({ error: 'Account is blocked' });
             }
 
             let token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET, {expiresIn: '1h'});
-            res.status(200).json({message : 'Login Successfull' , user, token});
+            res.status(200).json({message : 'Login Successfull' ,  token, 
+                userData : {
+                    username : user.name , useremail : user.email, role : user.role
+                }});
 
         } else {
-            res.json({error : 'User not found'});
+            res.status(401).json({error : 'User not found'});
         }
     } catch (error) {
-        console.log(error, 'backend google login err');
+        next(error);
     }
 }
+
+// *********************************************************************************
+// *********************************************************************************
