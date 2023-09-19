@@ -78,9 +78,11 @@ export const login = async (req, res , next) => {
                 return res.status(401).json({error : 'Inavlid Password'});
             }
             const token = jwt.sign({userId : company.id , email : company.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
-            return res.status(200).json({message : 'Login successfully' ,
-            companyTokenData : {
-                username : company.name, useremail : company.email , role : company.role, token
+
+            return res.status(200).json({message : 'Login successfully' , token,
+            companyData : {
+                username : company.name, useremail : company.email , 
+                userId : company._id , role : company.role,
             }});
         }
 
@@ -96,9 +98,11 @@ export const login = async (req, res , next) => {
         }
 
         const token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
-        return res.status(200).json({message : 'Login successfully' ,
-        userTokenData : {
-            username : user.name, useremail : user.email , role: user.role, token
+
+        return res.status(200).json({message : 'Login successfully' , token,
+        userData : {
+            username : user.name, useremail : user.email ,
+            userId : user._id  , role: user.role
         }});
 
         

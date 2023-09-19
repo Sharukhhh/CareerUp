@@ -19,21 +19,21 @@ const Profile = () => {
 
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
-          <div className="hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
+          <div className="w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
             <ProfileCard />
             <ConnectionCard />
           </div>
 
           {/* center */}
           <div className="flex-1 h-full bg-primary px-4 flex flex-col gap-6 overflow-y-auto">
+            
             <PostCards />
           </div>
 
           {/* right */}
             {/* User Profession /  */}
-
             {user?.role === 'Candidate' ? (
-              <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+              <div className="w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                   <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                     <span>Experience</span>
@@ -46,7 +46,8 @@ const Profile = () => {
                   </div>
                 </div>
             
-              
+              <div className="lg:hidden mt-4"></div>
+
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                   <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                     <span>Education</span>

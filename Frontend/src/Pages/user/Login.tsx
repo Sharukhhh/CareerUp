@@ -18,20 +18,21 @@ const Login = () => {
     e.preventDefault();
 
     axiosInstance.post('/auth/login' , {email , password}).then((res) => {
-      if(res.data.userTokenData){
-        
-        dispatch(setUserInfo(res.data.userTokenData));
+
+      if(res.data.userData){
+        dispatch(setUserInfo(res.data.userData));
+        localStorage.setItem('userToken' , JSON.stringify(res.data.token));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
         setTimeout(() => {
-          navigate('/profile');
+          navigate('/feed');
         }, 3000);
 
-      } else if(res.data.companyTokenData){
-
-        dispatch(setUserInfo(res.data.companyTokenData));
+      } else if(res.data.companyData){
+        dispatch(setUserInfo(res.data.companyData));
+        localStorage.setItem('userToken' , JSON.stringify(res.data.token));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
         setTimeout(() => {
-          navigate('/profile');
+          navigate('/feed');
         }, 3000);
       }
 

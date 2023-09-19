@@ -11,8 +11,6 @@ const UserTable = () => {
         adminAxiosInstance.get('/users').then((res) => {
         
             if(res.data){
-                console.log(res.data, 'prrrrrrrrrrrrrrrrrrrrrr');
-                
                 setUsers(res.data.users);
             }
         }).catch((err) => console.log(err, 'users get error axios')

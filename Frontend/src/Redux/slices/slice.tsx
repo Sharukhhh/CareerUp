@@ -5,17 +5,16 @@ export interface UserCred {
     username : String,
     useremail : String,
     role : String , 
+    userId : String
 }
 
 //structure of state 
 export interface UserState{
     userCred : UserCred | null;
-    isAuthenticated : boolean
 }
 
 const initialState : UserState = {
     userCred : null,
-    isAuthenticated : false
 }
 
 
@@ -27,12 +26,10 @@ export const userSlice = createSlice({
 
         setUserInfo : (state , action: PayloadAction <UserCred | null>) => {
             state.userCred = action.payload;
-            state.isAuthenticated = Boolean(action.payload);          //sets to true if data exists
         }, 
 
         logout : (state) => {
             state.userCred = null;
-            state.isAuthenticated = false;
         },
     }
 })

@@ -5,7 +5,7 @@ import companyModel from '../models/companyModel.js';
 
 export const verify = async (req, res , next) => {
     try {
-        const token = req.headers.authorization || req.cookies || '';
+        const token = req.header('authorization').split(' ')[1];
 
         if(!token){
             return res.status(401).json({message : 'Unauthorized!, not token found'});
@@ -19,6 +19,7 @@ export const verify = async (req, res , next) => {
                 return res.status(401).json({ message: 'Unauthorized - User not found' });
             }
             req.user = user;
+            console.log(user);
 
         } else if (decoded.role === 'Company'){
             const company = await companyModel.findById(decoded.userId);
@@ -26,6 +27,7 @@ export const verify = async (req, res , next) => {
                 return res.status(401).json({ message: 'Unauthorized - User not found' });
             }
             req.user = company;
+            console.log(company);
         }
         next();
 
