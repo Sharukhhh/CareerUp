@@ -4,8 +4,8 @@ import {Link} from 'react-router-dom';
 
 const PostCards = () => {
   return (
-    <>
-      <div className='mb-2 bg-primary p-4 rounded-xl'>
+    <> 
+      <div className='mb-2 mt-2 bg-primary p-4 rounded-xl'>
         <div className='flex gap-3 items-center mb-2 '>
           <Link to=''>
             <img src="" alt="" className='w-14 h-14 object-cover rounded-full bg-gray-600' />

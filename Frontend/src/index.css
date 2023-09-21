@@ -93,8 +93,30 @@ z-index: 49;
   }
 }
 
+.dropDownProfile {
+  position: absolute;
+  top: 4.5rem;
+  right: 5.8rem;
+  width: 140px;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid gray;
+}
 
-
+.dropDownProfile::before{
+  position: absolute;
+  top: 0.7rem;
+  right: 1.1rem;
+  width: 40px;
+  height: 20px;
+  transform: rotate(80deg);
+  background-color: rgb(255, 255, 255);
+  border-left: 1px solid gray;
+  border-top: 1px solid gray;
+}
 
 
 /* :root {

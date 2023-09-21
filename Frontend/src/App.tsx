@@ -12,6 +12,7 @@ import UsersList from './Pages/admin/UsersList';
 import CompanyList from './Pages/admin/CompanyList';
 
 import PrivatePages from './Components/PrivatePages';
+import AddInfoPage from './Pages/user/AddInfoPage';
 
 function App() {
 
@@ -24,8 +25,9 @@ function App() {
         <Route path='/login' element={<Login/>} />
 
         <Route element={<PrivatePages/>}>
-          <Route path='/profile' element={<Profile/>} />
+          <Route path='/account' element={<Profile/>} />
           <Route path='/feed' element={<UserFeed />} />
+          <Route path='/details' element={<AddInfoPage />}/>
         </Route>
 
         <Route path='/admin' element={<Adminlogin/>}/>

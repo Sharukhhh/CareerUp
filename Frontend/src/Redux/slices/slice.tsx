@@ -5,7 +5,7 @@ export interface UserCred {
     username : String,
     useremail : String,
     role : String , 
-    userId : String
+    userId : String,
 }
 
 //structure of state 

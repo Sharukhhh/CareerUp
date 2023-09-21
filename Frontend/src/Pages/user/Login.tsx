@@ -126,7 +126,7 @@ const Login = () => {
                       dispatch(setUserInfo(res.data.userData));
                       toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
                       setTimeout(() => {
-                        navigate('/profile');
+                        navigate('/feed');
                       }, 3000);
                     } else if(res.data.error){
                       toast.error(res.data.error);

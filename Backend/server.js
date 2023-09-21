@@ -21,15 +21,19 @@ app.use(express.json());
 app.use(express.urlencoded({extended : true})); 
 
 //user auth routes
-import authRoutes from './routes/authRoutes.js'; 
+import authRoutes from './routes/auth/authRoutes.js'; 
 app.use('/auth' , authRoutes);
 
 //user routes
-import userRoutes from './routes/user.js';
+import userRoutes from './routes/user/user.js';
 app.use('/' , userRoutes);
 
+//user-data routes
+import userDataRoutes from './routes/user/userData.js'
+app.use('/' , userDataRoutes);
+
 //admin routes
-import adminRoutes from './routes/admin.js'
+import adminRoutes from './routes/admin/admin.js'
 app.use('/admin' , adminRoutes);
 
 

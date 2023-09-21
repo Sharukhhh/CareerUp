@@ -102,7 +102,7 @@ export const login = async (req, res , next) => {
         return res.status(200).json({message : 'Login successfully' , token,
         userData : {
             username : user.name, useremail : user.email ,
-            userId : user._id  , role: user.role
+            userId : user._id  , role: user.role,
         }});
 
         
@@ -156,7 +156,8 @@ export const googleLogin = async (req, res , next) => {
             let token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET, {expiresIn: '1h'});
             res.status(200).json({message : 'Login Successfull' ,  token, 
                 userData : {
-                    username : user.name , useremail : user.email, role : user.role
+                    username : user.name , useremail : user.email, role : user.role,
+                    profileImage : profileImage
                 }});
 
         } else {

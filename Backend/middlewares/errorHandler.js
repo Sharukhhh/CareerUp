@@ -31,6 +31,6 @@ export const errorHandler = async (err , req, res , next) => {
 
     }
 
-    return res.status(statusCode).json({error : message});
+    res.status(statusCode).json({error : message});
 
 }

@@ -1,4 +1,4 @@
-import React , {useEffect} from 'react';
+import React , {useEffect , useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
@@ -9,10 +9,17 @@ import {CgProfile} from 'react-icons/cg';
 import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
+import ProfileDropDown from '../../../Pages/user/ProfileDropDown';
+
+interface UserNavProps {
+  userData : any;
+}
 
 
-const UserNav = () => {
+const UserNav:React.FC<UserNavProps> = ({userData}) => {
   const {theme} = useSelector((state : ThemeRootState) => state.theme);
+
+  const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
 
 
   const dispatch = useDispatch();
@@ -59,21 +66,23 @@ const UserNav = () => {
       {/* Icons */}
       <div className='flex gap-10 items-center text-ascent-1 text-md md:text-xl'>
             <NavLink to='/feed'>
-              <ImHome />
+                <ImHome className='hover:scale-125' />
             </NavLink>
           
-
-            <NavLink to='/profile'>
-              <CgProfile />
-            </NavLink>
-           
           <button onClick={() => handleTheme()} >
-            {theme === 'light' ? <BsMoon/> : <BsSunFill /> }
+            {theme === 'light' ? <BsMoon className='hover:scale-125'/> : <BsSunFill className='hover:scale-125' /> }
           </button>
-            <IoMdNotificationsOutline />
+            <IoMdNotificationsOutline className='hover:scale-125' />
+
+          <span onClick={() => setOpenDropProfile((prev) => !prev)}>
+          <CgProfile className='hover:scale-125' />
+          </span>
+            {
+              openDropProfile && <ProfileDropDown userData={userData} />
+            }
 
           <div>
-            <button onClick={() => handleLogout()} className='inline-flex items-center rounded-full bg-[#065ad8] text-white text-sm px-4 md:px-6 py-1 md:py-2'>Log Out</button>
+            <button onClick={() => handleLogout()} className='inline-flex items-center rounded-full bg-[#065ad8] text-white text-sm px-4 md:px-6 py-1 md:py-2 hover:scale-105'>Log Out</button>
           </div>
       </div>
     </div>

@@ -6,7 +6,8 @@ import companyModel from '../models/companyModel.js';
 export const verify = async (req, res , next) => {
     try {
         const token = req.header('authorization').split(' ')[1];
-
+        // console.log(token , '@@@@@@@@@@@@@@@@@@@@@@');
+        
         if(!token){
             return res.status(401).json({message : 'Unauthorized!, not token found'});
         }

@@ -45,6 +45,14 @@ const companySchema = mongoose.Schema({
     headline : String,
 
     profileImage : String,
+
+    job : [
+        {
+            Position : String,
+            location : String,
+            
+        }
+    ]
 });
 
 const companyModel = mongoose.model('companies' , companySchema);

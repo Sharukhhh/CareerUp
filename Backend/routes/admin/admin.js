@@ -4,8 +4,8 @@ import {
     adminLogin, getCompanies, getUsers, blockUser, unBlockUser ,
     verifyCompany ,blockCompany , unBlockCompany 
 } 
-from '../controllers/admin/adminController.js';
-import { verifyAdmin } from '../middlewares/adminAuth.js';
+from '../../controllers/admin/adminController.js';
+import { verifyAdmin } from '../../middlewares/adminAuth.js';
 
 //auth
 router.post('/' , adminLogin);
