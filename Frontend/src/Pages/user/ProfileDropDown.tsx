@@ -8,8 +8,6 @@ interface ProfileDropDownProps {
 
 const ProfileDropDown : React.FC<ProfileDropDownProps> = ({userData}) => {
 
-    
-
     const handleNotVerified = () => {
         return toast.error('Not verified by admin' , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
     }

@@ -51,15 +51,14 @@ const userSchema = mongoose.Schema({
             location : String,
             from : Date,
             to : Date
-        }
+        } 
     ],
 
     profession : [
         {
             companyName : String,
             location : String,
-            position : String,
-            to : Date,
+            role : String,
         }
     ],
 

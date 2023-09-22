@@ -1,13 +1,18 @@
-import {useState , useEffect  } from 'react';
+import {useState , useEffect , lazy , Suspense  } from 'react';
+import { Spinner } from '@material-tailwind/react';
 import { useSelector } from 'react-redux';
 import { Toaster } from "react-hot-toast";
+import {FaUserGraduate} from 'react-icons/fa6';
 import ConnectionCard from "../../Components/user/cards/ConnectionCard";
 import PostCards from "../../Components/user/cards/PostCards";
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
-import EditProfile from "../../Components/user/edit-user/EditProfile";
 import RootState from "../../Redux/rootstate/rootState";
 import { axiosInstance } from "../../api/axiosInstance";
+import { BiSolidEdit} from 'react-icons/bi';
+import {BsBriefcase} from 'react-icons/bs';
+import {MdDelete} from 'react-icons/md';
+const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
 
 const Profile = () => {
 
@@ -60,23 +65,85 @@ const Profile = () => {
             {user?.role === 'Candidate' ? (
               <div className="w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
-                    <span>Experience</span>
+                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
+                    <span>Experience / Profession</span>
                   </div>
-              
-                  <div className="w-full flex flex-col gap-4 pt-4">
-                    <div className="flex items-center justify-between">
-              
-                    </div>
+
+                  {userData?.profession?.length > 0 ? (
+                  <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
+                    {userData?.profession?.reverse().map((item : any) => {
+                      return (
+                      <div className="flex items-center justify-between" key={item._id}>
+                        <BsBriefcase size={25} className='w-14 h-14 me-5 text-blue' />
+                        <div className='flex-1'>
+                          <p className='font-bold text-lg text-gray-900'>{item.role}</p>
+                          <span className='text-md'>{item.companyName}</span> <br />
+                          <span className='text-ascent-2 text-sm'>{item.location}</span>
+                        </div>
+
+                        {user?.userId === userData?._id && (
+                        <div className='flex me-1 flex-col gap-4'>
+                          <button 
+                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                            <BiSolidEdit />
+                          </button>
+                          <button 
+                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                            <MdDelete />
+                          </button>
+                        </div>
+                        )}
+                      </div>
+                      )
+                    })}
                   </div>
+                  ) : (
+                    <p className='text-gray-600 text-center'>Not Added </p>
+                  )}
                 </div>
             
               <div className="lg:hidden mt-4"></div>
 
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
+                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
                     <span>Education</span>
                   </div>
+
+                  {userData?.education?.length > 0 ? (
+                  <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
+                    {userData?.education?.slice().reverse().map((item : any) => {
+                      return (
+                      <>
+                      <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item._id}>
+                        <FaUserGraduate size={25} className='w-14 h-14 me-5 text-blue' />
+                        <div className='flex-1'>
+                          <p className='font-bold text-lg text-gray-900'>{item.fieldOfStudy}</p>
+                          <span className='text-md'>{item.institute}</span> <br />
+                          <span className='text-ascent-2 text-sm'>{item.location}</span> <br />
+                          <span className='text-ascent-1 text-xs'>
+                          {new Date(item.from).toLocaleDateString()} - {new Date(item.to).toLocaleDateString()}
+                          </span>
+                        </div>
+
+                        <div className='flex me-1 flex-col gap-4'>
+                          <button 
+                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                            <BiSolidEdit />
+                          </button>
+                          <button 
+                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                            <MdDelete />
+                          </button>
+                        </div>
+                        
+                      </div>
+                      </>
+                      )
+                    })}
+                  </div>
+                  ):(
+                    <p className='text-gray-600 text-center'>Not Added </p>
+                  )}
                 </div>
               </div>
             ) : (
@@ -96,7 +163,9 @@ const Profile = () => {
         </div>
       </div>
 
-      <EditProfile userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
+      <Suspense fallback={<div><Spinner/></div>}>
+        <EditProfile userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
+      </Suspense>
     </>  
   )
 }

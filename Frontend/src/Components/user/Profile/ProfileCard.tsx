@@ -62,19 +62,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                     </span>
                 </div> */}
             </div>
-{/* 
-        {user?.userId === userData._id && (
-                <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
-            {user?.role === 'Candidate' ? (
-                   <> 
-                    <button className='w-full mb-2 p-1 bg-light-blue-800 text-white rounded-sm hover:scale-95'>Add Education</button>
-                    <button className='w-full p-1 bg-light-blue-800 text-white rounded-sm hover:scale-95'>Add Profession</button>
-                   </> 
-            ) : (
-                    <button className='w-full mb-2 p-1 bg-light-blue-800 text-white rounded-sm hover:scale-95'>Post Your Job</button>
-            )}  
-                </div> 
-        )}  */}
 
             <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
                 <p className='text-ascent-1'>Connections</p>

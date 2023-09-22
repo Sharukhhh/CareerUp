@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , {useState , lazy , Suspense} from 'react';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
@@ -7,7 +7,9 @@ import UserNav from '../../Components/user/Nav/UserNav'
 import ProfileCard from '../../Components/user/Profile/ProfileCard'
 import ConnectionCard from '../../Components/user/cards/ConnectionCard'
 import PostCards from '../../Components/user/cards/PostCards'
-import EditProfile from '../../Components/user/edit-user/EditProfile';
+import { Spinner } from '@material-tailwind/react';
+const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
+
 
 const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
@@ -50,12 +52,12 @@ const UserFeed = () => {
                     <form className="bg-primary px-4 rounded-md " encType='multipart/form-data'>
                         <div className="w-full flex items-center gap-2 py-4 border-b border-[#66666645]">
                             <img 
-                            src="" 
+                            src={userData.profileImage} 
                             alt=""
                             className="w-14 h-14 object-cover rounded-full bg-gray-700"
                             />
                             <div className='w-full flex flex-col'>
-                                <textarea rows={2} name="description" 
+                                <textarea rows={2} name="description"  draggable='false'
                                 className="bg-secondary rounded-lg border border-[#66666645] outline-none text-sm 
                                 text-ascent-1 px-4 py-4 w-full placeholder:text-[#666]" placeholder="Add a Post!" 
                                 />
@@ -111,7 +113,9 @@ const UserFeed = () => {
             </div>
         </div>
 
-        <EditProfile userData={userData} visible={showModal} closeEditModal={closeEditModal} />
+        <Suspense fallback={<Spinner />}>
+            <EditProfile userData={userData} visible={showModal} closeEditModal={closeEditModal} />
+        </Suspense>
     </>
   )
 }

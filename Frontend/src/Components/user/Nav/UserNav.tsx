@@ -1,4 +1,4 @@
-import React , {useEffect , useState} from 'react';
+import React , {useEffect , useState , lazy , Suspense} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
@@ -9,7 +9,8 @@ import {CgProfile} from 'react-icons/cg';
 import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
-import ProfileDropDown from '../../../Pages/user/ProfileDropDown';
+const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDown'));
+import { Spinner } from '@material-tailwind/react';
 
 interface UserNavProps {
   userData : any;
@@ -75,10 +76,15 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
             <IoMdNotificationsOutline className='hover:scale-125' />
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
-          <CgProfile className='hover:scale-125' />
+          {/* <CgProfile className='hover:scale-125' /> */}
+          <img src={userData?.profileImage} alt='' className='w-6  h-6 rounded-full object-cover hover:scale-125' />
           </span>
             {
-              openDropProfile && <ProfileDropDown userData={userData} />
+              openDropProfile && (
+              <Suspense fallback={<div><Spinner/></div>}>
+              <LazyProfileDropDown userData={userData} />
+              </Suspense>
+              )
             }
 
           <div>

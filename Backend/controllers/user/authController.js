@@ -157,6 +157,7 @@ export const googleLogin = async (req, res , next) => {
             res.status(200).json({message : 'Login Successfull' ,  token, 
                 userData : {
                     username : user.name , useremail : user.email, role : user.role,
+                    userId : user._id,
                     profileImage : profileImage
                 }});
 
