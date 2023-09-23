@@ -2,12 +2,12 @@ import React , {useState , lazy , Suspense} from 'react';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
-import {BiImages, BiSolidVideo} from 'react-icons/bi';
 import UserNav from '../../Components/user/Nav/UserNav'
 import ProfileCard from '../../Components/user/Profile/ProfileCard'
 import ConnectionCard from '../../Components/user/cards/ConnectionCard'
-import PostCards from '../../Components/user/cards/PostCards'
+import PostCards from '../../Components/user/postss/PostCards'
 import { Spinner } from '@material-tailwind/react';
+import CreatePost from '../../Components/user/postss/CreatePost';
 const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
 
 
@@ -49,37 +49,7 @@ const UserFeed = () => {
 
                 {/* center */}
                 <div className='flex-1 h-full bg-bgColor px-3 flex flex-col gap-6 overflow-y-auto'>
-                    <form className="bg-primary px-4 rounded-md " encType='multipart/form-data'>
-                        <div className="w-full flex items-center gap-2 py-4 border-b border-[#66666645]">
-                            <img 
-                            src={userData.profileImage} 
-                            alt=""
-                            className="w-14 h-14 object-cover rounded-full bg-gray-700"
-                            />
-                            <div className='w-full flex flex-col'>
-                                <textarea rows={2} name="description"  draggable='false'
-                                className="bg-secondary rounded-lg border border-[#66666645] outline-none text-sm 
-                                text-ascent-1 px-4 py-4 w-full placeholder:text-[#666]" placeholder="Add a Post!" 
-                                />
-                            </div>
-                        </div>
-                        <div className='flex items-center justify-between py-4'>
-                            <label htmlFor="imgUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
-                                <input type="file" className='hidden' accept='.jpg .png .jpeg' id='imgUpload' />
-                                <BiImages />
-                                <span>Images</span>
-                            </label>
-
-                            <label htmlFor="videUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
-                                <input type="file" className='hidden' accept='' id='videoUpload' />
-                                <BiSolidVideo />
-                                <span>Videos</span>
-                            </label>
-
-                            <button className='bg-[#0444a4] text-white py-1 px-6 rounded-full font-semibold text-sm' type='submit' title='post'>Post</button>
-                        </div>
-                    </form>
-
+                    <CreatePost  userData={userData} />
                     <PostCards />
                 </div>
 

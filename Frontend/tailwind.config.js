@@ -16,11 +16,11 @@ module.exports = {
       },
     },
     screens: {
-      sm: "640px",
+      sm: "640px", //mobile view
 
-      md: "768px",
+      md: "768px", //tablet view
 
-      lg: "1024px",
+      lg: "1024px", //laptop view
 
       xl: "1280px",
 

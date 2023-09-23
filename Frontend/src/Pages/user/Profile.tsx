@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Toaster } from "react-hot-toast";
 import {FaUserGraduate} from 'react-icons/fa6';
 import ConnectionCard from "../../Components/user/cards/ConnectionCard";
-import PostCards from "../../Components/user/cards/PostCards";
+import PostCards from "../../Components/user/postss/PostCards";
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
 import RootState from "../../Redux/rootstate/rootState";
@@ -12,21 +12,31 @@ import { axiosInstance } from "../../api/axiosInstance";
 import { BiSolidEdit} from 'react-icons/bi';
 import {BsBriefcase} from 'react-icons/bs';
 import {MdDelete} from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
+const DeleteBox = lazy(() => import('../../Components/user/modal/PermissionBox'));
 
 const Profile = () => {
 
+  const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
 
   //modals
   const [showModal , setShowModal] = useState<boolean>(false);
+  const [showBox , setShowBox] = useState<boolean>(false);
 
   const openEditModal = () => {
     setShowModal(true);
   }
-
   const closeEditModal = () => {
     setShowModal(false);
+  }
+
+  const openBox = () => {
+    setShowBox(true);
+  }
+  const closeBox = () => {
+    setShowBox(false);
   }
 
   const user = useSelector((state : RootState) => state.user.userCred);
@@ -40,6 +50,7 @@ const Profile = () => {
     }).catch((error) => console.log(error , 'axios')
     )
   }, []);
+
 
   return (
     <>
@@ -71,7 +82,7 @@ const Profile = () => {
 
                   {userData?.profession?.length > 0 ? (
                   <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
-                    {userData?.profession?.reverse().map((item : any) => {
+                    {userData?.profession?.map((item : any) => {
                       return (
                       <div className="flex items-center justify-between" key={item._id}>
                         <BsBriefcase size={25} className='w-14 h-14 me-5 text-blue' />
@@ -87,7 +98,7 @@ const Profile = () => {
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>
-                          <button 
+                          <button onClick={openBox}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <MdDelete />
                           </button>
@@ -111,7 +122,7 @@ const Profile = () => {
 
                   {userData?.education?.length > 0 ? (
                   <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
-                    {userData?.education?.slice().reverse().map((item : any) => {
+                    {userData?.education?.map((item : any) => {
                       return (
                       <>
                       <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item._id}>
@@ -130,7 +141,7 @@ const Profile = () => {
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>
-                          <button 
+                          <button onClick={openBox}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <MdDelete />
                           </button>
@@ -163,7 +174,11 @@ const Profile = () => {
         </div>
       </div>
 
-      <Suspense fallback={<div><Spinner/></div>}>
+      <Suspense fallback={<Spinner/>}>
+        <DeleteBox userData={userData} visible={showBox} closeBox={closeBox} />
+      </Suspense>
+
+      <Suspense fallback={<Spinner/>}>
         <EditProfile userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
       </Suspense>
     </>  

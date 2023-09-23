@@ -124,6 +124,7 @@ const Login = () => {
 
                     if(res.data.message){
                       dispatch(setUserInfo(res.data.userData));
+                      localStorage.setItem('userToken' , JSON.stringify(res.data.token));
                       toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
                       setTimeout(() => {
                         navigate('/feed');
