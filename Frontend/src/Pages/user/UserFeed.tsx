@@ -1,4 +1,4 @@
-import React , {useState , lazy , Suspense} from 'react';
+import React , {useState , lazy , Suspense , useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
@@ -8,7 +8,7 @@ import ConnectionCard from '../../Components/user/cards/ConnectionCard'
 import PostCards from '../../Components/user/postss/PostCards'
 import { Spinner } from '@material-tailwind/react';
 import CreatePost from '../../Components/user/postss/CreatePost';
-const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
+const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 
 
 const UserFeed = () => {

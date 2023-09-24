@@ -1,8 +1,8 @@
 import React , {useState} from 'react'
 import { IoMdClose } from 'react-icons/io'
 import { useSelector } from 'react-redux';
-import RootState from '../../../Redux/rootstate/rootState';
-import { axiosInstance } from '../../../api/axiosInstance';
+import RootState from '../../../../Redux/rootstate/rootState';
+import { axiosInstance } from '../../../../api/axiosInstance';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 

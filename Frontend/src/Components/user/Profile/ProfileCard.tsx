@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useEffect} from 'react';
 import {Link} from 'react-router-dom';
 // import {BsThreeDotsVertical} from 'react-icons/bs'
 import {BiEdit} from 'react-icons/bi';
@@ -13,6 +13,7 @@ interface ProfileCardProps {
 }
 
 const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => {
+
 
     const user = useSelector((state : RootState) => state.user.userCred);
 
@@ -36,7 +37,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                     </div>
                  </Link>
 
-            {user?.userId === userData._id ? (
+            {user?.userId === userData?._id ? (
                 <div className='' onClick={openEditModal}>
                     <BiEdit size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
                 </div>

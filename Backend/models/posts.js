@@ -14,14 +14,14 @@ const postSchema = mongoose.Schema({
         required : true
     },
 
-    media : [{
+    media : {
         type : String
-    }],
+    },
 
     createdAt : {
         type : Date,
-        default : Date.now
-    },
+        default : Date.now    
+    },  
 
     likes : [{
         type : mongoose.Schema.Types.ObjectId,

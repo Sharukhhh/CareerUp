@@ -43,6 +43,27 @@ export const editEducation  = async (req, res, next) => {
 
 export const deleteEducation = async (req, res, next) => {
     try {
+        const educationId = req.params.educationId;
+
+        if(!educationId){
+            return res.status(404).json({error : 'Details not found'});
+        }
+
+        const result = await userModel.updateOne(
+            {'education._id' : educationId},
+            {$pull : {education : {_id : educationId}}}
+        );
+
+        if(result.nModified === 0){
+            return res.status(404).json({error : 'Document not found'});
+        }
+
+        const updatedUser = await userModel.findOne({'education._id' : educationId});
+        // if(!updatedUser){
+        //     return res.status(404).json({error : 'User not found'});
+        // }
+
+        res.json({message : 'Deleted Succesfully' , user: updatedUser});
         
     } catch (error) {
         next(error); 
@@ -82,7 +103,8 @@ export const addProfession = async (req, res, next) => {
 
 export const editProfession = async (req, res, next) => {
     try {
-        
+        const id = req.params.id;
+
     } catch (error) {
         next(error);
     }
@@ -90,7 +112,27 @@ export const editProfession = async (req, res, next) => {
 
 export const deleteProfession = async (req, res, next) => {
     try {
-        
+        const professionId = req.params.professionId;
+
+        if(!professionId){
+            return res.status(404).json({error : 'Details not found'});
+        }
+
+        const result = await userModel.updateOne(
+            {'profession._id' : professionId},
+            {$pull : {profession : {_id : professionId}}}
+        );
+
+        if(result.nModified === 0){
+            return res.status(404).json({error : 'Document not found'});
+        }
+
+        const updatedUser = await userModel.findOne({'profession._id' : professionId});
+        // if(!updatedUser){
+        //     return res.status(404).json({error : 'User not found'});
+        // }
+
+        res.json({message : 'Deleted Succesfully', user : updatedUser});
     } catch (error) {
         next(error);
     }

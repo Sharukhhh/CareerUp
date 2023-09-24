@@ -24,7 +24,7 @@ const AddInfoPage = () => {
     e.preventDefault()
 
     if(!institute || !field || !instituteLocation || !eFromDate || !eEndDate){
-      return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> ,  style : {color : '#fff' , background : '#59788E' , fontWeight : 'bold'}});
+      return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
     }
 
     axiosInstance.post(`/add_edu/${user?.userId}`, {institute , fieldOfStudy : field , location : instituteLocation , 
@@ -57,14 +57,14 @@ const AddInfoPage = () => {
     e.preventDefault();
 
     if(!companyName || !role || !companyLocation){
-      return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> ,  style : {color : '#fff' , background : '#59788E' , fontWeight : 'bold'}});
+      return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> , });
     }
 
     axiosInstance.post(`/add_pro/${user?.userId}` , {companyName , role , location : companyLocation})
     .then((res) =>{
 
       if(res.data.message){
-        toast.success(res.data.message);
+        toast.success(res.data.message, {icon : <BsFillSave2Fill/> });
 
         setCompanyName('');
         setRole('');

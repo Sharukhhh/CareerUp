@@ -80,3 +80,45 @@ export const deletePost = async (req, res , next) => {
 }
 // *********************************************************************************
 // *********************************************************************************
+
+export const getPosts = async (req, res, next) => {
+  try {
+    const posts = await postModel.find();
+
+    if(!posts){
+      return res.status(404).json({error : 'No posts found'});
+    }
+
+    res.status(200).json({message : 'Posts available' , posts});
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const userOnlyPosts = async(req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const user = await userModel.findById(id);
+    if(!user){
+      return res.status(404).json({error : 'user not found'});
+    }
+
+    let userPosts;
+    if(user.role === 'Candidate'){
+      userPosts = await postModel.find({user : id});
+    } else if(user.role === 'Company'){
+      userPosts = await postModel.find({user : id});
+    }
+
+    if(!userPosts){
+      return res.status(404).json({message : 'No posts found'});
+    }
+
+    return res.status(200).json({message : 'users posts available' , userPosts })
+
+  } catch (error) {
+    next(error);
+  }
+}

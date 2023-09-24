@@ -1,43 +1,42 @@
 import React, { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
-import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
-interface PermissionBoxProps {
+interface EducationPermissionBoxProps {
     visible : boolean;
-    closeBox : () => void;
-    professionId : string;
+    closeEduBox : () => void;
+    educationId : string;
     setUserData : (userData: any) => void;
 }
 
-const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , closeBox, professionId}) => {
+
+const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({setUserData , visible , closeEduBox , educationId}) => {
     const [open, setOpen] = useState(true);
 
     const cancelButtonRef = useRef(null);
 
-    const deleteProfession = () => {
-      console.log(professionId);
-      
-      axiosInstance.delete(`/delete_pro/${professionId}`)
-      .then((res) => {
-        if(res.data.message){
-          toast.success(res.data.message);
-          closeBox();
-          setUserData(res.data.user);
-        }
+    const deleteEducation = () => {
+        axiosInstance.delete(`/delete_edu/${educationId}`)
+        .then((res) => {
+            if(res.data.message){
+                toast.success(res.data.message);
+                closeEduBox();
+                setUserData(res.data.user);
+            } 
+            if(res.data.error){
+                toast.error(res.data.error , {duration: 2000});
+            }
 
-        if(res.data.error){
-          toast.error(res.data.error , {duration: 2000});
-        }
-      }).catch((err) => console.log(err , 'delete pro err')
-      )
+        }).catch((err) => console.log(err , 'axios delete err')
+        )
     }
 
   return (
     <>
     {visible && (
-            <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
         <Transition.Child
           as={Fragment}
@@ -74,7 +73,7 @@ const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , clo
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Are you sure you want to delete this Profession? 
+                          Are you sure you want to delete this Education? 
                         </p>
                       </div>
                     </div>
@@ -82,7 +81,7 @@ const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , clo
                 </div>
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
-                    type="button" onClick={deleteProfession}
+                    type="button" onClick={deleteEducation}
                     className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                   >
                     Delete
@@ -90,7 +89,7 @@ const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , clo
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={closeBox}
+                    onClick={closeEduBox}
                     ref={cancelButtonRef}
                   >
                     Cancel
@@ -107,4 +106,4 @@ const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , clo
   )
 }
 
-export default PermissionBox
+export default EduConfirmBox

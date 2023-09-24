@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { Toaster } from "react-hot-toast";
 import {FaUserGraduate} from 'react-icons/fa6';
 import ConnectionCard from "../../Components/user/cards/ConnectionCard";
-import PostCards from "../../Components/user/postss/PostCards";
+import SingleUserPostCard from '../../Components/user/postss/SingleUserPostCard';
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
 import RootState from "../../Redux/rootstate/rootState";
@@ -13,17 +13,22 @@ import { BiSolidEdit} from 'react-icons/bi';
 import {BsBriefcase} from 'react-icons/bs';
 import {MdDelete} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-const EditProfile = lazy(() => import('../../Components/user/edit-user/EditProfile'));
+const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 const DeleteBox = lazy(() => import('../../Components/user/modal/PermissionBox'));
+const EduConfirmBox = lazy(() => import('../../Components/user/modal/EduConfirmBox'));
 
 const Profile = () => {
 
   const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
 
+  const [educationId , setEducationId] = useState<string>('');
+  const [professionId , setProfessionId] = useState<string>('');
+
   //modals
   const [showModal , setShowModal] = useState<boolean>(false);
   const [showBox , setShowBox] = useState<boolean>(false);
+  const [showEduBox , setShowEduBox] = useState<boolean>(false);
 
   const openEditModal = () => {
     setShowModal(true);
@@ -32,11 +37,20 @@ const Profile = () => {
     setShowModal(false);
   }
 
-  const openBox = () => {
+  const openBox = (professionId : string) => {
+    setProfessionId(professionId);
     setShowBox(true);
   }
   const closeBox = () => {
     setShowBox(false);
+  }
+
+  const openEduBox = (educationId : string) => {
+    setEducationId(educationId);
+    setShowEduBox(true);
+  }
+  const closeEduBox = () => {
+    setShowEduBox(false);
   }
 
   const user = useSelector((state : RootState) => state.user.userCred);
@@ -68,7 +82,7 @@ const Profile = () => {
           {/* center */}
           <div className="flex-1 h-full border rounded-lg bg-primary px-4 flex flex-col gap-6 overflow-y-auto">
             
-            <PostCards />
+            <SingleUserPostCard/>
           </div>
 
           {/* right */}
@@ -84,12 +98,12 @@ const Profile = () => {
                   <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
                     {userData?.profession?.map((item : any) => {
                       return (
-                      <div className="flex items-center justify-between" key={item._id}>
+                      <div className="flex items-center justify-between" key={item?._id}>
                         <BsBriefcase size={25} className='w-14 h-14 me-5 text-blue' />
                         <div className='flex-1'>
-                          <p className='font-bold text-lg text-gray-900'>{item.role}</p>
-                          <span className='text-md'>{item.companyName}</span> <br />
-                          <span className='text-ascent-2 text-sm'>{item.location}</span>
+                          <p className='font-bold text-lg text-gray-900'>{item?.role}</p>
+                          <span className='text-md'>{item?.companyName}</span> <br />
+                          <span className='text-ascent-2 text-sm'>{item?.location}</span>
                         </div>
 
                         {user?.userId === userData?._id && (
@@ -98,7 +112,7 @@ const Profile = () => {
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>
-                          <button onClick={openBox}
+                          <button onClick={() => openBox(item?._id)}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <MdDelete />
                           </button>
@@ -125,14 +139,14 @@ const Profile = () => {
                     {userData?.education?.map((item : any) => {
                       return (
                       <>
-                      <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item._id}>
+                      <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item?._id}>
                         <FaUserGraduate size={25} className='w-14 h-14 me-5 text-blue' />
                         <div className='flex-1'>
-                          <p className='font-bold text-lg text-gray-900'>{item.fieldOfStudy}</p>
-                          <span className='text-md'>{item.institute}</span> <br />
-                          <span className='text-ascent-2 text-sm'>{item.location}</span> <br />
+                          <p className='font-bold text-lg text-gray-900'>{item?.fieldOfStudy}</p>
+                          <span className='text-md'>{item?.institute}</span> <br />
+                          <span className='text-ascent-2 text-sm'>{item?.location}</span> <br />
                           <span className='text-ascent-1 text-xs'>
-                          {new Date(item.from).toLocaleDateString()} - {new Date(item.to).toLocaleDateString()}
+                          {new Date(item?.from).toLocaleDateString()} - {new Date(item?.to).toLocaleDateString()}
                           </span>
                         </div>
 
@@ -141,7 +155,7 @@ const Profile = () => {
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>
-                          <button onClick={openBox}
+                          <button onClick={() => openEduBox(item?._id)}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <MdDelete />
                           </button>
@@ -175,11 +189,15 @@ const Profile = () => {
       </div>
 
       <Suspense fallback={<Spinner/>}>
-        <DeleteBox userData={userData} visible={showBox} closeBox={closeBox} />
+        <DeleteBox setUserData={setUserData} visible={showBox} closeBox={closeBox} professionId={professionId} />
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
         <EditProfile userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
+      </Suspense>
+
+      <Suspense fallback={<Spinner/>}>
+        <EduConfirmBox setUserData={setUserData} visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
       </Suspense>
     </>  
   )

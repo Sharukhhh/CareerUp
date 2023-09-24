@@ -20,9 +20,9 @@ const ProfileDropDown : React.FC<ProfileDropDownProps> = ({userData}) => {
                 <li className='hover:bg-blue-gray-100 py-2'>Profile</li>
             </Link>
             <hr className='border border-gray-400' />
-            {userData.verify === false ? (
+            {userData?.verify === false ? (
                 <li onClick={handleNotVerified} className='hover:bg-blue-gray-100 py-2'>Post Your Job</li>
-            ) : userData.verify === true ? (
+            ) : userData?.verify === true ? (
                 <Link to='/details' className='hover:bg-blue-gray-100 py-2'>
                 <li>Post Your Job</li>
                 </Link>

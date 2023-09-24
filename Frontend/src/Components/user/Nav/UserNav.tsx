@@ -26,13 +26,13 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (theme === 'dark') {
-  //     document.body.classList.add('dark');    dark:bg-[#0C0C0C]
-  //   } else {
-  //     document.body.classList.remove('dark');
-  //   }
-  // }, [theme]);
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('dark');    
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     const token = localStorage.getItem('userToken');
@@ -57,23 +57,23 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
   }
      
   return (
-    <div className='w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary'>
+    <div className='w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary dark:bg-[#0C134F]'>
       <NavLink to='/feed' className='flex gap-2 items-center'>
         <div className='p-1 md:p-2 text-[#065ad8] rounded font-extrabold  text-xl'>
-          <span>CareerUp</span>
+          <span className='dark:text-white'>CareerUp</span>
         </div>
       </NavLink>
 
       {/* Icons */}
       <div className='flex gap-10 items-center text-ascent-1 text-md md:text-xl'>
             <NavLink to='/feed'>
-                <ImHome className='hover:scale-125' />
+                <ImHome className='hover:scale-125 dark:text-white' />
             </NavLink>
           
           <button onClick={() => handleTheme()} >
-            {theme === 'light' ? <BsMoon className='hover:scale-125'/> : <BsSunFill className='hover:scale-125' /> }
+            {theme === 'light' ? <BsMoon className='hover:scale-125'/> : <BsSunFill className='hover:scale-125 dark:text-white' /> }
           </button>
-            <IoMdNotificationsOutline className='hover:scale-125' />
+            <IoMdNotificationsOutline className='hover:scale-125 dark:text-white' />
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
           {/* <CgProfile className='hover:scale-125' /> */}

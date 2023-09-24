@@ -32,7 +32,7 @@ const companySchema = mongoose.Schema({
 
     isBlocked : {
         type : Boolean,
-        default : false
+        default : false 
     },
 
     verify : {

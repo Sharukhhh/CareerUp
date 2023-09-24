@@ -1,5 +1,6 @@
 import multer from 'multer';
 import path from 'path';
+import express from 'express';
 
 const upload = multer({
     storage : multer.diskStorage({}) ,
@@ -12,13 +13,12 @@ const upload = multer({
 
             const error = new multer.MulterError('Unsupported file type!');
             new Error("File type is not supported");
-            error.http_codem = 401;
+            error.status = 401;
             cb(error, false);
             return;
         }
-
         cb(null , true);
-    }
+    } 
 });
 
 

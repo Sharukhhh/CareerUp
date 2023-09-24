@@ -12,10 +12,51 @@ const CreatePost : React.FC<CreatePostProps> = ({userData }) => {
 
     const user = useSelector((state : RootState) => state.user.userCred);
 
+    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const allowedVideoExtensions = ['mp4', 'mov', 'avi'];
+
     const [content , setContent] = useState<string>('');
     const [image , setImage] = useState<File | null>(null);
     const [video, setVideo] = useState<File | null>(null);
 
+    const displayFile = () => {
+        if(image){
+            return <img src={URL.createObjectURL(image)} alt='image' className="w-3/4 h-1/2 max-h-fit mt-2  rounded-3xl"/>
+        } else if(video){
+            return <img src={URL.createObjectURL(video)} alt='video' className="w-3/4 h-1/2 max-h-fit mt-2  rounded-3xl" />
+        } else {
+            return null;
+        }
+    }
+
+    const handleImageChange = (e  :any ) => {
+        const inputImage = e.target.files[0];
+
+        if(inputImage){
+            const fileExtension = inputImage.name.split('.').pop().toLowerCase();
+
+            if(allowedImageExtensions.includes(fileExtension)){
+                setImage(inputImage);
+            }else{
+                toast.error('Invalid Image Format');
+            }
+        }
+    }
+
+    const handleVideoChange = (e : any) => {
+        const videoInput = e.target.files[0];
+
+        if(videoInput){
+            const fileExtension = videoInput.name.split('').pop().toLowerCase();
+
+            if(allowedVideoExtensions.includes(fileExtension)){
+                setVideo(videoInput);
+            } else {
+                toast.error('Invalid video format');
+            }
+        }
+    }
+ 
 
     const postSubmit = (e : React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
@@ -77,18 +118,18 @@ const CreatePost : React.FC<CreatePostProps> = ({userData }) => {
                         />
                     </div>
                 </div>
-            <div className='image-show flex flex-grow justify-center'></div>
+            <div className='image-show flex flex-grow justify-center'>{displayFile()}</div>
             </div>
             <div className='flex items-center justify-between py-4'>
                 <label htmlFor="imgUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
-                    <input type="file" name='image' onChange={(e) => setImage(e.target.files?.[0] || null)}  
+                    <input type="file" onChange={handleImageChange} 
                     className='hidden' accept='.jpg .png .jpeg' id='imgUpload' />
                     <BiImages />
                     <span>Images</span>
                 </label>
 
                 <label htmlFor="videUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
-                    <input type="file" name='video' onChange={(e) => setVideo(e.target.files?.[0] || null)}
+                    <input type="file" onChange={handleVideoChange}
                     className='hidden' accept='.mp4, .avi, .mov, video/*' id='videoUpload' />
                     <BiSolidVideo />
                     <span>Videos</span>
