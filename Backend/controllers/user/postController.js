@@ -6,7 +6,8 @@ import cloudinary from '../../utils/cloudinary.js';
 
 export const createPost = async (req, res , next) => {
     try {
-        
+        const images=req.files
+        console.log(images,"//////");
         const id = req.params.id;
 
         let user = await userModel.findById(id);
@@ -20,37 +21,50 @@ export const createPost = async (req, res , next) => {
             user = company;
         }
 
-        if (!req.files || req.files.length === 0) {
-            console.log('text only post');
-
-          } else {
-            
-            const isImage = /\.(jpg|jpeg|png)$/i.test(req.files[0].originalname);
-            const isVideo = /\.(mp4)$/i.test(req.files[0].originalname);
-      
-            if (isImage || isVideo) {
-              const uploadCloudinary = await cloudinary.uploader.upload(req.files[0].path, {
-                resource_type: isImage ? 'image' : 'video'
-              });
-      
-              const newPost = new postModel({
-                user: user._id,
-                description: req.body.content,
-                media: uploadCloudinary.url,
-              });
-      
-              await newPost.save();
-              return res.json({ message: 'New post Added!', newPost });
+        let cloudimage=[]
+        if(images && images.length>0){
+            for (const image of images){
+              const result=await cloudinary.uploader.upload(image.path)
+              cloudimage.push(result.secure_url)
             }
-          }
+        }
+        console.log(cloudimage,"this is my cloud image");
+        const newPost = new postModel({
+          user: user._id,
+          description: req.body.content,
+          media: cloudimage
+        })
+        // if (!req.files || req.files.length === 0) {
+        //     console.log('text only post');
+
+        //   } else {
+            
+        //     const isImage = /\.(jpg|jpeg|png)$/i.test(req.files[0].originalname);
+        //     const isVideo = /\.(mp4)$/i.test(req.files[0].originalname);
+
+        //     if (isImage || isVideo) {
+        //       console.log('keri ');
+
+        //       const uploadCloudinary = await cloud.uploader.upload(req.files[0].path, {
+        //         resource_type: isImage ? 'image' : 'video'
+        //       });
+
+        //       console.log('ethi');
       
-          const newPost = new postModel({
-            user: user._id,
-            description: req.body.content
-          });
+        //      
+      
+        //       await newPost.save();
+        //       return res.json({ message: 'New post Added!', newPost });
+        //     }
+        //   }
+      
+          // const newPost = new postModel({
+          //   user: user._id,
+          //   description: req.body.content,
+          // });
       
           await newPost.save();
-          res.json({ message: 'New Post Added' });
+          res.json({ message: 'New Post Added'  , newPost});
 
     } catch (error) {
         next(error);
@@ -83,7 +97,7 @@ export const deletePost = async (req, res , next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const posts = await postModel.find();
+    const posts = await postModel.find().populate('user').exec();
 
     if(!posts){
       return res.status(404).json({error : 'No posts found'});

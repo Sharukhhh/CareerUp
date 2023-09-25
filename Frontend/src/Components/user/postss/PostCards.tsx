@@ -10,25 +10,28 @@ import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 import CommentForm from '../comment/CommentForm';
 
-const PostCards = () => {
+interface PostCardProps { 
+  posts : any;
+}
+
+const PostCards : React.FC<PostCardProps> = ({posts}) => {
   const user = useSelector((state : RootState) =>state.user.userCred);
-  const [posts , setPosts] = useState<any>([])
-  const [showAll , setShowAll] = useState<any>(0);
+  const [showAll , setShowAll] = useState<{ [postId: string]: boolean }>({});
   const [comments , showComments] = useState<any>(0);
 
-  useEffect(() => {
-    axiosInstance.get('/getposts').then((res) => {
-      if(res.data.message){
-        setPosts(res.data.posts);
-      }
-    }).catch((err) => console.log(err, 'axios posts err')
-    )
-  }, []);
+    // Function to toggle showAll state for a specific post
+    const toggleShowAll = (postId: string) => {
+      setShowAll((prevShowAll) => ({
+        ...prevShowAll,
+        [postId]: !prevShowAll[postId],
+      }));
+    };
 
   return (
     <> 
     {posts.length > 0 ? (
       posts?.slice().reverse().map((post : any) => {
+        const isShowAll = showAll[post._id];
         return (
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
@@ -51,15 +54,14 @@ const PostCards = () => {
 
             <div>
               <p className='text-ascent-2'>
-                {post?.description.slice(0, 300)}
-                {post?.description?.length > 301 && (
-                  showAll === post?._id ? (
-                    <span onClick={() => setShowAll(0)}
-                    className='text-blue ml-2 font-medium cursor-pointer'>Show less</span> 
-                    ) : ( 
-                    <span onClick={() => setShowAll(post?._id)}
-                    className='text-blue ml-2 font-medium cursor-pointer'>Show more</span>
-                  ))}
+              {isShowAll ? post?.description : post?.description.slice(0, 300)}
+                  {post?.description.length > 301 && (
+                    <span
+                      onClick={() => toggleShowAll(post._id)}
+                      className='text-blue ml-2 font-medium cursor-pointer'>
+                      {isShowAll ? 'Show less' : 'Show more'}
+                    </span>
+                  )}
               </p>
               
               {post?.media && (

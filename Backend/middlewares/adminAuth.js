@@ -3,15 +3,15 @@ import adminModel from '../models/admin.js';
 
 export const verifyAdmin = async (req, res , next) => {
     try { 
-        const tokenHeader = req.header('Authorization');
-        console.log(tokenHeader , 'ghrherehetheehre');    
+        // console.log(req.header('authorization'), '#######');
+        let token = req.header('authorization').split(' ')[1];
+        // console.log(token , '@@@@@@');
         
-        if (!tokenHeader) { 
-            return res.status(401).json({ message: 'No token provided' });
+        if(token === null){         
+            return res.status(401).json({message : 'Unauthorized!, not token found'});
         }
 
-        const token = tokenHeader.split(' ')[1];
-        console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' , token);
+        token = token.replaceAll('"',"");
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 

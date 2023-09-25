@@ -12,10 +12,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
- 
+
 
 import { errorHandler } from './middlewares/errorHandler.js';
-app.use(errorHandler);
+app.use(errorHandler); 
 
 app.use(express.json());
 app.use(express.urlencoded({extended : true})); 

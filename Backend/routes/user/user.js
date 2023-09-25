@@ -14,13 +14,13 @@ router.put('/editBasic/:id' , upload.array(2), addBasic);
 router.get('/listusers' , verify , listAllUsers);
 
 //user posts-management
-router.post('/addPost/:id' , upload.array('imageFile' , 'videoFile'), createPost);
+router.post('/addPost/:id' , upload.array('image' , 'video'), createPost);
 
 router.patch('/deletepost/:id' , deletePost );
 
-router.get('/getposts' , getPosts);
+router.get('/getposts' , verify ,  getPosts);
 
-router.get('/userposts/:id' , userOnlyPosts);
+router.get('/userposts/:id' , verify, userOnlyPosts);
 
 export default router;
 

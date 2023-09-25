@@ -14,9 +14,9 @@ const postSchema = mongoose.Schema({
         required : true
     },
 
-    media : {
+    media : [{
         type : String
-    },
+    }],
 
     createdAt : {
         type : Date,

@@ -12,7 +12,7 @@ router.post('/' , adminLogin);
 
 
 //user-management-routes
-router.get('/users' ,  getUsers);
+router.get('/users' , verifyAdmin,  getUsers);
 
 router.patch('/block/:id' , blockUser);
 
@@ -20,7 +20,7 @@ router.patch('/unblock/:id' , unBlockUser);
 
 
 //company-management-company
-router.get('/companies' , getCompanies);
+router.get('/companies' , verifyAdmin, getCompanies);
 
 router.patch('/verify/:id' , verifyCompany);
 

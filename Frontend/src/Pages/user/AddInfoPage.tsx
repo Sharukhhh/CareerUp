@@ -80,6 +80,36 @@ const AddInfoPage = () => {
   } 
 
 
+  //post-job
+  const [position , setPosition] = useState<string>('');
+  const [location, setJobLocation] = useState<string>('');
+  const [requirements , setRequirements] = useState<string>('');
+
+  const handleJobPost = (e : React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if(!position || !location || !requirements){
+      return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
+    }
+
+    axiosInstance.post(`/postjob/${user?.userId}` , {position, location , requirements})
+    .then((res) => {
+      if(res.data.message){
+        toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
+
+        setPosition('');
+        setJobLocation('');
+        setRequirements('');
+      }
+
+      if(res.data.error){
+        toast.error(res.data.error);
+      }
+    }).catch((error) => console.log(error , 'axios job post err')
+    )
+  }
+
+
   return (
     <>
     <Toaster position='top-center' />
@@ -186,10 +216,10 @@ const AddInfoPage = () => {
             ) : (
               <>
               <h2 className='text-lg font-bold mb-2'>Post Your Job</h2>
-              <form>
+              <form onSubmit={handleJobPost} >
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="hiring position">Position For Hiring</label>
-                  <input 
+                  <input onChange={(e) => setPosition(e.target.value)} value={position}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='position' placeholder='Add Position For Hiring' />
@@ -197,13 +227,13 @@ const AddInfoPage = () => {
 
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="location">Location</label>
-                  <input 
+                  <input onChange={(e) => setJobLocation(e.target.value)} value={location}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="Requirements">Requirements</label>
-                  <input 
+                  <input onChange={(e) => setRequirements(e.target.value)} value={requirements}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 p-8 placeholder:text=[#666] shadow-md'
                   type="text" name='requirements' placeholder='' />

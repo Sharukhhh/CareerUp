@@ -14,7 +14,7 @@ export const adminLogin = async (req, res) => {
             return res.status(400).json({error : 'Admin not found'});
         } else {
 
-            if(password === admin.password){
+            if(password === admin.password){      
                 const token =jwt.sign({adminId : admin.id , adminmail : admin.email} , process.env.JWT_SECRET ,{expiresIn : '1hr'});
                 return res.status(200).json({message : 'Login Successfull' , token});
             } else {

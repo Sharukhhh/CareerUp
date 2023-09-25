@@ -9,7 +9,7 @@ const upload = multer({
 
         let ext = path.extname(file.originalname);
 
-        if(ext !== '.jpg' && ext !== 'jpeg' && ext !== '.png' && ext !== '.mp4') {
+        if(ext !== '.jpg' && ext !== 'jpeg' && ext !== '.png' && ext !== '.mp4' && ext !== 'jfif') {
 
             const error = new multer.MulterError('Unsupported file type!');
             new Error("File type is not supported");

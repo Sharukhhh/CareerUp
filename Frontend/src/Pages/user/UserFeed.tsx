@@ -13,6 +13,7 @@ const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/Edi
 
 const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
+    const [posts , setPosts] = useState<any>([])
 
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
@@ -26,14 +27,28 @@ const UserFeed = () => {
   }
 
     const user = useSelector((state : RootState) => state.user.userCred);
-  
-    axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+
+    useEffect(() => {
+      axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
       
-      if(res.data){
-        setUserData(res.data.user);
-      }
-    }).catch((error) => console.log(error , 'axios')
-    )
+        if(res.data){
+          setUserData(res.data.user);
+        }
+      }).catch((error) => console.log(error , 'axios')
+      )
+
+      axiosInstance.get('/getposts').then((res) => {
+        if(res.data.message){
+          setPosts(res.data.posts);
+        }
+      }).catch((err) => console.log(err, 'axios posts err')
+      )
+    }, [user?.userId]);
+
+  // Function to add a new post to the 'posts' state
+  const addNewPost = (newPost : any) => {
+    setPosts([...posts, newPost]);
+  };
   return (
     <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
@@ -47,10 +62,10 @@ const UserFeed = () => {
                     <ConnectionCard />
                 </div>
 
-                {/* center */}
+                {/* center */}   
                 <div className='flex-1 h-full bg-bgColor px-3 flex flex-col gap-6 overflow-y-auto'>
-                    <CreatePost  userData={userData} />
-                    <PostCards />
+                    <CreatePost  userData={userData} addNewPost={addNewPost} />
+                    <PostCards posts={posts} />
                 </div>
 
                 {/* right-side */}

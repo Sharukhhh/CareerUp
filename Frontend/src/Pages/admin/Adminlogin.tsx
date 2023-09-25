@@ -15,7 +15,7 @@ const Adminlogin = () => {
         adminAxiosInstance.post('/' , {email:adminEmail , password:adminPassword}).then((res) =>{
           
           if(res.data.message){
-            // localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
+            localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
             toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
             setTimeout(() => {
               navigate('/admin/users');

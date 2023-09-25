@@ -12,8 +12,8 @@ export const axiosInstance = axios.create({
 export const adminAxiosInstance = axios.create({
     baseURL : 'http://localhost:3000/admin' , 
 
-    // headers : {
-    //     'Authorization' : `Bearer ${localStorage.getItem('adminToken')}`
-    // }
+    headers : {
+        'Authorization' : `Bearer ${localStorage.getItem('adminToken')}`
+    }
     
 });

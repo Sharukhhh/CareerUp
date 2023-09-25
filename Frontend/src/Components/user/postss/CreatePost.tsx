@@ -6,13 +6,14 @@ import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 interface CreatePostProps{
     userData : any;
+    addNewPost: (newPost: any) => void;
 }
 
-const CreatePost : React.FC<CreatePostProps> = ({userData }) => {
+const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
 
     const user = useSelector((state : RootState) => state.user.userCred);
 
-    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif' , 'jfif'];
     const allowedVideoExtensions = ['mp4', 'mov', 'avi'];
 
     const [content , setContent] = useState<string>('');
@@ -90,6 +91,8 @@ const CreatePost : React.FC<CreatePostProps> = ({userData }) => {
                 setContent('');
                 setImage(null);
                 setVideo(null);
+
+                addNewPost(res.data.newPost)
             }
 
             if(res.data.error){
@@ -123,14 +126,14 @@ const CreatePost : React.FC<CreatePostProps> = ({userData }) => {
             <div className='flex items-center justify-between py-4'>
                 <label htmlFor="imgUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
                     <input type="file" onChange={handleImageChange} 
-                    className='hidden' accept='.jpg .png .jpeg' id='imgUpload' />
+                    className='hidden' name='image' accept='.jpg .png .jpeg' id='imgUpload' />
                     <BiImages />
                     <span>Images</span>
                 </label>
 
                 <label htmlFor="videUpload" className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'>
                     <input type="file" onChange={handleVideoChange}
-                    className='hidden' accept='.mp4, .avi, .mov, video/*' id='videoUpload' />
+                    className='hidden' name='video' accept='.mp4, .avi, .mov, video/*' id='videoUpload' />
                     <BiSolidVideo />
                     <span>Videos</span>
                 </label>
