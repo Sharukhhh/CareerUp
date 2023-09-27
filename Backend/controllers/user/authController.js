@@ -77,7 +77,7 @@ export const login = async (req, res , next) => {
             if(!matchPassword){
                 return res.status(401).json({error : 'Inavlid Password'});
             }
-            const token = jwt.sign({userId : company.id , email : company.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
+            const token = jwt.sign({userId : company.id } , process.env.JWT_SECRET , {expiresIn : '1h'});
 
             return res.status(200).json({message : 'Login successfully' , token,
             companyData : {
@@ -97,7 +97,7 @@ export const login = async (req, res , next) => {
             return res.status(401).json({error : 'Invalid Password'});
         }
 
-        const token = jwt.sign({userId : user.id , email : user.email} , process.env.JWT_SECRET , {expiresIn : '1h'});
+        const token = jwt.sign({userId : user.id } , process.env.JWT_SECRET , {expiresIn : '1h'});
 
         return res.status(200).json({message : 'Login successfully' , token,
         userData : {
@@ -122,6 +122,12 @@ export const googleSignup = async (req, res , next) => {
         const decodedData = jwt.decode(token);
 
         const {name , email , picture , jti} = decodedData;
+
+        const user = await userModel.findOne({email});
+
+        if(user){
+            return res.status(401).json({error : 'User Already Exist'});
+        }
 
         const newUser = new userModel({
             name , email , profileImage : picture , password : jti , role : 'Candidate' ,

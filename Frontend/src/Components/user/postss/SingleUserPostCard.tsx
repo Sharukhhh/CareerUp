@@ -27,7 +27,7 @@ const SingleUserPostCard = () => {
     {userPosts.length > 0 ? (
       userPosts?.slice().reverse().map((post : any) => {
         return(
-        <div className='mb-2 mt-2 bg-primary p-4 rounded-xl'>
+        <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
             <Link to=''>
                 <img src={post?.user?.profileImage} alt="img" className='w-14 h-14 object-cover rounded-full bg-gray-600' />

@@ -21,7 +21,8 @@ const Login = () => {
 
       if(res.data.userData){
         dispatch(setUserInfo(res.data.userData));
-        localStorage.setItem('userToken' , JSON.stringify(res.data.token));
+        const token = res.data.token;
+        localStorage.setItem('userToken', JSON.stringify(token));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
         setTimeout(() => {
           navigate('/feed');
@@ -29,7 +30,8 @@ const Login = () => {
 
       } else if(res.data.companyData){
         dispatch(setUserInfo(res.data.companyData));
-        localStorage.setItem('userToken' , JSON.stringify(res.data.token));
+        const token = res.data.token;
+        localStorage.setItem('userToken', JSON.stringify(token));
         toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
         setTimeout(() => {
           navigate('/feed');

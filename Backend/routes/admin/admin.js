@@ -14,19 +14,19 @@ router.post('/' , adminLogin);
 //user-management-routes
 router.get('/users' , verifyAdmin,  getUsers);
 
-router.patch('/block/:id' , blockUser);
+router.patch('/block/:id' , verifyAdmin, blockUser);
 
-router.patch('/unblock/:id' , unBlockUser);
+router.patch('/unblock/:id' , verifyAdmin, unBlockUser);
 
 
 //company-management-company
-router.get('/companies' , verifyAdmin, getCompanies);
+router.get('/companies', verifyAdmin, getCompanies);
 
-router.patch('/verify/:id' , verifyCompany);
+router.patch('/verify/:id' , verifyAdmin, verifyCompany);
 
-router.patch('/blockcompany/:id' , blockCompany );
+router.patch('/blockcompany/:id' , verifyAdmin, blockCompany );
 
-router.patch('/unblockcompany/:id' , unBlockCompany);
+router.patch('/unblockcompany/:id' , verifyAdmin, unBlockCompany);
 
 
 export default router;    

@@ -1,5 +1,5 @@
 import React  , {useState , useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { Link , useParams } from 'react-router-dom';
 import {IoArrowBackCircle} from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
@@ -12,6 +12,23 @@ const AddInfoPage = () => {
   const currentDate = new Date();
 
   const user = useSelector((state : RootState) => state.user.userCred);
+
+  const {id} = useParams();
+  const [editData , setEditData] = useState<any>([]);
+
+  useEffect(() => {
+    if(id){
+      axiosInstance.get(`/editdata/${id}`)
+      .then((res) => {
+        if(res.data.message){
+          setEditData(res.data.info);
+        }
+      }).catch((error) => console.log(error , 'axios bringerror')
+      )
+    }
+  }, [id]);
+
+  
   
   //education
   const [institute , setInstitute] = useState<string>('');
@@ -83,6 +100,7 @@ const AddInfoPage = () => {
   //post-job
   const [position , setPosition] = useState<string>('');
   const [location, setJobLocation] = useState<string>('');
+  const [salary , setSalary] = useState<string>('');
   const [requirements , setRequirements] = useState<string>('');
 
   const handleJobPost = (e : React.FormEvent<HTMLFormElement>) => {
@@ -92,7 +110,7 @@ const AddInfoPage = () => {
       return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
     }
 
-    axiosInstance.post(`/postjob/${user?.userId}` , {position, location , requirements})
+    axiosInstance.post(`/postjob/${user?.userId}` , {position, location , salary, requirements})
     .then((res) => {
       if(res.data.message){
         toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
@@ -132,14 +150,14 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="institute">Institute</label>
 
-                  <input onChange={(e) => setInstitute(e.target.value)} value={institute}
+                  <input onChange={(e) => setInstitute(e.target.value)} value={editData ? editData.institute : institute}
                   className='bg-secondary rounded border border-[#66666690] 
-                  outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
+                  outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[666#] shadow-md'
                   type="text" name='institute' placeholder='Institute that you studied' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="fieldOfStudy">Field of Study</label>
 
-                  <input onChange={(e) => setField(e.target.value)} value={field}
+                  <input onChange={(e) => setField(e.target.value)} value={editData ? editData.fieldOfStudy : field}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='fieldOfStudy' placeholder='field of study' />
@@ -148,7 +166,7 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="location">Location</label>
 
-                  <input onChange={(e) => setInstituteLocation(e.target.value)} value={instituteLocation}
+                  <input onChange={(e) => setInstituteLocation(e.target.value)} value={editData ? editData.location : instituteLocation}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
@@ -156,7 +174,7 @@ const AddInfoPage = () => {
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="from Date">From</label>
 
                   <input onChange={(e) => setFromDate(new Date(e.target.value))}
-                  value={eFromDate ? eFromDate.toISOString().split('T')[0] : ''}
+                  value={editData ? editData.from :  eFromDate.toISOString().split('T')[0]}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="date" name="date" placeholder='from' />
@@ -164,7 +182,7 @@ const AddInfoPage = () => {
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="upto date">Upto</label>
 
                   <input onChange={(e) => setEEndDate(new Date(e.target.value))}
-                  value={eEndDate ? eEndDate.toISOString().split('T')[0] : ''}
+                  value={editData ? editData.to :  eEndDate.toISOString().split('T')[0]}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="date" name="upto" placeholder='upto'/>
@@ -186,14 +204,14 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="company">Name of the company</label>
 
-                  <input onChange={(e) => setCompanyName(e.target.value)} value={companyName} 
+                  <input onChange={(e) => setCompanyName(e.target.value)} value={editData ? editData.companyName : companyName} 
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='companyName' placeholder='Company Name' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="company">Position</label>
 
-                  <input onChange={(e) => setRole(e.target.value)} value={role} 
+                  <input onChange={(e) => setRole(e.target.value)} value={editData ? editData.role : role} 
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='position' placeholder='Your Position' />
@@ -202,7 +220,7 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="location">Location</label>
 
-                  <input onChange={(e) => setCompanyLocation(e.target.value)} value={companyLocation}
+                  <input onChange={(e) => setCompanyLocation(e.target.value)} value={editData ? editData.companyLocation : companyLocation}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
@@ -223,6 +241,12 @@ const AddInfoPage = () => {
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='position' placeholder='Add Position For Hiring' />
+
+                  <label className='text-ascent-2 text-sm mb-2' htmlFor="package">Package</label>
+                  <input onChange={(e) => setSalary(e.target.value)} value={salary}
+                  className='bg-secondary rounded border border-[#66666690] 
+                  outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
+                  type="text" name='package' placeholder='Salary Package' />
                 </div>
 
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>

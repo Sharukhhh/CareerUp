@@ -11,7 +11,7 @@ export const errorHandler = async (err , req, res , next) => {
     console.error(err, 'initial logged error');
 
     let statusCode = 500;
-    let message = 'Internal Server Error';
+    let message = 'Internal Server Error'; 
 
     if(err instanceof CustomError){
         statusCode = err.statusCode;

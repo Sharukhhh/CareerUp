@@ -18,17 +18,35 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
     const user = useSelector((state : RootState) => state.user.userCred);
     const navigate = useNavigate();
 
-    const [name , setName] = useState<string>(String(user?.username) || '');
     const [headline , setHeadline] = useState<string>(userData?.headline || '');
     const [location , setLocation] = useState<string>(userData?.location || '');
-    const [profileImage , setImage] = useState<string>('');
+    const [profileImage , setImage] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImage(e.target.files[0]);
+          }
+    }
 
     const editSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('headline', headline);
+        formData.append('location', location);
+
+        if (profileImage) {
+          formData.append('profileImage', profileImage);
+        }
         
-        axiosInstance.put(`/editBasic/${user?.userId}` , {name , headline , location , profileImage}).then((res) => {
+        axiosInstance.put(`/addBasic/${user?.userId}` , formData).then((res) => {
 
             if(res.data.message){
+                setHeadline('');
+                setLocation('');
+                setImage(null);
+                closeEditModal();
+
                 toast.success(res.data.message);
             }else{
                 toast.error(res.data.error);
@@ -64,13 +82,7 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
                                     </button>
                             </div>
                             
-                                <form onSubmit={editSubmit} className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'>
-
-                                    <label className='text-ascent-2 text-sm mb-2' htmlFor="name">Name</label>
-                                    <input type="text" value={name} name='name' 
-                                    onChange={(e) => setName(e.target.value)} className='w-full bg-secondary rounded border 
-                                    border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' 
-                                    />
+                                <form onSubmit={editSubmit} encType='multipart/form-data'  className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'>
     
                                     <label className='text-ascent-2 text-sm mb-2' htmlFor="headline">Headline</label>
                                     <input type="text" value={headline} name='healine' 
@@ -85,8 +97,8 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
                                     />
     
                                     <label className='text-ascent-2 text-sm mb-2' htmlFor="name">Profile Picture</label>
-                                    <input type="file" value={profileImage} name='profileImage' 
-                                    onChange={(e) => setImage(e.target.value)} className='w-full bg-secondary rounded border 
+                                    <input type="file"  accept="image/*" name='profileImage' 
+                                    onChange={handleFileChange} className='w-full bg-secondary rounded border 
                                     border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' 
                                     />
 

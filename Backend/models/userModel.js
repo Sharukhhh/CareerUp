@@ -42,7 +42,10 @@ const userSchema = mongoose.Schema({
 
     skills : String,
 
-    profileImage : String,
+    profileImage : {
+        type : String,
+        default : 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
+    },
 
     education : [
         {
@@ -65,7 +68,20 @@ const userSchema = mongoose.Schema({
     resume : {
         data : Buffer,
         contentType : String
-    }
+    },
+
+    savedPosts : [{
+        postId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'posts',
+            required : true
+        },
+
+        addedAt : {
+            type : Date,
+            default : Date.now,
+        }
+    }]
 
     
 })

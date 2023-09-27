@@ -4,72 +4,55 @@ import postModel from '../../models/posts.js';
 import cloudinary from '../../utils/cloudinary.js';
 
 
-export const createPost = async (req, res , next) => {
-    try {
-        const images=req.files
-        console.log(images,"//////");
-        const id = req.params.id;
-
-        let user = await userModel.findById(id);
-
-        if(!user){
-            const company = await companyModel.findById(id);
-
-            if(!company){
-                return res.status(404).json({error : 'User not found'});
-            }
-            user = company;
-        }
-
-        let cloudimage=[]
-        if(images && images.length>0){
-            for (const image of images){
-              const result=await cloudinary.uploader.upload(image.path)
-              cloudimage.push(result.secure_url)
-            }
-        }
-        console.log(cloudimage,"this is my cloud image");
-        const newPost = new postModel({
-          user: user._id,
-          description: req.body.content,
-          media: cloudimage
-        })
-        // if (!req.files || req.files.length === 0) {
-        //     console.log('text only post');
-
-        //   } else {
-            
-        //     const isImage = /\.(jpg|jpeg|png)$/i.test(req.files[0].originalname);
-        //     const isVideo = /\.(mp4)$/i.test(req.files[0].originalname);
-
-        //     if (isImage || isVideo) {
-        //       console.log('keri ');
-
-        //       const uploadCloudinary = await cloud.uploader.upload(req.files[0].path, {
-        //         resource_type: isImage ? 'image' : 'video'
-        //       });
-
-        //       console.log('ethi');
+export const createPost = async (req, res, next) => {
+  try {
+    const images = req.files;
+    console.log(images, "//////");
+    const id = req.params.id;
+    
+    let user = await userModel.findById(id);
+    
+    if (!user) {
+      const company = await companyModel.findById(id);
       
-        //      
+      if (!company) {
+        return res.status(404).json({ error: 'User not found' });
+      }
       
-        //       await newPost.save();
-        //       return res.json({ message: 'New post Added!', newPost });
-        //     }
-        //   }
-      
-          // const newPost = new postModel({
-          //   user: user._id,
-          //   description: req.body.content,
-          // });
-      
-          await newPost.save();
-          res.json({ message: 'New Post Added'  , newPost});
-
-    } catch (error) {
-        next(error);
+      user = company;
     }
-}
+
+    let cloudimage = [];
+
+    if (images && images.length > 0) {
+      for (const image of images) {
+        const result = await cloudinary.uploader.upload(image.path);
+        cloudimage.push(result.secure_url);
+      }
+    }
+
+    console.log(cloudimage, "this is my cloud image");
+
+    const newPostData = {
+      user: user._id,
+      description: req.body.content,
+      media: cloudimage,
+    };
+
+    if (!images || images.length === 0) {
+      console.log('text only post');
+      delete newPostData.media; 
+    }
+
+    const newPost = new postModel(newPostData);
+    await newPost.save();
+
+    res.json({ message: 'New Post Added', newPost });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const deletePost = async (req, res , next) => {
     try {
@@ -109,28 +92,66 @@ export const getPosts = async (req, res, next) => {
   }
 }
 
+// *********************************************************************************
+// *********************************************************************************
 
-export const userOnlyPosts = async(req, res, next) => {
+
+export const likeandDislikePost = async (req, res, next) =>{
   try {
-    const id = req.params.id;
+    const user = req.user;
+    const postId = req.params.postId;
 
-    const user = await userModel.findById(id);
-    if(!user){
-      return res.status(404).json({error : 'user not found'});
+    const post  = await postModel.findById(postId);
+
+    if(!post){
+      return res.status(401).json({error : 'No post found'});
     }
 
-    let userPosts;
-    if(user.role === 'Candidate'){
-      userPosts = await postModel.find({user : id});
-    } else if(user.role === 'Company'){
-      userPosts = await postModel.find({user : id});
+    const isLiked = post.likes.includes(user._id);
+    if(isLiked){
+
+      post.likes = post.likes.filter((userId) => userId.toString() !== user._id.toString() );
+      await post.save();
+
+      return res.status(200).json({message: 'DisLiked Post'});
+    } else {
+
+      post.likes.push(user._id);
+      await post.save();
+
+      return res.status(200).json({message : 'Post Likes Successfully'});
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const saveandUnsavePosts = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    const user = req.user;
+
+    const post = await postModel.findById(postId);
+
+    if(!post){
+      return res.status(404).json({error : 'Post Not Found'});
     }
 
-    if(!userPosts){
-      return res.status(404).json({message : 'No posts found'});
+    const isSaved = user.savedPosts.some((savedPosts) => savedPosts.postId.toString() === savedPosts.postId.toString())
+    if(isSaved){
+      user.savedPosts = user.savedPosts.filter((savedPosts) => savedPosts.postId.toString() !== savedPosts.postId.toString());
+
+      await user.save();
+      return res.json({message : 'Post Unsaved !'});
+
+    } else {
+
+      user.savedPosts.push({postId : post._id});
+      await user.save();
+
+      return res.json({message : 'Post Saved !'});
     }
 
-    return res.status(200).json({message : 'users posts available' , userPosts })
 
   } catch (error) {
     next(error);

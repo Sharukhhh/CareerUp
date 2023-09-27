@@ -13,6 +13,7 @@ import CompanyList from './Pages/admin/CompanyList';
 
 import PrivatePages from './Components/PrivatePages';
 import AddInfoPage from './Pages/user/AddInfoPage';
+import SavedPosts from './Pages/user/SavedPosts';
 
 function App() {
 
@@ -28,6 +29,8 @@ function App() {
           <Route path='/account' element={<Profile/>} />
           <Route path='/feed' element={<UserFeed />} />
           <Route path='/details' element={<AddInfoPage />}/>
+          <Route path='/details/:id' element={<AddInfoPage/>}/>
+          <Route path='/saved' element={<SavedPosts/>}/>
         </Route>
 
         <Route path='/admin' element={<Adminlogin/>}/>

@@ -17,6 +17,10 @@ const createJobSchema = mongoose.Schema({
         required : true
     },
 
+    package : {
+        type : String,
+    },
+
     requirements : {
         type : String,
         required : true

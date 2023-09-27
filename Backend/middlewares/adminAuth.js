@@ -15,8 +15,15 @@ export const verifyAdmin = async (req, res , next) => {
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.body.adminId = decodedToken.adminId;
+        const adminId = decodedToken.adminId;
 
+        const admin = await adminModel.findById(adminId);
+
+        if(!admin){
+            return res.status(401).json({ message: 'Unauthorized - User not found' });
+        }
+
+        req.admin = admin;
         next(); 
 
     } catch (error) {

@@ -14,6 +14,7 @@ const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/Edi
 const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
     const [posts , setPosts] = useState<any>([])
+    const [updateUI , setUpdateUI] = useState<boolean>(false);
 
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
@@ -43,7 +44,7 @@ const UserFeed = () => {
         }
       }).catch((err) => console.log(err, 'axios posts err')
       )
-    }, [user?.userId]);
+    }, [user?.userId , updateUI]);
 
   // Function to add a new post to the 'posts' state
   const addNewPost = (newPost : any) => {
@@ -63,9 +64,9 @@ const UserFeed = () => {
                 </div>
 
                 {/* center */}   
-                <div className='flex-1 h-full bg-bgColor px-3 flex flex-col gap-6 overflow-y-auto'>
+                <div className='flex-1 bg-bgColor pt-5 pb-10 flex flex-col gap-6 overflow-y-auto'>
                     <CreatePost  userData={userData} addNewPost={addNewPost} />
-                    <PostCards posts={posts} />
+                    <PostCards  userData={userData} posts={posts} setUpdateUI={setUpdateUI} showAllposts={true} />
                 </div>
 
                 {/* right-side */}

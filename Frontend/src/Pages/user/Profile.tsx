@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import { Toaster } from "react-hot-toast";
 import {FaUserGraduate} from 'react-icons/fa6';
 import ConnectionCard from "../../Components/user/cards/ConnectionCard";
-import SingleUserPostCard from '../../Components/user/postss/SingleUserPostCard';
+
+import PostCards from '../../Components/user/postss/PostCards';
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
 import RootState from "../../Redux/rootstate/rootState";
@@ -21,6 +22,8 @@ const Profile = () => {
 
   const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
+  const [posts, setPosts] = useState<any>([]);
+  const [updateUI , setUpdateUI] = useState<boolean>(false);
 
   const [educationId , setEducationId] = useState<string>('');
   const [professionId , setProfessionId] = useState<string>('');
@@ -63,7 +66,18 @@ const Profile = () => {
       }
     }).catch((error) => console.log(error , 'axios')
     )
-  }, []);
+
+    axiosInstance.get('/getposts').then((res) => {
+      if(res.data.message){
+        setPosts(res.data.posts);
+      }
+    }).catch((err) => console.log(err, 'axios posts err')
+    )
+  }, [  user?.userId ,updateUI]);
+
+  const navigateToInfo =(id : string) => {
+    navigate(`/details/${id}`);
+  }
 
 
   return (
@@ -81,8 +95,8 @@ const Profile = () => {
 
           {/* center */}
           <div className="flex-1 h-full border rounded-lg bg-primary px-4 flex flex-col gap-6 overflow-y-auto">
-            
-            <SingleUserPostCard/>
+            <PostCards setUpdateUI={setUpdateUI} userData={userData} showAllposts={false} posts={posts} />
+
           </div>
 
           {/* right */}
@@ -108,7 +122,7 @@ const Profile = () => {
 
                         {user?.userId === userData?._id && (
                         <div className='flex me-1 flex-col gap-4'>
-                          <button 
+                          <button onClick={() => navigateToInfo(item?._id)}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>
@@ -151,7 +165,7 @@ const Profile = () => {
                         </div>
 
                         <div className='flex me-1 flex-col gap-4'>
-                          <button 
+                          <button onClick={() => navigateToInfo(item?._id)}
                           className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
                             <BiSolidEdit />
                           </button>

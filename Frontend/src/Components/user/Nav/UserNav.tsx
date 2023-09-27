@@ -5,7 +5,6 @@ import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
 import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
 import {ImHome} from 'react-icons/im';
-import {CgProfile} from 'react-icons/cg';
 import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
@@ -37,7 +36,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
   useEffect(() => {
     const token = localStorage.getItem('userToken');
     if(token){
-      console.log('token here');
+      console.log('token here' ,token);
     } else {
       navigate('/login');
     }
@@ -57,7 +56,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
   }
      
   return (
-    <div className='w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary dark:bg-[#0C134F]'>
+    <div className='w-full flex flex-col md:flex-row items-center justify-between py-3 md:py-6 px-4 md:px-8 bg-primary dark:bg-[#0C134F]'>
       <NavLink to='/feed' className='flex gap-2 items-center'>
         <div className='p-1 md:p-2 text-[#065ad8] rounded font-extrabold  text-xl'>
           <span className='dark:text-white'>CareerUp</span>
@@ -65,7 +64,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
       </NavLink>
 
       {/* Icons */}
-      <div className='flex gap-10 items-center text-ascent-1 text-md md:text-xl'>
+      <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl'>
             <NavLink to='/feed'>
                 <ImHome className='hover:scale-125 dark:text-white' />
             </NavLink>
@@ -77,7 +76,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
           {/* <CgProfile className='hover:scale-125' /> */}
-          <img src={userData?.profileImage} alt='' className='w-6  h-6 rounded-full object-cover hover:scale-125' />
+          <img src={userData?.profileImage} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
           </span>
             {
               openDropProfile && (
@@ -88,7 +87,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
             }
 
           <div>
-            <button onClick={() => handleLogout()} className='inline-flex items-center rounded-full bg-[#065ad8] text-white text-sm px-4 md:px-6 py-1 md:py-2 hover:scale-105'>Log Out</button>
+            <button onClick={() => handleLogout()} className='inline-flex items-center rounded-full bg-[#065ad8] text-white text-sm px-4 py-1 md:px-6 md:py-2 hover:scale-105'>Log Out</button>
           </div>
       </div>
     </div>

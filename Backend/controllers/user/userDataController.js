@@ -1,6 +1,105 @@
 import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
 import jobModel from "../../models/jobs.js";
+import cloudinary from "../../utils/cloudinary.js";
+
+export const getEditData = async (req, res, next) => {
+    try {
+        const itemId = req.params.id;
+        const user = req.user;
+
+        let userData;
+        let companyData;
+
+        if(user){
+            if(user.role === 'Candidate'){
+                userData = await userModel.findById(user._id);
+            } else if(user.role === 'Company'){
+                companyData = await companyModel.findById(user._id);
+            }
+        }
+
+        if (!userData && !companyData) {
+            return res.status(404).json({ message: 'User or Company not found' });
+        }
+
+        let itemToEdit;
+        if(userData){
+            if(userData.education){
+                itemToEdit = userData.education.find((edu) => edu._id.toString() === itemId);
+            }
+
+            if(!itemToEdit && userData.profession){
+                itemToEdit = userData.profession.find((edu) => edu._id.toString() === itemId);
+            }
+        }
+
+        if(!itemToEdit){
+            return res.status(404).json({ message: 'Item not found' });
+        }
+
+        if(user._id.toString() === (userData && userData._id.toString()) || 
+        (companyData && user._id.toString() === companyData._id.toString())){
+
+            return res.status(200).json({ message: 'Edit data fetched successfully', info: itemToEdit });
+        } else {
+            return res.status(403).json({ message: 'Unauthorized access' });
+        }
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+// *********************************************************************************
+// *********************************************************************************
+
+export const addBasic = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        let user = await userModel.findById(id);
+
+        if(!user){
+            let company = await companyModel.findById(id);
+
+            if(!company){
+                return res.status(400).json({error : 'No user found'});
+            }
+
+            const { location , headline } = req.body;
+            const profileImage = req.files.profileImage;
+            const uploadToCloud = await cloudinary.uploader.upload(profileImage.path);
+
+            company = await companyModel.updateMany({
+                location : location , 
+                headline : headline , 
+                profileImage : uploadToCloud.secure_url 
+            } , {new  :true});
+
+            return res.json({message : 'Updated Successfully' , company});
+        }
+
+        const { location , headline } = req.body;
+        const profileImage = req.files;
+        const uploadToCloud = await cloudinary.uploader.upload(profileImage.path);
+
+        user = await userModel.findByIdAndUpdate(id , {
+            location : location , 
+            headline : headline , 
+            profileImage : uploadToCloud.secure_url
+        } , {new : true});
+
+        return res.json({message : 'Updated Successfully' , user});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+// *********************************************************************************
+// *********************************************************************************
+
 
 export const addEducation = async (req, res , next) => {
     try {
@@ -37,6 +136,7 @@ export const addEducation = async (req, res , next) => {
 
 export const editEducation  = async (req, res, next) => {
     try {
+        const itemId = req.params.id;
         
     } catch (error) {
         next(error);

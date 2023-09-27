@@ -13,7 +13,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
 
     const user = useSelector((state : RootState) => state.user.userCred);
 
-    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif' , 'jfif'];
+    const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif' ];
     const allowedVideoExtensions = ['mp4', 'mov', 'avi'];
 
     const [content , setContent] = useState<string>('');
@@ -105,7 +105,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
   return (
     <>
     <Toaster position='top-center' />
-        <form onSubmit={postSubmit} className="bg-primary px-4 rounded-md " encType='multipart/form-data'>
+        <form onSubmit={postSubmit} className="bg-primary px-4 rounded-lg flex flex-col " encType='multipart/form-data'>
             <div className='flex flex-col p-2 border-b border-[#66666645]'>
                 <div className="w-full flex items-center gap-2 py-4">
                     <img 

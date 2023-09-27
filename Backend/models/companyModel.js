@@ -44,13 +44,17 @@ const companySchema = mongoose.Schema({
 
     headline : String,
 
-    profileImage : String,
+    profileImage : {
+        type : String,
+        default : 'https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png'
+    },
 
     job : [
         {
             Position : String,
             location : String,
-            
+            package : String,
+            requirements: String
         }
     ]
 });

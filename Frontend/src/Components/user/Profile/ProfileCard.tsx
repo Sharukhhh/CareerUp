@@ -32,7 +32,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                         </p>
 
                         <span className='text-ascent-2'>
-                            {/* {user?.useremail} */}
+                            {userData?.headline}
                         </span>
                     </div>
                  </Link>

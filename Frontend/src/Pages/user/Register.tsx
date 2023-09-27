@@ -10,6 +10,7 @@ const Register = () => {
     const [email  , setEmail] = useState<string>('');
     const [role , setRole] = useState<string>('');
     const [password , setPassword] = useState<string>('');
+    const [passwordStrength , SetPasswordstrength] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -31,6 +32,61 @@ const Register = () => {
         }).catch(error => console.log(error , 'Axios register error')
         )
     }
+
+    const checkPasswordstrength = (password : string) => {
+
+      const passwordRequirements = {
+        minLength : 7,
+        requireUpperCase : true,
+        requireLowerCase: true,
+        requireNumbers : true,
+        requireSpecialChars : true
+      }
+
+    // Regular expressions for character classes
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const numbersRegex = /[0-9]/;
+    const specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+
+    let strength = 0;
+
+    if(password.length >= passwordRequirements.minLength){
+      strength ++;
+    }
+
+    if(passwordRequirements.requireUpperCase && uppercaseRegex.test(password)){
+      strength++;
+    }
+
+    if(passwordRequirements.requireLowerCase && lowercaseRegex.test(password)){
+      strength ++;
+    }
+
+    if(passwordRequirements.requireNumbers && numbersRegex.test(password)){
+      strength++;
+    }
+
+    if(passwordRequirements.requireSpecialChars && specialCharRegex.test(password)){
+      strength ++;
+    }
+
+    if (strength === 0) {
+      return 'Weak';
+    } else if (strength < 4) {
+      return 'Moderate';
+    } else {
+      return 'Strong';
+    }
+  }
+
+  const handlePasswordChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+
+    const strength = checkPasswordstrength(newPassword);
+    SetPasswordstrength(strength);
+  }
 
   return (
     <>
@@ -124,11 +180,22 @@ const Register = () => {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-              </div>
+                  {passwordStrength && (
+                    <div
+                      className={`text-sm mt-2 ${
+                        passwordStrength === 'Strong'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      }`}
+                    >
+                      Password Strength: {passwordStrength}
+                    </div>
+                  )}
+            </div>
             </div>
 
             <div>
