@@ -81,6 +81,13 @@ const userSchema = mongoose.Schema({
             type : Date,
             default : Date.now,
         }
+    }],
+
+    connections : [{
+        userId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        }
     }]
 
     

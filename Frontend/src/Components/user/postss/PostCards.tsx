@@ -1,7 +1,7 @@
 import React , {useState , useEffect} from 'react'
 import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
 import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
-import {MdOutlineReportProblem} from 'react-icons/md';
+import {MdOutlineDeleteOutline, MdOutlineReportProblem} from 'react-icons/md';
 import {Link} from 'react-router-dom';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
@@ -20,7 +20,7 @@ interface PostCardProps {
 const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , setUpdateUI}) => {
   const user = useSelector((state : RootState) =>state.user.userCred);
   const [showAll , setShowAll] = useState<{ [postId: string]: boolean }>({});
-  const [comments , showComments] = useState<any>(0);
+  const [comments , setShowComments] = useState<any>([]);
 
   const filteredPosts = showAllposts
   ? posts
@@ -65,10 +65,58 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
       )
     }
 
+    const deletePost = (postId : string) => {
+      axiosInstance.patch(`/deletepost/${postId}`)
+      .then((res) => {
+        if(res.data.message){
+          toast.success(res.data.message);
+
+          setUpdateUI((prev : boolean) => !prev);
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((err) => console.log(err , 'err occured post delete')
+      )
+    }
+
+    const getComments = async (postId : string) => {
+      axiosInstance.get(`/comments/${postId}`)
+      .then((res) =>{
+        if(res.data.message){
+          setShowComments(res.data.comments);
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((error) => console.log('axios comment get err' , error)
+      )
+    }
+
+    // useEffect(() => {
+    //   const getComments = async (postId : string) => {
+    //     axiosInstance.get(`/comments/${postId}`)
+    //     .then((res) =>{
+    //       if(res.data.message){
+    //         setShowComments(res.data.comments);
+    //       }
+
+    //       if(res.data.error){
+    //         toast.error(res.data.error);
+    //       }
+    //     }).catch((error) => console.log('axios comment get err' , error)
+    //     )
+    //   }
+    // }, []);
+
   return (
     <> 
     {filteredPosts.length > 0 ? (
-      filteredPosts?.slice().reverse().map((post : any) => {
+      filteredPosts
+      .filter((post :any) => !post.isDeleted)
+      .slice().reverse().map((post : any) => {
         const isShowAll = showAll[post._id];
         // if (!showAllPosts && post.user.userId !== user?.userId) {
         //   return null; // Skip posts that don't belong to the logged-in user
@@ -124,13 +172,25 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                 {post?.likes?.length} likes
               </p>
 
-              <p className='flex gap-2 items-center text-base cursor-pointer'>
+              <p onClick={() => {
+                setShowComments(comments === post._id ? null : post._id);
+                getComments(post?._id)
+              }}
+              className='flex gap-2 items-center text-base cursor-pointer'>
                 <BiComment size={20}/>
                 {post?.comments?.length} comments
               </p>
 
+              {user?.userId === post?.user?._id && (
+                <div onClick={() => deletePost(post?._id)}
+                className='flex gap-1 items-center text-base text-ascent-1 cursor-pointer'>
+                  <MdOutlineDeleteOutline size={20} />
+                  <span>Delete</span>
+                </div>
+              )}
+
               <p className='flex gap-2 items-center text-base cursor-pointer'>
-                  {userData?.savedPosts.some((saved : any )=> saved.postId === post?._id) ? (
+                  {userData?.savedPosts?.some((saved : any )=> saved.postId === post?._id) ? (
                     <span onClick={() => saveAndUnsave(post._id)} >
                       <FaBookmark size={20} />
                     </span>
@@ -146,9 +206,44 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               </p>
             </div>
 
-            {showComments === post?._id && (
+            {comments === post?._id && (
               <div className='w-full mt-4 border-t border-[#66666645] pt-4'>
-                <CommentForm id={post?._id} />
+                <CommentForm setUpdateUI={setUpdateUI} userData={userData} id={post?._id}
+                getComments={() => getComments(post?._id)} />
+
+                {
+                  comments?.length > 0 ? (
+                    <div className='w-full py-2'>
+                      <div className='flex gap-3 items-center mb-1'>
+                        <Link to=''>
+                          <img src="" alt="" 
+                          className='w-10 h-10 rounded-full object-cover'/>
+                        </Link>
+                        <div>
+                          <Link to=''>
+                            <p className='font-medium text-base text-ascent-1'>
+
+                            </p>
+                          </Link>
+                          <span className='text-ascent-2 text-sm'>
+
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className='ml-12'>
+                        <p className='text-ascent-2'></p>
+
+                        <div className='mt-2 flex gap-6'>
+                          <p></p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <span className='flex text-sm py-4 text-ascent-2 text-center'>
+                      No Comments yet, be the first to Comment
+                    </span>
+                  )}
               </div>
             )}
           </div>

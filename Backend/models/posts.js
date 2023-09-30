@@ -17,7 +17,7 @@ const postSchema = mongoose.Schema({
     media : [{
         type : String
     }],
-
+   
     createdAt : {
         type : Date,
         default : Date.now    

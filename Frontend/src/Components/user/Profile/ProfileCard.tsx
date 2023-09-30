@@ -28,7 +28,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
 
                     <div className='flex flex-col justify-center'>
                         <p className='text-lg font-medium text-ascent-1'>
-                            {user?.username}
+                            {userData?.name}
                         </p>
 
                         <span className='text-ascent-2'>

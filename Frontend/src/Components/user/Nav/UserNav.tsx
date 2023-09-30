@@ -10,14 +10,19 @@ import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
 const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDown'));
 import { Spinner } from '@material-tailwind/react';
+import RootState from '../../../Redux/rootstate/rootState';
+import { axiosInstance } from '../../../api/axiosInstance';
 
 interface UserNavProps {
-  userData : any;
+  
 }
 
 
-const UserNav:React.FC<UserNavProps> = ({userData}) => {
+const UserNav:React.FC<UserNavProps> = () => {
   const {theme} = useSelector((state : ThemeRootState) => state.theme);
+  const user = useSelector((state : RootState) => state.user.userCred);
+
+  const [userData , setUserData] = useState<any>([]);
 
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
 
@@ -26,12 +31,14 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (theme === 'dark') {
-      document.body.classList.add('dark');    
-    } else {
-      document.body.classList.remove('dark');
-    }
-  }, [theme]);
+    axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+      
+      if(res.data){
+        setUserData(res.data.user);
+      }
+    }).catch((error) => console.log(error , 'axios')
+    )
+  })
 
   useEffect(() => {
     const token = localStorage.getItem('userToken');
@@ -54,7 +61,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
 
     toast.success('Logout Successfully');
   }
-     
+
   return (
     <div className='w-full flex flex-col md:flex-row items-center justify-between py-3 md:py-6 px-4 md:px-8 bg-primary dark:bg-[#0C134F]'>
       <NavLink to='/feed' className='flex gap-2 items-center'>
@@ -62,6 +69,14 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
           <span className='dark:text-white'>CareerUp</span>
         </div>
       </NavLink>
+
+      <form className='hidden md:flex items-center justify-center'>
+        <input type="text" placeholder='search....' className='border border-gray-200 w-[18rem] lg:w-[38rem] rounded-full py-2' />
+
+        <button type='submit' className='bg-[#0444a4] text-white px-4 py-2 rounded-r-full'>
+          Search
+        </button>
+      </form>
 
       {/* Icons */}
       <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl'>
@@ -76,7 +91,7 @@ const UserNav:React.FC<UserNavProps> = ({userData}) => {
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
           {/* <CgProfile className='hover:scale-125' /> */}
-          <img src={userData?.profileImage} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+          <img src={userData ? userData.profileImage : null} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
           </span>
             {
               openDropProfile && (

@@ -1,19 +1,18 @@
-import {Routes , Route, Navigate} from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-// import RootState from './Redux/rootstate/rootState';
+import {Routes , Route} from 'react-router-dom';
+// import './index.css';
 import Home from './Pages/intro/Home';
 import Register from './Pages/user/Register';
 import Login from './Pages/user/Login';
 import Profile from './Pages/user/Profile';
 import UserFeed from './Pages/user/UserFeed';
+import AddInfoPage from './Pages/user/AddInfoPage';
+import SavedPosts from './Pages/user/SavedPosts';  
 
 import Adminlogin from './Pages/admin/Adminlogin';
 import UsersList from './Pages/admin/UsersList';
 import CompanyList from './Pages/admin/CompanyList';
 
 import PrivatePages from './Components/PrivatePages';
-import AddInfoPage from './Pages/user/AddInfoPage';
-import SavedPosts from './Pages/user/SavedPosts';
 
 function App() {
 
@@ -27,6 +26,7 @@ function App() {
 
         <Route element={<PrivatePages/>}>
           <Route path='/account' element={<Profile/>} />
+          <Route path='/account/:id' element={<Profile/>} />
           <Route path='/feed' element={<UserFeed />} />
           <Route path='/details' element={<AddInfoPage />}/>
           <Route path='/details/:id' element={<AddInfoPage/>}/>

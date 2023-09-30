@@ -1,10 +1,10 @@
 import {useState , useEffect , lazy , Suspense  } from 'react';
+import { useParams } from 'react-router-dom';
 import { Spinner } from '@material-tailwind/react';
 import { useSelector } from 'react-redux';
 import { Toaster } from "react-hot-toast";
 import {FaUserGraduate} from 'react-icons/fa6';
 import ConnectionCard from "../../Components/user/cards/ConnectionCard";
-
 import PostCards from '../../Components/user/postss/PostCards';
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
@@ -19,7 +19,6 @@ const DeleteBox = lazy(() => import('../../Components/user/modal/PermissionBox')
 const EduConfirmBox = lazy(() => import('../../Components/user/modal/EduConfirmBox'));
 
 const Profile = () => {
-
   const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
   const [posts, setPosts] = useState<any>([]);
@@ -58,22 +57,52 @@ const Profile = () => {
 
   const user = useSelector((state : RootState) => state.user.userCred);
 
+  const{ id } = useParams();
+  // console.log(id);
+  
   useEffect(() => {
-    axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
-    
-      if(res.data){
-        setUserData(res.data.user);
-      }
-    }).catch((error) => console.log(error , 'axios')
-    )
+    if(id){
+      axiosInstance.get(`/profile/${id}`).then((res) => {
+        
+        if(res.data){          
+          setUserData(res.data.user);
+        }
+      }).catch((error) => console.log(error , 'axios another user')
+      )
+    } else {
+      axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+        if(res.data){
+          console.log('okda');
+          
+          setUserData(res.data.user);
+        }
+      }).catch((error) => console.log(error , 'axios')
+      )
+    }
+  },[id , user , updateUI]);
 
-    axiosInstance.get('/getposts').then((res) => {
-      if(res.data.message){
-        setPosts(res.data.posts);
-      }
-    }).catch((err) => console.log(err, 'axios posts err')
-    )
-  }, [  user?.userId ,updateUI]);
+  useEffect(() => {
+    if(id){
+      axiosInstance.get(`/userposts/${id}`).then((res) => {
+        if(res.data.message){
+          setPosts(res.data.posts);
+        }
+      }).catch((error) => console.log(error , 'user own posts fetch error')
+      )
+    }
+  },[id])
+
+
+  useEffect(() => {
+    if(!id){
+      axiosInstance.get('/getposts').then((res) => {
+        if(res.data.message){
+          setPosts(res.data.posts);
+        }
+      }).catch((err) => console.log(err, 'axios posts err')
+      )
+    }
+  }, [updateUI]);
 
   const navigateToInfo =(id : string) => {
     navigate(`/details/${id}`);
@@ -84,13 +113,13 @@ const Profile = () => {
     <>
       <div className="home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden">
         <Toaster position="top-center" />
-        <UserNav userData={userData} />
+        <UserNav />
 
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
           <div className="w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
             <ProfileCard userData = {userData} openEditModal={openEditModal} />
-            <ConnectionCard />
+            {/* <ConnectionCard userData={userData} /> */}
           </div>
 
           {/* center */}

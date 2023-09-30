@@ -31,7 +31,7 @@ const companySchema = mongoose.Schema({
     },
 
     isBlocked : {
-        type : Boolean,
+        type : Boolean, 
         default : false 
     },
 
@@ -56,7 +56,14 @@ const companySchema = mongoose.Schema({
             package : String,
             requirements: String
         }
-    ]
+    ],
+
+    followers : [{
+        userId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        }
+    }]
 });
 
 const companyModel = mongoose.model('companies' , companySchema);

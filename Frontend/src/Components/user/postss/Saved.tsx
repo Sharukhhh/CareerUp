@@ -3,10 +3,17 @@ import { Link } from 'react-router-dom';
 import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
 import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
 import {MdOutlineReportProblem} from 'react-icons/md';
+import moment from 'moment';
 
-const Saved = () => {
+interface SavedPostProps {
+  savedPosts : any;
+}
+
+const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
   return (
     <>
+    {savedPosts.map((post : any) => {
+      return(
     <div className='mb-2 mt-2 bg-primary p-4 rounded-xl'>
         <div className='flex gap-3 items-center mb-2 '>
               <Link to=''>
@@ -17,15 +24,15 @@ const Saved = () => {
                 <div className=''>
                   <Link to='' >
                     <p className='font-medium text-lg text-ascent-1'>
-                      {/* {post?.user?.name} */}
+                      {post?.user?.name}
                     </p>
                   </Link>
                   <span className='text-ascent-2'>
-                    {/* {post?.user?.headine} */}
+                    {post?.user?.headine}
                   </span>
                 </div>
                 <span className='text-ascent-2'>
-                    {/* {moment(post?.createdAt ?? '2023-09-24').fromNow()} */}
+                    {moment(post?.createdAt ?? '2023-09-24').fromNow()}
                 </span>
               </div>
             </div>
@@ -58,12 +65,12 @@ const Saved = () => {
                     <BiLike size={20} className='text-blue' />
                   {/* </span> */}
                 {/* )} */}
-                {/* {post?.likes?.length} likes */}
+                {post?.likes?.length} likes
               </p>
 
               <p className='flex gap-2 items-center text-base cursor-pointer'>
                 <BiComment size={20}/>
-                {/* {post?.comments?.length} comments */}
+                {post?.comments?.length} comments
               </p>
 
               <p className='flex gap-2 items-center text-base cursor-pointer'>
@@ -81,6 +88,8 @@ const Saved = () => {
               </div>
             {/* )} */}
           </div>
+          )
+          })}
     </>
   )
 }

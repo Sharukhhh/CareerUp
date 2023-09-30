@@ -16,7 +16,7 @@ export const verify = async (req, res , next) => {
         token = token.replaceAll('"', '');
 
         const decoded = jwt.verify(token , process.env.JWT_SECRET);
-        console.log(decoded, 'XXXXXXXXXXXXXXXXXXXX');
+        // console.log(decoded, 'XXXXXXXXXXXXXXXXXXXX');
         // console.log(decoded.role ,decoded.userId , 'OKKKKKKKKKKKKKKKKKKKKKKK');
 
         const userId = decoded.userId;
@@ -24,10 +24,6 @@ export const verify = async (req, res , next) => {
 
         let user;
         user = await userModel.findById(userId);
-
-        if(user.isBlocked){
-            return res.status(401).json({ message: 'Account is blocked' });
-        }
 
         if(!user){
             let company = await companyModel.findById(userId);
@@ -42,25 +38,11 @@ export const verify = async (req, res , next) => {
             user = company;
         }
 
+        if(user.isBlocked){
+            return res.status(401).json({ message: 'Account is blocked' });
+        }
+
         req.user = user;
-
-        // let user;
-
-        // if (role === 'Candidate') {
-        //     user = await userModel.findById(userId);
-        // } else if (role === 'Company') {
-        //     user = await companyModel.findById(userId);
-        // }
-
-        // if(!user){
-        //     return res.status(401).json({ message: 'Unauthorized - User not found' });
-        // }
-
-        // if(user.isBlocked){
-        //     return res.status(401).json({ message: 'Account is blocked' });
-        // }
-
-        // req.user = user;
         next();
 
     } catch (error) {

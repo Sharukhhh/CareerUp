@@ -1,7 +1,9 @@
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js'; 
+import commentModel from '../../models/comments.js';
 import postModel from '../../models/posts.js';
 import cloudinary from '../../utils/cloudinary.js';
+import mongoose, { mongo } from 'mongoose';
 
 
 export const createPost = async (req, res, next) => {
@@ -57,7 +59,7 @@ export const createPost = async (req, res, next) => {
 export const deletePost = async (req, res , next) => {
     try {
 
-        const postId = req.params.id;
+        const postId = req.params.postId;
 
         if(!postId){
             return res.status(404).json({message : 'Post Not Found'});
@@ -92,9 +94,44 @@ export const getPosts = async (req, res, next) => {
   }
 }
 
-// *********************************************************************************
-// *********************************************************************************
+export const getIndividualPosts = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
 
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
+    const posts = await postModel.find({user : userObjectId})
+    .populate('user');
+
+    if(!posts){
+      return res.status(404).json({error : 'Users post not found'});
+    }
+
+    return res.status(200).json({message : 'Posts avaialable' , posts});
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const getSavedPosts = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    const posts = user.savedPosts;
+
+    if(!posts){
+      return res.status(404).json({error : 'Saved posts not found'});
+    }
+
+    return res.status(200).json({message : 'Saved Posts' , posts});
+  } catch (error) {
+    next(error);
+  }
+}
+
+// *********************************************************************************
+// *********************************************************************************
 
 export const likeandDislikePost = async (req, res, next) =>{
   try {
@@ -157,3 +194,52 @@ export const saveandUnsavePosts = async (req, res, next) => {
     next(error);
   }
 }
+
+// *********************************************************************************
+// *********************************************************************************
+
+export const showComment = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+
+    const postWithComments = await postModel.findById(postId).populate('comments').exec();
+
+    if(!postWithComments){
+      return res.status(404).json({error : 'Post not found'});
+    }
+
+    const comments = postWithComments.comments;
+    return res.json({message : 'success', comments});
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const addComment = async (req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    const user = req.user;
+    const {text} = req.body;
+
+    const findPost = await postModel.findById(postId);
+    if(!findPost){
+      return res.status(404).json({error : 'Post not found'});
+    }
+
+    const newComment = new commentModel({
+      text, userId : user._id , postId
+    })
+
+    await newComment.save();
+    findPost.comments.push(newComment);
+
+    return res.json({message : 'Comment Added'});
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+
