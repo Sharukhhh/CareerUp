@@ -22,6 +22,9 @@ const AddInfoPage = () => {
       .then((res) => {
         if(res.data.message){
           setEditData(res.data.info);
+          console.log(res.data.info);
+          
+          
         }
       }).catch((error) => console.log(error , 'axios bringerror')
       )
@@ -31,11 +34,11 @@ const AddInfoPage = () => {
   
   
   //education
-  const [institute , setInstitute] = useState<string>('');
-  const [field , setField] = useState<string>('');
-  const [instituteLocation , setInstituteLocation] = useState<string>('');
-  const [eFromDate , setFromDate] = useState<Date>(currentDate);
-  const [eEndDate , setEEndDate] = useState<Date>(currentDate);
+  const [institute , setInstitute] = useState<string>(editData?.institute || '');
+  const [field , setField] = useState<string>(editData?.fieldOfStudy || '');
+  const [instituteLocation , setInstituteLocation] = useState<string>(editData?.location || '');
+  const [eFromDate , setFromDate] = useState<Date>(editData?.from || currentDate);
+  const [eEndDate , setEEndDate] = useState<Date>(editData?.to || currentDate);
 
   const handleEducationFormSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -65,10 +68,10 @@ const AddInfoPage = () => {
   }
 
 
-  //profession
-  const [companyName , setCompanyName] = useState<string>('');
-  const [role , setRole] = useState<string>('');
-  const [companyLocation , setCompanyLocation] = useState<string>('');
+  //profession/experience
+  const [companyName , setCompanyName] = useState<string>(editData?.companyName || '');
+  const [role , setRole] = useState<string>(editData?.role || '');
+  const [companyLocation , setCompanyLocation] = useState<string>(editData?.location || '');
 
   const handleProfessionFormSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -98,10 +101,10 @@ const AddInfoPage = () => {
 
 
   //post-job
-  const [position , setPosition] = useState<string>('');
-  const [location, setJobLocation] = useState<string>('');
-  const [salary , setSalary] = useState<string>('');
-  const [requirements , setRequirements] = useState<string>('');
+  const [position , setPosition] = useState<string>(editData?.Position || '');
+  const [location, setJobLocation] = useState<string>(editData?.location || '');
+  const [salary , setSalary] = useState<string>(editData?.package || '');
+  const [requirements , setRequirements] = useState<string>(editData?.requirements || '');
 
   const handleJobPost = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,7 +134,7 @@ const AddInfoPage = () => {
   return (
     <>
     <Toaster position='top-center' />
-        <div className='max-w-3xl mx-auto mt-8 p-6 bg-light-blue-50  border: rounded-lg shadow-xl'>
+        <div className='max-w-3xl mx-auto mt-8 p-6 bg-[#c3e3f7]  border: rounded-lg shadow-xl'>
             <div className='flex justify-between'>
                 <h1 className='text-3xl font-bold mb-3'>Fill Your Details</h1>
                 <div className='flex'>
@@ -147,17 +150,17 @@ const AddInfoPage = () => {
               <>
               <h2 className='text-lg font-bold mb-2'>Add Education</h2>
               <form onSubmit={handleEducationFormSubmit} >
-                <div className='grid md: grid-cols-2 gap-3 mb-3'>
+                <div className='grid md:grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="institute">Institute</label>
 
-                  <input onChange={(e) => setInstitute(e.target.value)} value={editData ? editData.institute : institute}
+                  <input onChange={(e) => setInstitute(e.target.value)} value={institute}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[666#] shadow-md'
                   type="text" name='institute' placeholder='Institute that you studied' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="fieldOfStudy">Field of Study</label>
 
-                  <input onChange={(e) => setField(e.target.value)} value={editData ? editData.fieldOfStudy : field}
+                  <input onChange={(e) => setField(e.target.value)} value={field}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='fieldOfStudy' placeholder='field of study' />
@@ -166,7 +169,7 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="location">Location</label>
 
-                  <input onChange={(e) => setInstituteLocation(e.target.value)} value={editData ? editData.location : instituteLocation}
+                  <input onChange={(e) => setInstituteLocation(e.target.value)} value={instituteLocation}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
@@ -188,7 +191,7 @@ const AddInfoPage = () => {
                   type="date" name="upto" placeholder='upto'/>
                 </div>
 
-                <button type='submit' className='mt-2 px-4 py-2 bg-light-blue-900 text-white rounded hover:bg-light-blue-600'>
+                <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
                   Save 
                 </button>
               </form>  
@@ -204,14 +207,14 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="company">Name of the company</label>
 
-                  <input onChange={(e) => setCompanyName(e.target.value)} value={editData ? editData.companyName : companyName} 
+                  <input onChange={(e) => setCompanyName(e.target.value)} value={companyName} 
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='companyName' placeholder='Company Name' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="company">Position</label>
 
-                  <input onChange={(e) => setRole(e.target.value)} value={editData ? editData.role : role} 
+                  <input onChange={(e) => setRole(e.target.value)} value={role} 
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='position' placeholder='Your Position' />
@@ -220,13 +223,13 @@ const AddInfoPage = () => {
                 <div className='grid md: grid-cols-2 gap-3 mb-3'>
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="location">Location</label>
 
-                  <input onChange={(e) => setCompanyLocation(e.target.value)} value={editData ? editData.companyLocation : companyLocation}
+                  <input onChange={(e) => setCompanyLocation(e.target.value)} value={companyLocation}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
                 </div>
 
-                <button type='submit' className='mt-2 px-4 py-2 bg-light-blue-900 text-white rounded hover:bg-light-blue-600'>
+                <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
                   Save 
                 </button>
               </form>  
@@ -263,7 +266,7 @@ const AddInfoPage = () => {
                   type="text" name='requirements' placeholder='' />
                 </div>
 
-                <button type='submit' className='mt-2 px-4 py-2 bg-light-blue-900 text-white rounded hover:bg-light-blue-600'>
+                <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
                   Save 
                 </button>
               </form>  

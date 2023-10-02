@@ -6,11 +6,10 @@ import toast from 'react-hot-toast';
 interface CommentFormProps {
     id : string;
     userData : any
-    getComments: () => void;
     setUpdateUI :(data: any) => void;
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({id , getComments ,userData , setUpdateUI}) => {
+const CommentForm: React.FC<CommentFormProps> = ({id ,  userData , setUpdateUI}) => {
 
   const [comment , setComment] = useState<string>('');
 

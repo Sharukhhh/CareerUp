@@ -70,6 +70,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
 
         if(content){
             formData.append('content' , content);
+            
         }
 
         if(image){
@@ -82,7 +83,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
 
         console.log(formData);
         
-        axiosInstance.post(`/addPost/${user?.userId}` , formData)
+        axiosInstance.post(`/addPost` , formData)
         .then((res) => {
             console.log(res);
             

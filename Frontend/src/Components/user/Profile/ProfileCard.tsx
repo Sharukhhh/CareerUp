@@ -42,6 +42,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                     <BiEdit size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
                 </div>
             ) : (
+                
                 <div className=''>
                     <BsPersonFillAdd size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
                 </div>
@@ -65,21 +66,22 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
             </div>
 
             <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
-                <p className='text-ascent-1'>Connections</p>
+                <p className='text-ascent-1'>{userData?.connections?.length} Connections</p>
 
-                <div className='flex items-center justify-between'>
+                {/* <div className='flex items-center justify-between'>
                     {/* <span className='text-ascent-1'>Who viewed your profile</span> */}
-                    <span></span>
-                </div>
+                    {/* <span></span>
+                </div> */} 
 
                 <div className='flex items-center justify-between'>
                     <span className='text-ascent-2'></span>
+                    <span></span>
                 </div>
             </div>   
 
-            <div className='w-full flex flex-col gap-4 py-4 pb-6'>
+            {/* <div className='w-full flex flex-col gap-4 py-4 pb-6'>
                 <p></p>
-            </div>
+            </div> */}
         </div>
     </div>    
     </>

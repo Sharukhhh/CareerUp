@@ -9,20 +9,20 @@ import mongoose, { mongo } from 'mongoose';
 export const createPost = async (req, res, next) => {
   try {
     const images = req.files;
-    console.log(images, "//////");
-    const id = req.params.id;
+    // const id = req.params.id;
+    const user = req.user;
     
-    let user = await userModel.findById(id);
+    // let user = await userModel.findById(id);
     
-    if (!user) {
-      const company = await companyModel.findById(id);
+    // if (!user) {
+    //   const company = await companyModel.findById(id);
       
-      if (!company) {
-        return res.status(404).json({ error: 'User not found' });
-      }
+    //   if (!company) {
+    //     return res.status(404).json({ error: 'User not found' });
+    //   }
       
-      user = company;
-    }
+    //   user = company;
+    // }
 
     let cloudimage = [];
 
@@ -35,21 +35,43 @@ export const createPost = async (req, res, next) => {
 
     console.log(cloudimage, "this is my cloud image");
 
-    const newPostData = {
-      user: user._id,
-      description: req.body.content,
-      media: cloudimage,
-    };
+    if(user.role === 'Candidate'){
+      const newPostData = {
+        user: user._id,
+        description: req.body.content,
+        media: cloudimage,
+      };
+  
+      if (!images || images.length === 0) {
+        console.log('text only post');
+        delete newPostData.media; 
+      }
+  
+      const newPost = new postModel(newPostData);
+      await newPost.save();
+  
+      res.json({ message: 'New Post Added', newPost });
 
-    if (!images || images.length === 0) {
-      console.log('text only post');
-      delete newPostData.media; 
+    } else {
+
+      const newPostData = {
+        company: user._id,
+        description: req.body.content,
+        media: cloudimage,
+      };
+  
+      if (!images || images.length === 0) {
+        console.log('text only post');
+        delete newPostData.media; 
+      }
+  
+      const newPost = new postModel(newPostData);
+      await newPost.save();
+  
+      res.json({ message: 'New Post Added', newPost });
     }
 
-    const newPost = new postModel(newPostData);
-    await newPost.save();
 
-    res.json({ message: 'New Post Added', newPost });
   } catch (error) {
     next(error);
   }
@@ -82,7 +104,9 @@ export const deletePost = async (req, res , next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const posts = await postModel.find().populate('user').exec();
+    const posts = await postModel.find().populate('user')
+    .populate('company')
+    .populate('comments').exec();
 
     if(!posts){
       return res.status(404).json({error : 'No posts found'});
@@ -101,7 +125,7 @@ export const getIndividualPosts = async (req, res, next) => {
     const userObjectId = new mongoose.Types.ObjectId(userId);
     
     const posts = await postModel.find({user : userObjectId})
-    .populate('user');
+    .populate('user').populate('company');
 
     if(!posts){
       return res.status(404).json({error : 'Users post not found'});
@@ -228,12 +252,27 @@ export const addComment = async (req, res, next) => {
       return res.status(404).json({error : 'Post not found'});
     }
 
-    const newComment = new commentModel({
-      text, userId : user._id , postId
-    })
+    if(user.role === 'Candidate'){
+      const newComment = new commentModel({
+        text, userId : user._id , postId
+      })
+  
+      await newComment.save();
+  
+      findPost.comments.push(newComment._id);
+      await findPost.save();
 
-    await newComment.save();
-    findPost.comments.push(newComment);
+    } else {
+
+      const newComment = new commentModel({
+        text, companyId : user._id , postId
+      });
+  
+      await newComment.save();
+  
+      findPost.comments.push(newComment._id);
+      await findPost.save();
+    }
 
     return res.json({message : 'Comment Added'});
 
@@ -242,4 +281,15 @@ export const addComment = async (req, res, next) => {
   }
 }
 
+
+export const deleteComment = async(req, res, next) => {
+  try {
+    const commentId = req.params.commentId;
+    const user = req.user;
+
+
+  } catch (error) {
+    next(error);
+  }
+}
 

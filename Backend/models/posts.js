@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
 
 
-const postSchema = mongoose.Schema({
+const postSchema = mongoose.Schema({ 
 
     user : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'users',
-        required : true
+    },
+
+    company : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'companies'
     },
 
     description : {
@@ -17,7 +21,7 @@ const postSchema = mongoose.Schema({
     media : [{
         type : String
     }],
-   
+
     createdAt : {
         type : Date,
         default : Date.now    

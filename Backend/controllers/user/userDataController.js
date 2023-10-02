@@ -57,6 +57,7 @@ export const getEditData = async (req, res, next) => {
 export const addBasic = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const { location , headline } = req.body;
 
         let user = await userModel.findById(id);
 
@@ -67,27 +68,17 @@ export const addBasic = async (req, res, next) => {
                 return res.status(400).json({error : 'No user found'});
             }
 
-            const { location , headline } = req.body;
-            const profileImage = req.files.profileImage;
-            const uploadToCloud = await cloudinary.uploader.upload(profileImage.path);
-
-            company = await companyModel.updateMany({
+            company = await companyModel.findByIdAndUpdate(id , {
                 location : location , 
                 headline : headline , 
-                profileImage : uploadToCloud.secure_url 
-            } , {new  :true});
+            } , {new : true});
 
-            return res.json({message : 'Updated Successfully' , company});
+            return res.json({message : 'Updated Successfully' , company : user});
         }
-
-        const { location , headline } = req.body;
-        const profileImage = req.files;
-        const uploadToCloud = await cloudinary.uploader.upload(profileImage.path);
 
         user = await userModel.findByIdAndUpdate(id , {
             location : location , 
             headline : headline , 
-            profileImage : uploadToCloud.secure_url
         } , {new : true});
 
         return res.json({message : 'Updated Successfully' , user});

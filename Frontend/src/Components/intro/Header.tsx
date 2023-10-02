@@ -75,12 +75,12 @@ const Header = () => {
       <Collapse open={openNav}>
         <div className="container mx-auto">
           <NavLink to='/login'>
-            <Button variant="gradient" size="sm" fullWidth className="my-8 bg-violet-900 hover:bg-violet-800">
+            <Button variant="gradient" size="sm" fullWidth className="my-8 bg-bgColor">
               <span>Sign in</span>
             </Button>
           </NavLink> 
           <NavLink to='/register'>
-            <Button variant="gradient" size="sm" fullWidth className="mb-3 bg-violet-900 hover:bg-violet-800">
+            <Button variant="gradient" size="sm" fullWidth className="mb-3">
               <span>Create New</span>
             </Button>
           </NavLink> 

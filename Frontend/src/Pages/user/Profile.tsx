@@ -23,6 +23,9 @@ const Profile = () => {
   const [userData , setUserData]  = useState<any>([]);
   const [posts, setPosts] = useState<any>([]);
   const [updateUI , setUpdateUI] = useState<boolean>(false);
+  const handleUpdateUI = () => {
+    setUpdateUI((prev) => !prev);
+  }
 
   const [educationId , setEducationId] = useState<string>('');
   const [professionId , setProfessionId] = useState<string>('');
@@ -64,7 +67,7 @@ const Profile = () => {
     if(id){
       axiosInstance.get(`/profile/${id}`).then((res) => {
         
-        if(res.data){          
+        if(res.data.message){          
           setUserData(res.data.user);
         }
       }).catch((error) => console.log(error , 'axios another user')
@@ -82,15 +85,13 @@ const Profile = () => {
   },[id , user , updateUI]);
 
   useEffect(() => {
-    if(id){
       axiosInstance.get(`/userposts/${id}`).then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }
       }).catch((error) => console.log(error , 'user own posts fetch error')
       )
-    }
-  },[id])
+  },[id]);
 
 
   useEffect(() => {
@@ -113,13 +114,13 @@ const Profile = () => {
     <>
       <div className="home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden">
         <Toaster position="top-center" />
-        <UserNav />
+        <UserNav handleUpdateUI={handleUpdateUI} />
 
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
           <div className="w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
             <ProfileCard userData = {userData} openEditModal={openEditModal} />
-            {/* <ConnectionCard userData={userData} /> */}
+            <ConnectionCard userData={userData} />
           </div>
 
           {/* center */}
@@ -152,11 +153,11 @@ const Profile = () => {
                         {user?.userId === userData?._id && (
                         <div className='flex me-1 flex-col gap-4'>
                           <button onClick={() => navigateToInfo(item?._id)}
-                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                          className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
                             <BiSolidEdit />
                           </button>
                           <button onClick={() => openBox(item?._id)}
-                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                             <MdDelete />
                           </button>
                         </div>
@@ -195,11 +196,11 @@ const Profile = () => {
 
                         <div className='flex me-1 flex-col gap-4'>
                           <button onClick={() => navigateToInfo(item?._id)}
-                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                             <BiSolidEdit />
                           </button>
                           <button onClick={() => openEduBox(item?._id)}
-                          className='bg-gray-300 text-sm text-white p-1 rounded hover:bg-gray-900'>
+                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                             <MdDelete />
                           </button>
                         </div>
@@ -236,7 +237,7 @@ const Profile = () => {
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
-        <EditProfile userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
+        <EditProfile setUpdateUI={setUpdateUI} userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>

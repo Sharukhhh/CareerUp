@@ -24,7 +24,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
   const filteredPosts = showAllposts
   ? posts
-  : posts.filter((post: any) => post.user._id === user?.userId);
+  : posts.filter((post: any) => post.user?._id === user?.userId);
 
     // Function to toggle showAll state for a specific post
     const toggleShowAll = (postId: string) => {
@@ -81,19 +81,23 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
       )
     }
 
-    const getComments = async (postId : string) => {
-      axiosInstance.get(`/comments/${postId}`)
-      .then((res) =>{
-        if(res.data.message){
-          setShowComments(res.data.comments);
-        }
+    const deleteComment = (commentId : string) => {
 
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((error) => console.log('axios comment get err' , error)
-      )
     }
+
+    // const getComments = async (postId : string) => {
+    //   axiosInstance.get(`/comments/${postId}`)
+    //   .then((res) =>{
+    //     if(res.data.message){
+    //       setShowComments(res.data.comments);
+    //     }
+
+    //     if(res.data.error){
+    //       toast.error(res.data.error);
+    //     }
+    //   }).catch((error) => console.log('axios comment get err' , error)
+    //   )
+    // }
 
     // useEffect(() => {
     //   const getComments = async (postId : string) => {
@@ -118,24 +122,21 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
       .filter((post :any) => !post.isDeleted)
       .slice().reverse().map((post : any) => {
         const isShowAll = showAll[post._id];
-        // if (!showAllPosts && post.user.userId !== user?.userId) {
-        //   return null; // Skip posts that don't belong to the logged-in user
-        // }
         return (
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
               <Link to=''>
-                <img src={post?.user?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full bg-gray-600' />
+                <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full bg-gray-600' />
               </Link>
 
               <div className='w-full flex justify-between'>
                 <div className=''>
                   <Link to='' >
                     <p className='font-medium text-lg text-ascent-1'>
-                      {post?.user?.name}
+                      {post?.user?.name || post?.company?.name}
                     </p>
                   </Link>
-                  <span className='text-ascent-2'>{post?.user?.headine}</span>
+                  <span className='text-ascent-2'>{post?.user?.headline || post?.company?.headline}</span>
                 </div>
                 <span className='text-ascent-2'>{moment(post?.createdAt ?? '2023-09-24').fromNow()}</span>
               </div>
@@ -174,7 +175,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
               <p onClick={() => {
                 setShowComments(comments === post._id ? null : post._id);
-                getComments(post?._id)
+                // getComments(post?._id)
               }}
               className='flex gap-2 items-center text-base cursor-pointer'>
                 <BiComment size={20}/>
@@ -209,36 +210,42 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
             {comments === post?._id && (
               <div className='w-full mt-4 border-t border-[#66666645] pt-4'>
                 <CommentForm setUpdateUI={setUpdateUI} userData={userData} id={post?._id}
-                getComments={() => getComments(post?._id)} />
+                />
 
                 {
-                  comments?.length > 0 ? (
-                    <div className='w-full py-2'>
+                  post?.comments?.length > 0 ? (
+                    post?.comments?.map((comment : any) =>{
+                    return (
+                    <div className='w-full py-2' key={comment._id}>
                       <div className='flex gap-3 items-center mb-1'>
                         <Link to=''>
-                          <img src="" alt="" 
+                          <img src={comment?.userId?.profileImage || comment?.companyId?.profileImage} alt="" 
                           className='w-10 h-10 rounded-full object-cover'/>
                         </Link>
                         <div>
                           <Link to=''>
                             <p className='font-medium text-base text-ascent-1'>
-
+                              {comment?.userId?.name || comment?.companyId?.profileImage}
                             </p>
                           </Link>
                           <span className='text-ascent-2 text-sm'>
-
+                          {moment(comment?.createdAt ?? '2023-10-02').fromNow()}
                           </span>
                         </div>
                       </div>
 
                       <div className='ml-12'>
-                        <p className='text-ascent-2'></p>
+                        <p className='text-ascent-2'>{comment?.text}</p>
 
                         <div className='mt-2 flex gap-6'>
-                          <p></p>
+                          <span onClick={() => deleteComment(comment._id)} className='text-blue hover:bg-[#3b509c2b] cursor-pointer'>
+                            Delete
+                          </span>
                         </div>
                       </div>
                     </div>
+                    )
+                    })
                   ) : (
                     <span className='flex text-sm py-4 text-ascent-2 text-center'>
                       No Comments yet, be the first to Comment

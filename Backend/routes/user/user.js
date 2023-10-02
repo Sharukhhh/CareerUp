@@ -1,20 +1,24 @@
 import express from 'express';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
-import {connectAndDisconnectUser,  getProfile, listAllUsers } from '../../controllers/user/userController.js';
+import {connectAndDisconnectUser,  getProfile, listAllUsers, search } from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
-import { addComment, createPost , deletePost, getIndividualPosts, getPosts,  getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment } from '../../controllers/user/postController.js';
+import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment } from '../../controllers/user/postController.js';
 import upload from '../../utils/multerSetup.js';
+
+//search
+router.get('/search' , verify , search);
 
 //profile-management
 router.get('/profile/:id' , verify,  getProfile);
 
-router.put('/addBasic/:id' , upload.single('profileImage'), addBasic);
+router.post('/addBasic/:id' , verify, addBasic);
 
 router.get('/listusers' , verify,  listAllUsers);
 
+
 //user posts-management
-router.post('/addPost/:postId' , upload.array('image' , 'video'), createPost);
+router.post('/addPost' , verify, upload.array('image' , 'video'), createPost);
 
 router.patch('/deletepost/:postId' , verify, deletePost);
 

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js'; 
+import postModel from '../../models/posts.js';
 import cloudinary from '../../utils/cloudinary.js';
 
 
@@ -22,7 +23,7 @@ export const getProfile = async (req, res , next) => {
             return res.status(200).json({message: 'success' , user : company});
         }
 
-        res.status(200).json({user})
+        res.status(200).json({message : 'success' , user})
         
     } catch (error) {
         next(error);
@@ -80,12 +81,13 @@ export const connectAndDisconnectUser = async (req, res, next) => {
             return res.status(400).json({error : 'Invalid user'});
         }
 
-        if (Array.isArray(user.connections) && targetUser._id) {
+        if (Array.isArray(user.connections)) {
             const isConnected = user.connections.some((conn) => {
                 return conn.userId && conn.userId.equals(targetUser._id);
             });
 
         if(isConnected){
+
             user.connections = user.connections.filter((conn) => {
                 return conn.userId && !conn.userId.equals(targetUser._id);
             });
@@ -95,20 +97,49 @@ export const connectAndDisconnectUser = async (req, res, next) => {
             });
 
             await user.save();
+            await targetUser.save();
+
             return res.json({message : `Connection Removed with ${targetUser.name}`});
 
         } else {
 
             user.connections.push({ userId: targetUser._id });
+
             targetUser.connections.push({userId : user._id});
 
             await user.save();
+            await targetUser.save();
+
             return res.json({message : `Connected with ${targetUser.name}`});
         }
 
     }else{
         return res.status(400).json({ error: 'Invalid connections or targetUser._id' });
     }
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+export const search = async (req, res, next) => {
+    try {
+        const {query} = req.query;
+
+        const posts = await postModel.find({
+            description: { $regex: new RegExp(query, 'i') }, // 'i' makes it case-insensitive
+          })
+        .populate('user')
+        .populate('company')
+        .populate('comments');
+
+        if(!posts){
+            return res.status(401).json({error : 'Post not found!'});
+        }
+
+        return res.json({message : 'Search success' , posts});
 
     } catch (error) {
         next(error);

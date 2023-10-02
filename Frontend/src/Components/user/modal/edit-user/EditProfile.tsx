@@ -9,42 +9,33 @@ import { useNavigate } from 'react-router-dom';
 interface EditProfileProps {
     userData : any;
     visible : boolean;
+    setUpdateUI :(data: any) => void;
     closeEditModal : () => void;
 }
 
 
-const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , userData}) => {
+const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , userData , setUpdateUI}) => {
 
     const user = useSelector((state : RootState) => state.user.userCred);
     const navigate = useNavigate();
 
-    const [headline , setHeadline] = useState<string>(userData?.headline || '');
-    const [location , setLocation] = useState<string>(userData?.location || '');
-    const [profileImage , setImage] = useState<File | null>(null);
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setImage(e.target.files[0]);
-          }
-    }
+    const [headline , setHeadline] = useState<string>(userData?.headline);
+    const [location , setLocation] = useState<string>(userData?.location);
 
     const editSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('headline', headline);
-        formData.append('location', location);
-
-        if (profileImage) {
-          formData.append('profileImage', profileImage);
+        if(!headline || !location){
+            return toast.error('Provide Details' , {duration : 2000});
         }
         
-        axiosInstance.put(`/addBasic/${user?.userId}` , formData).then((res) => {
+        axiosInstance.post(`/addBasic/${user?.userId}` , {headline , location}).then((res) => {
 
             if(res.data.message){
                 setHeadline('');
                 setLocation('');
-                setImage(null);
+                setUpdateUI((prev : any) => !prev);
+
                 closeEditModal();
 
                 toast.success(res.data.message);
@@ -73,37 +64,52 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
                             <div className='flex justify-between px-6 pt-5 pb-2'>
                                     <label 
                                     htmlFor="name"
-                                    className='block font-medium text-xl text-ascent-1 text-left'>Edit Profile
+                                    className='block font-medium text-xl text-ascent-1 text-left'>Provide
                                     </label>
     
-                                    <button className='text-ascent-1' onClick={closeEditModal}>
+                                    <button className='text-ascent-1 cursor-pointer' onClick={closeEditModal}>
                                         <IoMdClose size={22} />
     
                                     </button>
                             </div>
                             
-                                <form onSubmit={editSubmit} encType='multipart/form-data'  className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'>
+                                <form onSubmit={editSubmit} className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'>
     
                                     <label className='text-ascent-2 text-sm mb-2' htmlFor="headline">Headline</label>
-                                    <input type="text" value={headline} name='healine' 
+                                    <input type="text" value={ headline} name='healine' 
                                     onChange={(e) => setHeadline(e.target.value)} className='w-full bg-secondary rounded border 
                                     border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' 
                                     />
     
                                     <label className='text-ascent-2 text-sm mb-2' htmlFor="name">Location</label>
-                                    <input type="text" value={location} name='location' 
+                                    <input type="text" value={  location} name='location' 
                                     onChange={(e) => setLocation(e.target.value)} className='w-full bg-secondary rounded border 
-                                    border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' 
-                                    />
-    
-                                    <label className='text-ascent-2 text-sm mb-2' htmlFor="name">Profile Picture</label>
-                                    <input type="file"  accept="image/*" name='profileImage' 
-                                    onChange={handleFileChange} className='w-full bg-secondary rounded border 
                                     border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' 
                                     />
 
                                     <button type='submit' className='inline-flex mt-4 justify-center rounded-md bg-blue px-8 py-3 mb-4 text-sm font-medium text-white outline-none'>
                                         Save
+                                    </button>
+                                </form>
+
+                                <hr className='my-6 border-t border-gray-700' />
+
+                                <form encType='multipart/form-data'  className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'>
+                                    <label htmlFor="profileImage">Profile Image</label>
+                                    <input type="file" name="profileImage" placeholder='upload image'
+                                    className='w-full bg-secondary rounded border 
+                                    border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' />
+
+                                {user?.role === 'Candidate' && (
+                                    <>
+                                        <label htmlFor="resume">Resume</label>
+                                        <input type="file" name="resume" placeholder='upload your resume' 
+                                        className='w-full bg-secondary rounded border 
+                                        border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666]' />
+                                    </>
+                                )}
+                                    <button type='submit' className='inline-flex mt-4 justify-center rounded-md bg-blue px-8 py-3 mb-4 text-sm font-medium text-white outline-none'>
+                                        Upload
                                     </button>
                                 </form>
                         </div>

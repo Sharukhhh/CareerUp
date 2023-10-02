@@ -54,7 +54,7 @@ const userSchema = mongoose.Schema({
             location : String,
             from : Date,
             to : Date
-        } 
+        }  
     ],
 
     profession : [
@@ -68,7 +68,7 @@ const userSchema = mongoose.Schema({
     resume : {
         data : Buffer,
         contentType : String
-    },
+    }, 
 
     savedPosts : [{
         postId : {
