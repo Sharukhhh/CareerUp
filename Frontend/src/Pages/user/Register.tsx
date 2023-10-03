@@ -8,6 +8,7 @@ import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
 const Register = () => {
     const [name , setName] = useState<string>('');
     const [email  , setEmail] = useState<string>('');
+    const [mobNumber, setMobNumber] = useState<string>(''); 
     const [role , setRole] = useState<string>('');
     const [password , setPassword] = useState<string>('');
     const [passwordStrength , SetPasswordstrength] = useState<string>('');
@@ -16,21 +17,25 @@ const Register = () => {
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        axiosInstance.post('/auth/register' , {name , email , role , password}).then((res) => {
-          console.log(res , ': Registered user Data');
-
+        
+        axiosInstance.post('/auth/register' , {name , email , phone: mobNumber, role , password})
+        .then((res) => {
+          
           if(res.data.message){
             toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
             setTimeout(() => {
               navigate('/login');
             }, 3000);
-          } else if(res.data.error) {
+          } 
+
+          if(res.data.error) {
             toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
           }
-        }).catch(error => console.log(error , 'Axios register error')
-        )
+        }).catch((err) => {
+          console.log(err);
+          
+        }) 
     }
 
     const checkPasswordstrength = (password : string) => {
@@ -90,8 +95,8 @@ const Register = () => {
 
   return (
     <>
-    <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
     <Toaster position='top-right'/>
+    <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
@@ -104,27 +109,28 @@ const Register = () => {
           </h2>
         </div>
 
-        <div className="border-2 rounded-md border-violet-950 p-5 bg-gray-50 mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit} method="POST">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Full Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="name"
-                  value={name}
-                  name="name"
-                  type="text"
-                  autoComplete="name"
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+        <div className="border-2 border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-lg">
+          <form className="space-y-6" onSubmit={handleSubmit} >
+            <div className='flex space-x-4'>
+              <div className='w-1/2'>
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                  Full Name
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="name"
+                    value={name}
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
+            <div className='w-1/2'>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Select your Role
               </label>
@@ -143,6 +149,7 @@ const Register = () => {
                 </select>
               </div>
             </div>
+           </div> 
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -156,6 +163,24 @@ const Register = () => {
                   type="email"
                   autoComplete="email"
                   onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium leading-6 text-gray-900">
+                Phone No.
+              </label>
+              <div className="mt-2">
+                <input
+                  id="phone"
+                  value={mobNumber}
+                  name="phone"
+                  type="text"
+                  autoComplete="phone"
+                  onChange={(e) => setMobNumber(e.target.value)}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -188,8 +213,8 @@ const Register = () => {
                     <div
                       className={`text-sm mt-2 ${
                         passwordStrength === 'Strong'
-                          ? 'text-green-500'
-                          : 'text-red-500'
+                          ? 'text-[#5dc43e]'
+                          : 'text-[#e84848]'
                       }`}
                     >
                       Password Strength: {passwordStrength}

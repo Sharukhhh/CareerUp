@@ -23,9 +23,6 @@ const Profile = () => {
   const [userData , setUserData]  = useState<any>([]);
   const [posts, setPosts] = useState<any>([]);
   const [updateUI , setUpdateUI] = useState<boolean>(false);
-  const handleUpdateUI = () => {
-    setUpdateUI((prev) => !prev);
-  }
 
   const [educationId , setEducationId] = useState<string>('');
   const [professionId , setProfessionId] = useState<string>('');
@@ -114,7 +111,7 @@ const Profile = () => {
     <>
       <div className="home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden">
         <Toaster position="top-center" />
-        <UserNav handleUpdateUI={handleUpdateUI} />
+        <UserNav />
 
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
@@ -124,7 +121,7 @@ const Profile = () => {
           </div>
 
           {/* center */}
-          <div className="flex-1 h-full border rounded-lg bg-primary px-4 flex flex-col gap-6 overflow-y-auto">
+          <div className="flex-1 h-full bg-bgColor px-4 flex flex-col gap-6 overflow-y-auto">
             <PostCards setUpdateUI={setUpdateUI} userData={userData} showAllposts={false} posts={posts} />
 
           </div>
@@ -233,7 +230,7 @@ const Profile = () => {
       </div>
 
       <Suspense fallback={<Spinner/>}>
-        <DeleteBox setUserData={setUserData} visible={showBox} closeBox={closeBox} professionId={professionId} />
+        <DeleteBox setUpdateUI={setUpdateUI} setUserData={setUserData} visible={showBox} closeBox={closeBox} professionId={professionId} />
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
@@ -241,7 +238,7 @@ const Profile = () => {
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
-        <EduConfirmBox setUserData={setUserData} visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
+        <EduConfirmBox setUpdateUI={setUpdateUI} setUserData={setUserData} visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
       </Suspense>
     </>  
   )

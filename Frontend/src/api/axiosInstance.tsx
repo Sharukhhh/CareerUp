@@ -1,12 +1,8 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export const axiosInstance = axios.create({
     baseURL : 'http://localhost:3000',
-
-
-    // headers : {
-    //     'authorization' : `Bearer ${localStorage.getItem('userToken')}`
-    // }
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -19,14 +15,24 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 })
 
+axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.error || 'An error occurred';
+            // Show error toast with errorMessage
+            toast.error(errorMessage, { duration: 2000, style: { color: '#fff', background: 'black' } });
+        } else {
+            // Handle other errors
+            console.error('Axios error:', error);
+        }
+        return Promise.reject(error);
+    }
+)
+
 
 export const adminAxiosInstance = axios.create({
     baseURL : 'http://localhost:3000/admin' , 
-
-    // headers : {
-    //     'Authorization' : `Bearer ${localStorage.getItem('adminToken')}`
-    // }
-    
 });
 
 adminAxiosInstance.interceptors.request.use((config) => {

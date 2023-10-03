@@ -3,7 +3,9 @@ const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import {connectAndDisconnectUser,  getProfile, listAllUsers, search } from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
-import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment } from '../../controllers/user/postController.js';
+import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
+getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment, reportPost } 
+from '../../controllers/user/postController.js';
 import upload from '../../utils/multerSetup.js';
 
 //search
@@ -35,6 +37,8 @@ router.get('/save/:postId' , verify , saveandUnsavePosts);
 router.get('comments/:postId', verify, showComment);
 
 router.post('/postcomment/:postId' , verify , addComment);
+
+router.patch('/report/:postId' , verify , reportPost )
 
 
 //user-connections

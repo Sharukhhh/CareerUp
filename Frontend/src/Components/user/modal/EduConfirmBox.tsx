@@ -9,10 +9,11 @@ interface EducationPermissionBoxProps {
     closeEduBox : () => void;
     educationId : string;
     setUserData : (userData: any) => void;
+    setUpdateUI :(data: any) => void;
 }
 
 
-const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({setUserData , visible , closeEduBox , educationId}) => {
+const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({setUserData , setUpdateUI, visible , closeEduBox , educationId}) => {
     const [open, setOpen] = useState(true);
 
     const cancelButtonRef = useRef(null);
@@ -23,7 +24,8 @@ const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({setUserData , vis
             if(res.data.message){
                 toast.success(res.data.message);
                 closeEduBox();
-                setUserData(res.data.user);
+                setUpdateUI((prev : any) => !prev);
+                // setUserData(res.data.user);
             } 
             if(res.data.error){
                 toast.error(res.data.error , {duration: 2000});

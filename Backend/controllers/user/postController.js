@@ -293,3 +293,32 @@ export const deleteComment = async(req, res, next) => {
   }
 }
 
+// *********************************************************************************
+// *********************************************************************************
+
+
+export const reportPost = async(req, res, next) => {
+  try {
+    const postId = req.params.postId;
+    const user = req.user;
+
+    const {reason} = req.body;
+
+    const post = await postModel.findByIdAndUpdate(postId , {
+      $push : {
+        reports : {
+          user: user._id, reason: reason
+        },
+      },
+    } , {new : true});
+
+    if(!post){
+      return res.status(404).json({error : 'Post not found'});
+    }
+
+    return res.status(200).json({message : 'Report Submitted!'});
+
+  } catch (error) {
+    next(error);
+  }
+}

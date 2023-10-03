@@ -40,7 +40,18 @@ const postSchema = mongoose.Schema({
     isDeleted : {  //soft-delete
         type : Boolean,
         default : false
-    }
+    },
+
+    reports : [{
+        user : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        },
+
+        reason : {
+            type : String
+        }
+    }]
 
 } , {timestamps: true});
 

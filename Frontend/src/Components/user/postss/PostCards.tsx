@@ -1,14 +1,16 @@
-import React , {useState , useEffect} from 'react'
+import React , {useState , lazy , Suspense ,useEffect} from 'react'
 import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
 import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
 import {MdOutlineDeleteOutline, MdOutlineReportProblem} from 'react-icons/md';
 import {Link} from 'react-router-dom';
+import { Spinner } from '@material-tailwind/react';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 import CommentForm from '../comment/CommentForm';
+const ReportBox = lazy(() => import('../modal/ReportModal'));
 
 interface PostCardProps { 
   posts : any;
@@ -21,6 +23,18 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
   const user = useSelector((state : RootState) =>state.user.userCred);
   const [showAll , setShowAll] = useState<{ [postId: string]: boolean }>({});
   const [comments , setShowComments] = useState<any>([]);
+
+  const [showReportModal , setReportModal] = useState<boolean>(false);
+  const [selectedPostId , setSelectedPostId] = useState<string | null>(null);
+
+  const openReportModal = (postId : string) => {
+    setReportModal(true);
+    setSelectedPostId(postId);
+  }
+
+  const closeReportModal = () => {
+    setReportModal(false);
+  }
 
   const filteredPosts = showAllposts
   ? posts
@@ -202,7 +216,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                   )}
               </p>
 
-              <p className='flex gap-2 items-center text-base cursor-pointer hover:text-yellow-700'>
+              <p onClick={() => openReportModal(post?._id)} className='flex gap-2 items-center text-base cursor-pointer hover:text-[#e5d463]'>
                 <MdOutlineReportProblem size={20} />
               </p>
             </div>
@@ -261,6 +275,10 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
         <p className='text-lg text-ascent-2'>No posts Available</p>
       </div>
     )}
+
+    <Suspense fallback={<Spinner />}>
+      <ReportBox visible={showReportModal} closeReportModal={closeReportModal} postId={selectedPostId} />
+    </Suspense>
     </>
   )
 }

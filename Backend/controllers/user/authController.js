@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js';
+import validator from 'validator';
 
 
 
@@ -15,20 +16,26 @@ const hashPassword = async (password) => {
 
 export const register = async (req, res , next) => {
     try {
-        const {name , email , role , password} = req.body;
+
+        const {name , email , phone, role , password} = req.body;
 
         const existingUser = await userModel.findOne({email});
         const existingCompany = await companyModel.findOne({email});
 
         if(existingUser || existingCompany){
-            return res.status(400).json({error : 'Account already exists'});
+            return res.status(401).json({error : 'Account already exists'});
+        }
+
+        const phoneNumberPattern = /^[0-9]{10}$/;
+        if (!phoneNumberPattern.test(phone)) {
+            return res.status(401).json({ error: 'Invalid phone number' });
         }
 
         const bcryptedpassword = await hashPassword(password);
 
         if(role === 'Candidate'){
             const user = new userModel({
-                name , email , role , password : bcryptedpassword
+                name , email , role , phone, password : bcryptedpassword
             })
 
             await user.save(); 
@@ -38,7 +45,7 @@ export const register = async (req, res , next) => {
 
         } else {
             const company = new companyModel({
-                name , email , role , password : bcryptedpassword
+                name , email , role , phone, password : bcryptedpassword
             })
 
             await company.save();

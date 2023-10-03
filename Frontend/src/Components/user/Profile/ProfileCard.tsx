@@ -56,13 +56,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                         {userData?.location}
                     </span>
                 </div>
-
-                {/* <div className='flex gap-2 items-center text-ascent-2'>
-                    <BsBriefcase />
-                    <span>
-                    {user?.useremail}
-                    </span>
-                </div> */}
             </div>
 
             <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>

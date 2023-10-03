@@ -14,11 +14,11 @@ import RootState from '../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../api/axiosInstance';
 
 interface UserNavProps {
-  handleUpdateUI : () => void
+ 
 }
 
 
-const UserNav:React.FC<UserNavProps> = ({handleUpdateUI}) => {
+const UserNav:React.FC<UserNavProps> = () => {
   // const {theme} = useSelector((state : ThemeRootState) => state.theme);
   const user = useSelector((state : RootState) => state.user.userCred);
 
@@ -60,9 +60,8 @@ const UserNav:React.FC<UserNavProps> = ({handleUpdateUI}) => {
       axiosInstance.get('/search', {params : {query : searchQuery}})
       .then((res) => {
         if(res.data.message){
-          console.log(res.data.posts);
+          // console.log(res.data.posts);
 
-          handleUpdateUI();
         }
 
         if(res.data.error){

@@ -19,11 +19,6 @@ const UserFeed = () => {
     const [posts , setPosts] = useState<any>([])
     const [listUsers , setListUsers] = useState<any>([]);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
-
-    const handleUpdateUI = () => {
-      setUpdateUI((prev) => !prev);
-    }
-
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
 
@@ -88,7 +83,7 @@ const UserFeed = () => {
   return (
     <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
-            <UserNav handleUpdateUI={handleUpdateUI} />
+            <UserNav/>
 
             <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
 

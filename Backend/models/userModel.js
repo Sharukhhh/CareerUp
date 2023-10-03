@@ -20,6 +20,11 @@ const userSchema = mongoose.Schema({
         match : /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     },
 
+    phone : {
+        type: Number,
+        unique : true
+    },
+
     role : {
         type : String,
         required : true,

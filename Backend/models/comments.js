@@ -20,7 +20,7 @@ const commentSchema = mongoose.Schema({
 
     text : {
         type : String,
-        required : true
+        required : true 
     },
 
     createdAt : {

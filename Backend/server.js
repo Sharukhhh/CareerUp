@@ -13,10 +13,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
-import { errorHandler } from './middlewares/errorHandler.js';
-app.use(errorHandler); 
-
 app.use(express.json());
 app.use(express.urlencoded({extended : true})); 
 
@@ -36,6 +32,8 @@ app.use('/' , userDataRoutes);
 import adminRoutes from './routes/admin/admin.js'
 app.use('/admin' , adminRoutes);
 
+// import { errorHandler } from './middlewares/errorHandler.js';
+// app.use(errorHandler); 
 
 import { connectDB } from './connection/databse.js';
 connectDB();

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {BsFillChatLeftTextFill} from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import RootState from '../../../Redux/rootstate/rootState';
 
@@ -26,8 +27,8 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({userData}) => {
             <div className='w-full flex flex-col gap-4 pt-4'>
                 {userData?.connections?.map((connection : any) => {
                     return(
-                        <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'
-                        key={connection._id}>
+                    <div className='flex items-center justify-between' key={connection._id}>
+                        <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
                             <img src={connection?.userId?.profileImage}
                             className='w-10 h-10 object-cover rounded-full' alt="" 
                             />
@@ -40,6 +41,17 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({userData}) => {
                                 </span>
                             </div>
                         </Link>
+
+                        {user.userId === userData._id && (
+                        <div className='flex gap-1'>
+                            <button 
+                            className='text-sm p-1 rounded text-blue'
+                            >
+                                <BsFillChatLeftTextFill size={20} />
+                            </button>
+                        </div>
+                        )}
+                    </div>       
                     )
                 })}
             </div>
