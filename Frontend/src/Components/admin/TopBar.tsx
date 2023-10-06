@@ -48,7 +48,7 @@ const TopBar = () => {
                     </button>
 
                     <div className={`w-full lg:block lg:w-auto ${isMenuOpen ? 'block' : 'hidden'}`} id="navbar-solid-bg">
-                        <ul className="flex flex-col mt-4 rounded-lg text-lg font-semibold bg-gray-50 lg:flex-row lg:space-x-8 lg:mt-0 lg:border-0 lg:bg-transparent">
+                        <ul className="flex flex-col mt-4 cursor-pointer rounded-lg text-lg font-semibold bg-gray-50 lg:flex-row lg:space-x-8 lg:mt-0 lg:border-0 lg:bg-transparent">
                             <li>
                                 <NavLink to= ''>
                                     <p
@@ -64,6 +64,15 @@ const TopBar = () => {
                                         className="block py-2 pl-3 pr-4 lg:text-lg  rounded lg:bg-transparent lg:p-0 "
                                         aria-current="page">
                                         Users
+                                    </p>
+                            </NavLink>
+                            </li>
+                            <li>
+                            <NavLink to= '/admin/categories'>
+                                    <p
+                                        className="block py-2 pl-3 pr-4 lg:text-lg  rounded lg:bg-transparent lg:p-0 "
+                                        aria-current="page">
+                                        Job Category
                                     </p>
                             </NavLink>
                             </li>

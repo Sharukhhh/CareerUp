@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import {
     adminLogin, getCompanies, getUsers, blockUser, unBlockUser ,
-    verifyCompany ,blockCompany , unBlockCompany 
+    verifyCompany ,blockCompany , unBlockCompany, addCategory, deleteIndustry, getIndustries 
 } 
 from '../../controllers/admin/adminController.js';
 import { verifyAdmin } from '../../middlewares/adminAuth.js';
@@ -27,6 +27,12 @@ router.patch('/verify/:id' , verifyAdmin, verifyCompany);
 router.patch('/blockcompany/:id' , verifyAdmin, blockCompany );
 
 router.patch('/unblockcompany/:id' , verifyAdmin, unBlockCompany);
+
+router.post('/category' , verifyAdmin , addCategory);
+
+router.get('/getIndustries' , verifyAdmin , getIndustries);
+
+router.delete('/deleteCat/:id' , verifyAdmin , deleteIndustry);
 
 
 export default router;    

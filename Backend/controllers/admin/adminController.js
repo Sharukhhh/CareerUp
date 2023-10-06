@@ -2,6 +2,7 @@ import adminModel from "../../models/admin.js";
 import jwt from "jsonwebtoken";
 import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
+import categoryModel from "../../models/category.js";
 
 // ADMIN - auth
 export const adminLogin = async (req, res) => {
@@ -158,5 +159,68 @@ export const unBlockCompany = async (req, res) => {
         
     } catch (error) {
         console.log(error);
+    }
+}
+
+
+export const addCategory = async (req, res, next) => {
+    try {
+        const {industry} = req.body;
+
+        const existingIndustry = await categoryModel.findOne({industry : {
+            $regex : new RegExp(`^${industry}$`, 'i')
+        }});
+
+        if(existingIndustry){
+            return res.status(400).json({error : 'Industry Already Exists'});
+        }
+
+        if (/\d/.test(industry)) {
+            return res.status(400).json({ error: 'Invalid Entry!' });
+        }
+
+        const newIndustry = await categoryModel.create({
+            industry : industry
+        });
+
+        res.status(200).json({message : 'Industry Added' , newIndustry}); 
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getIndustries = async (req, res, next) => {
+    try {
+        const industries = await categoryModel.find();
+        if(!industries){
+            return res.status(404).json({error : 'Industries Not found'});
+        }
+
+        res.status(200).json({message : 'success' , industries});
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const deleteIndustry = async (req, res, next) => {
+    try {
+        const industryId = req.params.itemId;
+
+        if(!industryId){
+            return res.status(404).json({error : 'Industry Not Found'});
+        }
+
+        const industry = await categoryModel.findByIdAndRemove(industryId);
+
+        if(!industry){
+            return res.status(404).json({ error: 'Industry Not Found' });
+        }
+
+        res.status(200).json({message : 'Industry Removed Successfully'});
+
+    } catch (error) {
+        next(error);
     }
 }

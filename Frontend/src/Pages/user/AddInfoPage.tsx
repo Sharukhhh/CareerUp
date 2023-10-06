@@ -12,9 +12,12 @@ const AddInfoPage = () => {
   const currentDate = new Date();
 
   const user = useSelector((state : RootState) => state.user.userCred);
+  
+  const isCompany = user?.role === 'Company';
 
   const {id} = useParams();
   const [editData , setEditData] = useState<any>([]);
+  const [industries , setIndustries] = useState<any>([]);
 
   useEffect(() => {
     if(id){
@@ -30,6 +33,22 @@ const AddInfoPage = () => {
       )
     }
   }, [id]);
+
+  useEffect(() => {
+    if(isCompany){
+      axiosInstance.get('/getIndustries')
+      .then((res) => {
+        if(res.data.message){
+          setIndustries(res.data.industries);
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((error) => console.log(error , 'axios indutry fetch error')
+      )
+    }
+  },[isCompany]);
 
   
   
@@ -103,17 +122,18 @@ const AddInfoPage = () => {
   //post-job
   const [position , setPosition] = useState<string>(editData?.Position || '');
   const [location, setJobLocation] = useState<string>(editData?.location || '');
-  const [salary , setSalary] = useState<string>(editData?.package || '');
+  const [salaryPackage , setSalaryPackage] = useState<string>(editData?.package || '');
   const [requirements , setRequirements] = useState<string>(editData?.requirements || '');
+  const [industry , setIndustry] = useState<string >('');
 
   const handleJobPost = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(!position || !location || !requirements){
+    if(!position || !location || !requirements || !industry){
       return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
     }
 
-    axiosInstance.post(`/postjob/${user?.userId}` , {position, location , salary, requirements})
+    axiosInstance.post(`/postjob` , {position, location , salaryPackage , industry : industry, requirements})
     .then((res) => {
       if(res.data.message){
         toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
@@ -121,6 +141,7 @@ const AddInfoPage = () => {
         setPosition('');
         setJobLocation('');
         setRequirements('');
+        setIndustry('');
       }
 
       if(res.data.error){
@@ -136,7 +157,11 @@ const AddInfoPage = () => {
     <Toaster position='top-center' />
         <div className='max-w-3xl mx-auto mt-8 p-6 bg-[#c3e3f7]  border: rounded-lg shadow-xl'>
             <div className='flex justify-between'>
+              {user?.role === 'Candidate' ? (
                 <h1 className='text-3xl font-bold mb-3'>Fill Your Details</h1>
+              ) : (
+                <h1 className='text-3xl font-bold mb-3'>Post a Job</h1>
+              )}
                 <div className='flex'>
                   <Link to='/account'>
                   Back <IoArrowBackCircle size={20} />
@@ -246,7 +271,7 @@ const AddInfoPage = () => {
                   type="text" name='position' placeholder='Add Position For Hiring' />
 
                   <label className='text-ascent-2 text-sm mb-2' htmlFor="package">Package</label>
-                  <input onChange={(e) => setSalary(e.target.value)} value={salary}
+                  <input onChange={(e) => setSalaryPackage(e.target.value)} value={salaryPackage}
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='package' placeholder='Salary Package' />
@@ -264,6 +289,18 @@ const AddInfoPage = () => {
                   className='bg-secondary rounded border border-[#66666690] 
                   outline-none text-sm text-ascent-1 p-8 placeholder:text=[#666] shadow-md'
                   type="text" name='requirements' placeholder='' />
+
+                  <label className='text-ascent-2 text-sm mb-2' htmlFor="Industry">Select Industry</label>
+                    <select 
+                      className='bg-secondary rounded border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666] shadow-md'
+                      id="industry" name='industry' value={industry} onChange={(e) => setIndustry(e.target.value)}>
+                      <option value=''>Select an Industry</option>
+                      {industries.map((indstry : any) => {
+                        return(
+                        <option key={indstry._id} value={indstry._id}>{indstry}</option>
+                        )
+                      })}
+                    </select>
                 </div>
 
                 <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>

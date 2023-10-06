@@ -2,6 +2,7 @@ import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
 import jobModel from "../../models/jobs.js";
 import cloudinary from "../../utils/cloudinary.js";
+import categoryModel from "../../models/category.js";
 
 export const getEditData = async (req, res, next) => {
     try {
@@ -234,26 +235,63 @@ export const deleteProfession = async (req, res, next) => {
 // *********************************************************************************
 // *********************************************************************************
 
+export const getOwnPostedJobs = async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+
+        const jobs = await jobModel.find({postedBy : userId});
+
+        if(!jobs){
+            return res.status(404).json({error : 'No jobs found for this user'});
+        }
+
+        res.status(200).json({message: 'Jobs fetched!', jobs});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const displayJobs = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const jobs = await jobModel.find().populate('industry').exec();
+        if(!jobs){
+            return res.status(404).json({error : 'Data Not found'})
+        }
+
+        res.status(200).json({message : 'Success' , jobs});
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const createJob = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        const {position , location , requirements} = req.body;
+        const {position , location , salaryPackage, industry, requirements} = req.body;
+        const user = req.user;
 
-        if(!position || !location || !requirements){
+        if(!user){
+            return res.status(401).json({error : 'User not found'});
+        }
+
+        if(!position || !location || !requirements || !salaryPackage || !industry){
             return res.status(400).json({error : 'Fill all the fields'});
         }
 
-        const company = await companyModel.findById(id);
-        if(!company){
-            return res.status(404).json({error : 'company not found'});
+        const industryObject = await categoryModel.findOne({ industry: industry }); 
+        if (!industryObject) {
+            return res.status(400).json({ error: 'Invalid industry' });
         }
 
         const jobPost = new jobModel({
-            userId : company._id,
+            postedBy : user._id,
             position ,
+            salaryPackage,
             location,
-            requirements
+            requirements,
+            industry : industryObject._id
         });
         await jobPost.save();
 

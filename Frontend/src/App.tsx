@@ -7,6 +7,7 @@ import Profile from './Pages/user/Profile';
 import UserFeed from './Pages/user/UserFeed';
 import AddInfoPage from './Pages/user/AddInfoPage';
 import SavedPosts from './Pages/user/SavedPosts';  
+import RecruiterJobsPage from './Pages/user/RecruiterJobsPage';
 import Chat from './Pages/user/Chat';
 
 import Adminlogin from './Pages/admin/Adminlogin';
@@ -14,10 +15,16 @@ import UsersList from './Pages/admin/UsersList';
 import CompanyList from './Pages/admin/CompanyList';
 
 import PrivatePages from './Components/PrivatePages';
+import { useSelector } from 'react-redux';
+import RootState from './Redux/rootstate/rootState';
+import JobsPage from './Pages/user/JobsPage';
+import CategoryAdd from './Pages/admin/CategoryAdd';
 
 
 function App() {
+  const user = useSelector((state : RootState) => state.user.userCred);
 
+  const isCandidate = user?.role === 'Candidate';
 
   return (
     <>
@@ -34,11 +41,17 @@ function App() {
           <Route path='/details/:id' element={<AddInfoPage/>}/>
           <Route path='/saved' element={<SavedPosts/>}/>
           <Route path='/message' element={<Chat />}/>
+          {isCandidate ? (
+            <Route path='/jobs' element={<JobsPage />} />
+          ) : (
+            <Route path='/jobs' element={<RecruiterJobsPage/>}/>
+          )}
         </Route>
 
         <Route path='/admin' element={<Adminlogin/>}/>
         <Route path='/admin/users' element={<UsersList/>} />
         <Route path='/admin/companies' element={<CompanyList/>} />
+        <Route path='/admin/categories' element={<CategoryAdd />}/>
       </Routes>
     </>
   )

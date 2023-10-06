@@ -1,8 +1,9 @@
-import {useState } from 'react';
+import {useState , useEffect } from 'react';
 import {useNavigate , Link} from 'react-router-dom';
 import { axiosInstance } from '../../api/axiosInstance';
 import { toast , Toaster} from 'react-hot-toast';
 import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
+import { Spinner } from '@material-tailwind/react';
 
 
 const Register = () => {
@@ -11,12 +12,28 @@ const Register = () => {
     const [mobNumber, setMobNumber] = useState<string>(''); 
     const [role , setRole] = useState<string>('');
     const [password , setPassword] = useState<string>('');
+    const [otp , setOtp] = useState<string>('');
+    
     const [passwordStrength , SetPasswordstrength] = useState<string>('');
+    const [showOtpModal , setShowOtpModal] = useState<boolean>(false);
+    const [waitingForOtp , setWaitingForOtp] = useState<boolean>(false);
+    const [resendTimer , setResendTimer] = useState<number>(0);
+    const [isResentDisabled , setIsResentDisabled] = useState<boolean>(false);
+
+    const openOtpModal = () => {
+      setShowOtpModal(true);
+    }
+
+    const closeOtpModal = () => {
+      setShowOtpModal(false);
+    }
 
     const navigate = useNavigate();
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        setWaitingForOtp(true);
         
         axiosInstance.post('/auth/register' , {name , email , phone: mobNumber, role , password})
         .then((res) => {
@@ -24,9 +41,7 @@ const Register = () => {
           if(res.data.message){
             toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
-            setTimeout(() => {
-              navigate('/login');
-            }, 3000);
+            openOtpModal()
           } 
 
           if(res.data.error) {
@@ -34,8 +49,33 @@ const Register = () => {
           }
         }).catch((err) => {
           console.log(err);
-          
-        }) 
+        }).finally(() => {
+          setWaitingForOtp(false);
+        });
+    }
+
+    const otpSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      axiosInstance.post('/auth/otpregister', {name , email , phone: mobNumber, role , password , otp})
+      .then((res) => {
+        if(res.data.message){
+          closeOtpModal();
+          toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+        }
+
+      }).catch((error) => {
+        console.log(error , 'axios otp submit err');
+        
+      })
     }
 
     const checkPasswordstrength = (password : string) => {
@@ -93,6 +133,45 @@ const Register = () => {
     SetPasswordstrength(strength);
   }
 
+  const resendOTP = () => {
+
+    if(resendTimer === 0 && !isResentDisabled){
+
+      axiosInstance.post('/auth/resend', {phone : mobNumber , email , name , password , role})
+      .then((res) => {
+        if(res.data.message){
+          toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}})
+          setResendTimer(60);
+          setIsResentDisabled(true);
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+        }
+      }).catch((error) => console.log(error, 'resend otp error')
+      )
+    }
+  }
+
+  useEffect(() => {
+    if(resendTimer > 0){
+      const countDown = setInterval(() => {
+        setResendTimer((prevTime) => {
+          if (prevTime === 0) {
+            clearInterval(countDown);
+            setIsResentDisabled(false); // Reset isResentDisabled when timer reaches 0
+            return 0;
+          }
+          return prevTime - 1;
+        })
+      }, 1000);
+    return () => {
+      // Clean up the interval when the component unmounts
+      clearInterval(countDown);
+    };
+    }
+  } , [resendTimer]);
+
   return (
     <>
     <Toaster position='top-right'/>
@@ -109,7 +188,7 @@ const Register = () => {
           </h2>
         </div>
 
-        <div className="border-2 border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div className="border-2 border-black border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-lg">
           <form className="space-y-6" onSubmit={handleSubmit} >
             <div className='flex space-x-4'>
               <div className='w-1/2'>
@@ -149,7 +228,7 @@ const Register = () => {
                 </select>
               </div>
             </div>
-           </div> 
+          </div> 
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -274,6 +353,47 @@ const Register = () => {
         </div>
       </div>
       </GoogleOAuthProvider>
+
+
+      {waitingForOtp ?  (
+        <div className='fixed inset-0 bg-[#000] bg-opacity-30 backdrop-blur-sm flex justify-center items-center'>
+          <div className='bg-[#fefefe] p-2 rounded w-72 flex justify-center'>
+            <Spinner className='h-10 w-10' />
+          </div>
+        </div>
+      ) : (
+        null
+      )}
+
+      {showOtpModal && (
+        <div className='fixed inset-0 bg-[#000] bg-opacity-30 backdrop-blur-sm flex justify-center items-center'>
+          <div className='bg-[#fefefe] p-2 rounded w-72'>
+            <h1 className='font-bold text-center text-xl'>Enter OTP</h1>
+
+            <div className='flex flex-co justify-center'>
+              <form onSubmit={otpSubmit}>
+              <input type="text" value={otp} onChange={(e) => {
+                const inputValue = e.target.value.replace(/\D/g, '');
+                setOtp(inputValue);
+              }}
+              placeholder='OTP' className='border p-2 rounded mb-2' />
+                  <div className='flex justify-end mb-2'>
+                    <button type='button' onClick={resendOTP} disabled={isResentDisabled}
+                    className={`px-5 py-2 rounded text-blue ${isResentDisabled ? 'bg-gray-400 cursor-not-allowed' : 'hover:text-[#2d2d78]'}`}>
+                      Resend OTP {isResentDisabled ? `in ${resendTimer} seconds` : ''}
+                    </button>
+                  </div>
+
+                <div className='text-center'>
+                  <button  className='px-5 py-2 text-white rounded bg-blue'>
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

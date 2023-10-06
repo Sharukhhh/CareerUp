@@ -31,6 +31,7 @@ axiosInstance.interceptors.response.use(
 )
 
 
+
 export const adminAxiosInstance = axios.create({
     baseURL : 'http://localhost:3000/admin' , 
 });
@@ -43,3 +44,18 @@ adminAxiosInstance.interceptors.request.use((config) => {
     }
     return config;
 })
+
+adminAxiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.data) {
+            const errorMessage = error.response.data.error || 'An error occurred';
+            // Show error toast with errorMessage
+            toast.error(errorMessage, { duration: 2000, style: { color: '#fff', background: 'black' } });
+        } else {
+            // Handle other errors
+            console.error('Axios error:', error);
+        }
+        return Promise.reject(error);
+    }
+)

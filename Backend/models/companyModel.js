@@ -54,15 +54,6 @@ const companySchema = mongoose.Schema({
         default : 'https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png'
     },
 
-    job : [
-        {
-            Position : String,
-            location : String,
-            package : String,
-            requirements: String
-        }
-    ],
-
     followers : [{
         userId : {
             type : mongoose.Schema.Types.ObjectId,

@@ -67,15 +67,15 @@ const UserTable = () => {
         <div className="overflow-hidden rounded-lg border mt-12 border-gray-200 shadow-md m-5">
             
             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                <thead className="bg-gray-800">
+                <thead className="bg-[#323232]">
                     <tr>
                         <th scope="col" className="px-6 py-4 font-semibold text-white">Name</th>
                         <th scope="col" className="px-6 py-4 font-semibold text-white">Role</th>
-                        {/* <th scope="col" className="px-6 py-4 font-medium text-gray-900">Team</th> */}
+                        {/* <th scope="col" className="px-6 py-4 font-semibold text-white">Location</th> */}
                         <th scope="col" className="px-6 py-4 font-semibold text-white">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                <tbody className="divide-y divide-gray-100 border-t bg-[#efecec]">
                     {users.map((user : any , index : string ) => {
                         return (
                         <tr key={index} className="hover:bg-gray-50">
@@ -83,7 +83,7 @@ const UserTable = () => {
                                 <div className="relative h-10 w-10">
                                     <img
                                     className="h-full w-full rounded-full object-cover object-center"
-                                    src=""
+                                    src={user.profileImage}
                                     alt="pic"
                                     />
                                     {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
@@ -117,12 +117,12 @@ const UserTable = () => {
                                     <div className="flex justify-start gap-4">
                                         {!user.isBlocked ? (
                                             <button onClick={() => blockUser(user._id)}
-                                            className='inline-flex items-center gap-1 rounded-full bg-red-100 px-4 py-2 text-xs font-semibold text-red-700'>
+                                            className='inline-flex items-center gap-1 rounded-full bg-[#dc7979] px-4 py-2 text-xs font-semibold text-white'>
                                                 Block 
                                             </button>
                                         ) : (
                                             <button onClick={() => unBlockUser(user._id)} 
-                                            className='inline-flex items-center gap-1 rounded-full bg-light-blue-100 px-4 py-2 text-xs font-semibold text-light-blue-700'>
+                                            className='inline-flex items-center gap-1 rounded-full bg-[#6966ba] px-4 py-2 text-xs font-semibold text-white'>
                                                 UnBlock 
                                             </button>
                                         )}

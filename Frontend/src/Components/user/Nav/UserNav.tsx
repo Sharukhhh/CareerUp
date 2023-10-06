@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 // import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
 // import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
+import {BsBriefcaseFill} from 'react-icons/bs';
 import {ImHome} from 'react-icons/im';
 // import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
@@ -103,13 +104,18 @@ const UserNav:React.FC<UserNavProps> = () => {
       {/* Icons */}
       <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl'>
             <NavLink to='/feed'>
-                <ImHome className='hover:scale-125 dark:text-white' />
+              <ImHome className='hover:scale-125'/>
             </NavLink>
           
           {/* <button onClick={() => handleTheme()} >
             {theme === 'light' ? <BsMoon className='hover:scale-125'/> : <BsSunFill className='hover:scale-125' /> }
           </button> */}
-            <IoMdNotificationsOutline className='hover:scale-125 dark:text-white' />
+
+            <NavLink to='/jobs'>
+              <BsBriefcaseFill className='hover:scale-125'/>
+            </NavLink>
+
+            <IoMdNotificationsOutline className='hover:scale-125'/>
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
           {/* <CgProfile className='hover:scale-125' /> */}

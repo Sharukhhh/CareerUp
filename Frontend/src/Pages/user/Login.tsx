@@ -61,7 +61,7 @@ const Login = () => {
           </h2>
         </div>
 
-        <div className="border-2 border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="border-2 border-black border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-md">
           <form className="space-y-6" onSubmit={handleSubmit} method="POST">
 
             <div>

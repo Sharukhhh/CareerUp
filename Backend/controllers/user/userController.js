@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js'; 
 import postModel from '../../models/posts.js';
+import categoryModel from '../../models/category.js';
 import cloudinary from '../../utils/cloudinary.js';
 
 
@@ -141,6 +142,26 @@ export const search = async (req, res, next) => {
 
         return res.json({message : 'Search success' , posts});
 
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const getIndustries = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const industriesData = await categoryModel.find();
+
+        if(!industriesData){
+            return res.status(404).json({error : 'Not found'});
+        }
+
+        const industries = industriesData.map(industry => industry.industry);
+
+        return res.status(200).json({message : 'Success' , industries});
+        
     } catch (error) {
         next(error);
     }

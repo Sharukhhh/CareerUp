@@ -93,7 +93,27 @@ const userSchema = mongoose.Schema({
             type : mongoose.Schema.Types.ObjectId,
             ref : 'users'
         }
-    }]
+    }],
+
+    appliedJobs : [
+        {
+            jobId : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : 'job openings',
+            },
+
+            status : {
+                type : String,
+                enum : ['Pending' , 'Accepted' , 'Rejected'],
+                default : 'Pending'
+            },
+
+            appliedAt : {
+                type : Date,
+                default : Date.now
+            }
+        }
+    ]
 
     
 })

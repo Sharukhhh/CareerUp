@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 const createJobSchema = mongoose.Schema({
-    userId : {
+    postedBy : {
         type : mongoose.Schema.Types.ObjectId,
-        ref: 'users',
+        ref: 'companies',
         required : true
     },
 
@@ -17,8 +17,9 @@ const createJobSchema = mongoose.Schema({
         required : true
     },
 
-    package : {
+    salaryPackage : {
         type : String,
+        required : true,
     },
 
     requirements : {
@@ -26,10 +27,35 @@ const createJobSchema = mongoose.Schema({
         required : true
     },
 
+    industry : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref  :  'job industry'
+    },
+
     createdAt : {
         type : Date,
         default : Date.now()
-    }
+    },
+
+    applicants : [
+        {
+            userId : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : 'users',
+            },
+    
+            appliedAt : {
+                type : Date,
+                default : Date.now()
+            },
+
+            status : {
+                type : String,
+                enum : ['Pending' , 'Accepted' , 'Rejected'],
+                default : 'Pending'
+            },
+        }
+    ]
 });
 
 

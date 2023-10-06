@@ -22,6 +22,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
   const [posts, setPosts] = useState<any>([]);
+  const [jobs , setJobs] = useState<any>([]);
   const [updateUI , setUpdateUI] = useState<boolean>(false);
 
   const [educationId , setEducationId] = useState<string>('');
@@ -82,12 +83,14 @@ const Profile = () => {
   },[id , user , updateUI]);
 
   useEffect(() => {
+    if(id){
       axiosInstance.get(`/userposts/${id}`).then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }
       }).catch((error) => console.log(error , 'user own posts fetch error')
       )
+    }
   },[id]);
 
 
@@ -98,6 +101,13 @@ const Profile = () => {
           setPosts(res.data.posts);
         }
       }).catch((err) => console.log(err, 'axios posts err')
+      )
+
+      axiosInstance.get(`/postedjobs/${user?.userId}`).then((res) => {
+        if(res.data.message){
+          setJobs(res.data.jobs);
+        }
+      }).catch((error) => console.log('jobs fetch error', error)
       )
     }
   }, [updateUI]);
@@ -191,6 +201,7 @@ const Profile = () => {
                           </span>
                         </div>
 
+                        {user.userId === userData._id && (
                         <div className='flex me-1 flex-col gap-4'>
                           <button onClick={() => navigateToInfo(item?._id)}
                           className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
@@ -201,7 +212,7 @@ const Profile = () => {
                             <MdDelete />
                           </button>
                         </div>
-                        
+                        )}
                       </div>
                       </>
                       )
@@ -217,11 +228,36 @@ const Profile = () => {
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                   <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                     <span>Jobs By {user?.username}</span>
+                    <button className='bg-blue px-3 rounded-lg py-1 text-white text-xs'>View in Detail</button>
                   </div>
-                  <div className="w-full flex flex-col gap-4 pt-4">
-                    <div className="flex items-center justify-between">
-              
-                    </div>
+                  <div className="w-full flex flex-col gap-4 pt-4 rounded-md p-4 shadow-lg">
+                    {jobs?.length > 0 ? (
+                      jobs?.map((job : any) => {
+                        return(
+                        <div className="flex items-center justify-between" >
+                          <div className='flex-1'>
+                            <p className='font-bold text-lg'>{job?.position}</p>
+                            <span className='text-md'>{job?.location}</span>
+                            <span className='text-ascent-2 text-sm'></span>
+                            <span className='text-ascent-1 text-xs'>
+
+                            </span>
+                          </div>
+
+                          <div className='flex me-1 flex-col gap-4'>
+                            <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+
+                            </button>
+                            <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              
+                            </button>
+                          </div>
+                        </div>
+                        )
+                        })
+                    ) : ( 
+                      <p className='text-gray-600 text-center'>Not Added </p>
+                    )} 
                   </div>
                 </div>
               </div>  

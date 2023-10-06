@@ -1,10 +1,14 @@
 import express from 'express';
 const router = express.Router();
 
-import { register , login , googleSignup, googleLogin } from "../../controllers/user/authController.js";
+import { register , login , googleSignup, googleLogin, otpRegister } from "../../controllers/user/authController.js";
 
  
 router.post('/register' , register);
+
+router.post('/otpregister' , otpRegister);
+
+router.post('/resend'  , register);
 
 router.post('/login' , login);
 
