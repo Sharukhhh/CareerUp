@@ -82,6 +82,7 @@ const UserFeed = () => {
   };
   return (
     <>
+      <Suspense fallback={<Spinner className='h-20 w-20' />}>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 
@@ -172,6 +173,7 @@ const UserFeed = () => {
 
             </div>
         </div>
+      </Suspense>
 
         <Suspense fallback={<Spinner />}>
             <EditProfile setUpdateUI={setUpdateUI} userData={userData} visible={showModal} closeEditModal={closeEditModal} />

@@ -3,12 +3,39 @@ import UserNav from '../../Components/user/Nav/UserNav';
 import JobCard from '../../Components/user/cards/JobCard';
 import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import RootState from '../../Redux/rootstate/rootState';
+import ProfileCard from '../../Components/user/Profile/ProfileCard';
 
 const JobsPage = () => {
 
+  const user = useSelector((state : RootState) => state.user.userCred);
+
+
+  const [userData, setUserData] = useState<any>([]);
   const [industries , setIndustries] = useState<any>([]);
   const [selectedIndustry , setSelectedIndustry] = useState<string>('');
   const [jobs , setJobs] = useState<any>([]);
+
+  const [showModal , setShowModal] = useState<boolean>(false);
+
+  const openEditModal = () => {
+    setShowModal(true);
+  }
+
+  const closeEditModal = () => {
+    setShowModal(false);
+  }
+
+  useEffect(() => {
+    axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+      
+      if(res.data){
+        setUserData(res.data.user);
+      }
+    }).catch((error) => console.log(error , 'axios')
+    )
+  })
 
   useEffect(() => {
     axiosInstance.get('/getIndustries')
@@ -43,7 +70,7 @@ const JobsPage = () => {
         <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
           <div className='w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
-            
+            <ProfileCard userData={userData} openEditModal={openEditModal} />
           </div>
 
           {/* Remaining */}

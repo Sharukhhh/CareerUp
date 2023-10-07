@@ -14,7 +14,7 @@ router.get('/search' , verify , search);
 //profile-management
 router.get('/profile/:id' , verify,  getProfile);
 
-router.post('/addBasic/:id' , verify, addBasic);
+router.put('/addBasic' , verify, upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), addBasic);
 
 router.get('/listusers' , verify,  listAllUsers);
 

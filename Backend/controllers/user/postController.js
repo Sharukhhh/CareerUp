@@ -11,18 +11,6 @@ export const createPost = async (req, res, next) => {
     const images = req.files;
     // const id = req.params.id;
     const user = req.user;
-    
-    // let user = await userModel.findById(id);
-    
-    // if (!user) {
-    //   const company = await companyModel.findById(id);
-      
-    //   if (!company) {
-    //     return res.status(404).json({ error: 'User not found' });
-    //   }
-      
-    //   user = company;
-    // }
 
     let cloudimage = [];
 
@@ -38,7 +26,7 @@ export const createPost = async (req, res, next) => {
     if(user.role === 'Candidate'){
       const newPostData = {
         user: user._id,
-        description: req.body.content,
+        description: req.body.content,  
         media: cloudimage,
       };
   

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
 import toast, { Toaster } from 'react-hot-toast';
+import ReactPaginate from 'react-paginate';
 
 
 const UserTable = () => {
@@ -59,6 +60,15 @@ const UserTable = () => {
             }
         }).catch((err) => console.log(err , 'verify user unblock axios err')
         )
+    }
+
+    const [currentPage , setCurrentPage] = useState<number>(0);
+    const itemsPerPage = 5;
+    const pageCount = Math.ceil(users.length / itemsPerPage);
+    const displayedUsers = users.slice(currentPage * itemsPerPage , (currentPage + 1) * itemsPerPage);
+
+    const handlePageChange = (selectedPage : any) => {
+        setCurrentPage(selectedPage.selected);
     }
 
   return (
@@ -133,6 +143,51 @@ const UserTable = () => {
                     })}
                 </tbody>
             </table>
+        </div>
+
+
+        {/* Pagination */}
+        <div className='flex justify-center my-10'>
+            <nav className='block'>
+                <ul className="flex pl-0 rounded list-none flex-wrap">
+                    <li>
+                        <a
+                        href="#"
+                        className="relative block py-2 px-3 leading-tight bg-white border
+                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900 rounded-l-lg"
+                        >
+                            Previous
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#"
+                        className="relative block py-2 px-3 leading-tight bg-white border 
+                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900"
+                        >
+                            1
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#"
+                        className="relative block py-2 px-3 leading-tight bg-white border 
+                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900"
+                        >
+                            2
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#"
+                        className="relative block py-2 px-3 leading-tight bg-white border 
+                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900 rounded-r-lg"
+                        >
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </>
   )

@@ -48,41 +48,63 @@ export const getEditData = async (req, res, next) => {
         }
 
     } catch (error) {
-        next(error);
+        next(error);  
     }
 }
 
 // *********************************************************************************
 // *********************************************************************************
 
-export const addBasic = async (req, res, next) => {
+export const addBasic = async (req, res, next) => {  
     try {
-        const id = req.params.id;
+        const user = req.user;
         const { location , headline } = req.body;
 
-        let user = await userModel.findById(id);
+        const data = req.files;
+        let profileImagerUrl = null;
 
-        if(!user){
-            let company = await companyModel.findById(id);
-
-            if(!company){
-                return res.status(400).json({error : 'No user found'});
-            }
-
-            company = await companyModel.findByIdAndUpdate(id , {
-                location : location , 
-                headline : headline , 
-            } , {new : true});
-
-            return res.json({message : 'Updated Successfully' , company : user});
+        if(data && data.profileImage){
+            const result = await cloudinary.uploader.upload(data.profileImage[0].path);
+            profileImagerUrl = result.secure_url;
         }
 
-        user = await userModel.findByIdAndUpdate(id , {
-            location : location , 
-            headline : headline , 
-        } , {new : true});
+        let resumeUrl = null;
+        if(data && data.resume){
+            const result = await cloudinary.uploader.upload(data.resume[0].path);
+            resumeUrl = result.secure_url;
+        }
 
-        return res.json({message : 'Updated Successfully' , user});
+        if(user.role === 'Candidate'){
+            const updatedUser = await userModel.findByIdAndUpdate(user._id , {
+                location : location, 
+                headline : headline,
+                profileImage : profileImagerUrl,
+                resume: resumeUrl 
+            } , 
+            {new : true});
+            console.log(updatedUser);
+
+            if(updatedUser){
+                return  res.status(200).json({message : 'Updated Successfully'});
+            } else {
+                return res.status(404).json({error : 'user not found'});
+            }
+
+        } else {
+            const updatedCompany = await companyModel.findByIdAndUpdate(user._id ,{
+                location : location , 
+                headline : headline,
+                profileImage : profileImagerUrl
+            } , {new : true});
+            console.log(updatedCompany);
+
+            if(updatedCompany){
+                return res.status(200).json({message : 'Updated Successfully'});
+                
+            } else {
+                return res.status(404).json({error : 'user not found'});
+            }
+        }
 
     } catch (error) {
         next(error);
