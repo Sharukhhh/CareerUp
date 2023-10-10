@@ -2,7 +2,7 @@ import express from 'express';
 const router = express.Router();
 import {
     adminLogin, getCompanies, getUsers, blockUser, unBlockUser ,
-    verifyCompany ,blockCompany , unBlockCompany, addCategory, deleteIndustry, getIndustries 
+    verifyCompany ,blockCompany , unBlockCompany, addCategory, deleteIndustry, getIndustries, getAllPosts 
 } 
 from '../../controllers/admin/adminController.js';
 import { verifyAdmin } from '../../middlewares/adminAuth.js';
@@ -33,6 +33,10 @@ router.post('/category' , verifyAdmin , addCategory);
 router.get('/getIndustries' , verifyAdmin , getIndustries);
 
 router.delete('/deleteCat/:id' , verifyAdmin , deleteIndustry);
+
+
+//user-posts admin side
+router.get('/posts' , verifyAdmin, getAllPosts);
 
 
 export default router;    

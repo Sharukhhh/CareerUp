@@ -5,11 +5,10 @@ import companyModel from '../../models/companyModel.js';
 import validator from 'validator';
 import twilio from 'twilio';
 
-const twilioSid = 'AC4ecd9872cdd998d1c87ef6dc05ccf976';
-const twilioToken = '5c3e75f58d501aa4b414e2c79a302ece';
-const serviceSid = 'VA4852ec07caa61a8a74ed6147563dc707';
+const twilioSid = "AC4ecd9872cdd998d1c87ef6dc05ccf976";
+const twilioToken = "5c3e75f58d501aa4b414e2c79a302ece";
+const serviceSid = "VA4852ec07caa61a8a74ed6147563dc707";
 const client = twilio(twilioSid , twilioToken);
-
 
 
 const hashPassword = async (password) => {
@@ -29,30 +28,39 @@ export const register = async (req, res , next) => {
         const existingUser = await userModel.findOne({email});
         const existingCompany = await companyModel.findOne({email});
 
-        let existingMobile = await userModel.findOne({phone})
+        let existingMobile = await userModel.findOne({phone});
         if(!existingMobile){
             existingMobile = await companyModel.findOne({phone});
 
             if(existingMobile){
+                console.log('ba'); 
                 return res.status(401).json({error : 'Account already exists'});
             }
         }
 
         if(existingUser || existingCompany || existingMobile){
+            console.log('ho');
             return res.status(401).json({error : 'Account already exists'});
         }
 
         const phoneNumberPattern = /^[0-9]{10}$/;
         if (!phoneNumberPattern.test(phone)) {
+            console.log('ha');
             return res.status(401).json({ error: 'Invalid phone number' });
         }
 
-        client.verify.v2
+        console.log('ngee')
+        client.verify.v2       
         .services(serviceSid)
-        .verifications.create({ to: "+91" + phone , channel: "sms" })
+        .verifications.create({ to: `+91${phone}`  , channel: "sms" })
         .then((verification) =>{
-            res.json({message : 'OTP send , Verify!'});
+            console.log('da');
+            res.status(201).json({message : 'OTP send , Verify!'});
         })
+        .catch((error) => {
+            console.error("Error sending verification request:", error);
+            res.status(500).json({ error: 'Failed to send OTP verification' });
+        });
 
     } catch (error) {
         next(error);

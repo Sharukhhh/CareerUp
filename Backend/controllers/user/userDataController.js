@@ -259,16 +259,18 @@ export const deleteProfession = async (req, res, next) => {
 
 export const getOwnPostedJobs = async (req, res, next) => {
     try {
-        const userId = req.params.id;
 
-        const jobs = await jobModel.find({postedBy : userId});
+        const user = req.user;
 
-        if(!jobs){
-            return res.status(404).json({error : 'No jobs found for this user'});
-        }
+        if(user.role === 'Company'){
+            const jobs = await jobModel.find({postedBy : user._id});
 
-        res.status(200).json({message: 'Jobs fetched!', jobs});
+            if(!jobs){
+                return res.status(404).json({error : 'No jobs Posted'});
+            }
 
+            res.status(200).json({message: 'Jobs fetched!', jobs});
+        } 
     } catch (error) {
         next(error);
     }
@@ -278,7 +280,7 @@ export const displayJobs = async (req, res, next) => {
     try {
         const user = req.user;
 
-        const jobs = await jobModel.find().populate('industry').exec();
+        const jobs = await jobModel.find().populate('industry').populate('postedBy').exec();
         if(!jobs){
             return res.status(404).json({error : 'Data Not found'})
         }

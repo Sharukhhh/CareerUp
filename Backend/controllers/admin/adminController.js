@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
 import categoryModel from "../../models/category.js";
+import postModel from "../../models/posts.js";
 
 // ADMIN - auth
 export const adminLogin = async (req, res) => {
@@ -219,6 +220,24 @@ export const deleteIndustry = async (req, res, next) => {
         }
 
         res.status(200).json({message : 'Industry Removed Successfully'});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+// **********************************************************************************
+// *********************************************************************************
+
+export const getAllPosts = async (req, res, next) => {
+    try {
+        const posts = await postModel.find().sort({createdAt : -1});
+
+        if(!posts){
+            return res.status(404).json({error : 'No Posts available'});
+        }
+
+        return res.status(200).json({message : 'Posts fetched successfully' , posts});
 
     } catch (error) {
         next(error);

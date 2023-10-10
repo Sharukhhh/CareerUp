@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
-import {connectAndDisconnectUser,  getProfile, listAllUsers, search } from '../../controllers/user/userController.js';
+import {connectAndDisconnectUser,  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies } from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
 getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment, reportPost } 
@@ -17,6 +17,8 @@ router.get('/profile/:id' , verify,  getProfile);
 router.put('/addBasic' , verify, upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), addBasic);
 
 router.get('/listusers' , verify,  listAllUsers);
+
+router.get('/companies' , verify , listCompanies);
 
 
 //user posts-management
@@ -43,6 +45,11 @@ router.patch('/report/:postId' , verify , reportPost )
 
 //user-connections
 router.get('/connect/:userId' , verify , connectAndDisconnectUser);
+
+//user-job
+router.get('/apply/:jobId' , verify , jobApplication);
+
+router.get('/applicants/:jobId' , verify , getApplicants)
 
 
 export default router;

@@ -92,7 +92,8 @@ export const deletePost = async (req, res , next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const posts = await postModel.find().populate('user')
+    const posts = await postModel.find()
+    .populate('user')
     .populate('company')
     .populate('comments').exec();
 
@@ -118,6 +119,8 @@ export const getIndividualPosts = async (req, res, next) => {
     if(!posts){
       return res.status(404).json({error : 'Users post not found'});
     }
+
+    console.log(posts);
 
     return res.status(200).json({message : 'Posts avaialable' , posts});
   } catch (error) {

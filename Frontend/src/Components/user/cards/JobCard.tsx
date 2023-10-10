@@ -1,12 +1,19 @@
-import React , {useState} from 'react';
+import React , {useState , useEffect} from 'react';
 import {BiDownArrowCircle} from 'react-icons/bi';
+import { axiosInstance } from '../../../api/axiosInstance';
+import toast, { Toaster } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import RootState from '../../../Redux/rootstate/rootState';
 
 interface JobCardProps {
   jobs : any;
-  selectedIndustry : string
+  selectedIndustry : string;
+  setUpdateUI :(data: any) => void;
 }
 
-const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry}) => {
+const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry , setUpdateUI}) => {
+
+  const user = useSelector((state : RootState) => state.user.userCred);
 
     const filteredJobs = jobs.filter((job : any) => {
       return selectedIndustry === '' || job?.industry?.industry === selectedIndustry
@@ -21,12 +28,31 @@ const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry}) => {
       updateAccordionState[index] = !updateAccordionState[index];
       setIsAccordionOpen(updateAccordionState);
     }
+
+    const applyJob = (jobId : string) => {
+      axiosInstance.get(`/apply/${jobId}`)
+        .then((res) => {
+          if(res.data.message){
+            toast.success(res.data.message , {duration : 3000});
+          // Force a re-render by updating the isAccordionOpen state
+          setUpdateUI((prev : any) => !prev);
+          }
+
+          if(res.data.error){
+            toast.error(res.data.error , {duration: 2000});
+          }
+        }).catch((error) => console.log(error , 'axios apply error')
+      )
+    }
+
   return (
     <>
+    <Toaster position='top-center'/>
         {filteredJobs?.length > 0 ? (
           filteredJobs?.map((job : any , index : number) => {
-            return(
-          <div className='border rounded-lg my-2 mx-4 overflow-hidden shadow-md' key={job._id}>
+            const hasApplied = job.applicants.some((applicant : any) => applicant.userId.toString() === user?.userId.toString());
+          return(
+          <div className='border rounded-lg my-2 mx-4 shadow-md' key={job._id}>
             <div className="border-b-2 px-4 py-5 cursor-pointer bg-gradient-to-tl from-[#9facfc] to-[#e9eaec]" title='Click Here'
             onClick={() => toggleAccordion(index)}>
               <div className='flex justify-between items-center'>
@@ -40,18 +66,36 @@ const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry}) => {
 
              {/* Accordion Content */}
             <div className={isAccordionOpen[index] ? 'p-4 bg-blue-gray-50 border-blue-gray-500' : 'p-4 hidden bg-blue-gray-50 border-blue-gray-500'}>
-                <p className="text-sm">{job?.location}</p>
-                <p className="text-sm">{job?.salaryPackage}</p>
-
-                <div className="flex mt-2">
-                  <button className="px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]">Apply</button>
+              <div className='flex justify-between items-center'>
+                <div>
+                  <p className='text-xl font-semibold'>{job?.postedBy?.name}</p>
+                  <div className='flex flex-col'>
+                    <p className="text-md font-semibold">Location : {job?.location}</p>
+                    <p className="text-md font-semibold">Salary: {job?.salaryPackage}</p>
+                    <p className='text-md mt-3 text-ascent-1'>
+                      {job?.requirements}
+                    </p>
+                  </div>
                 </div>
+                {hasApplied ? (
+                  <button type='button' className='px-5 py-2 bg-gray-400 text-black opacity-50 font-bold cursor-not-allowed'>
+                    Applied
+                  </button>
+                ) : (
+                  <button type='button' onClick={() => applyJob(job?._id)} 
+                  className="px-5 py-2 bg-blue cursor-pointer font-bold text-white rounded hover:bg-[#2a398fd2] mt-2 lg:mt-0">
+                    Apply
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-            )
+          )
           })
           ) : (
-            <p>No Jobs Available</p>
+            <p className='text-center mx-8 bg-blue-gray-100 rounded-sm'>
+              No Jobs Available
+            </p>
         )}  
         
     </>

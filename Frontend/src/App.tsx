@@ -19,6 +19,9 @@ import { useSelector } from 'react-redux';
 import RootState from './Redux/rootstate/rootState';
 import JobsPage from './Pages/user/JobsPage';
 import CategoryAdd from './Pages/admin/CategoryAdd';
+import Applicants from './Pages/user/Applicants';
+import Dashboard from './Pages/admin/Dashboard';
+import PostTable from './Pages/admin/PostTable';
 
 
 function App() {
@@ -44,7 +47,10 @@ function App() {
           {isCandidate ? (
             <Route path='/jobs' element={<JobsPage />} />
           ) : (
+            <>
             <Route path='/jobs' element={<RecruiterJobsPage/>}/>
+            <Route path='/applicants/:jobId' element={<Applicants/>}/>
+            </>
           )}
         </Route>
 
@@ -52,6 +58,8 @@ function App() {
         <Route path='/admin/users' element={<UsersList/>} />
         <Route path='/admin/companies' element={<CompanyList/>} />
         <Route path='/admin/categories' element={<CategoryAdd />}/>
+        <Route path='/admin/dashboard' element={<Dashboard />}/>
+        <Route path='/admin/posts' element={<PostTable/>}/>
       </Routes>
     </>
   )

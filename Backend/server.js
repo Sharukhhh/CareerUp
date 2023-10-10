@@ -7,7 +7,7 @@ import http from 'http';
 
 
 const app = express(); 
-const server = http.createServer(app);
+const server = http.createServer(app);  
 const io = new SocketIoServer(server);
 
 const corsOptions = {

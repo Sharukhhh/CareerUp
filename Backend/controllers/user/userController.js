@@ -4,12 +4,15 @@ import companyModel from '../../models/companyModel.js';
 import postModel from '../../models/posts.js';
 import categoryModel from '../../models/category.js';
 import cloudinary from '../../utils/cloudinary.js';
+import jobModel from '../../models/jobs.js';
 
 
 
 export const getProfile = async (req, res , next) => {
     try {
         const id = req.params.id;
+
+        const loggedUser = req.user;
         
         const user = await userModel.findById(id).populate({
             path: 'connections.userId',
@@ -48,6 +51,24 @@ export const listAllUsers = async (req, res , next) => {
 
         res.json({message : 'Success' , users});
         
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const listCompanies = async (req , res, next) => {
+    try {
+        const user = req.user;
+
+        const companies = await companyModel.find();
+
+        if(!companies || companies.length === 0){
+            return res.status(400).json({error : 'No users found'})
+        }
+
+        res.json({message : 'success' , companies});
+
     } catch (error) {
         next(error);
     }
@@ -147,6 +168,8 @@ export const search = async (req, res, next) => {
     }
 }
 
+// *********************************************************************************
+// *********************************************************************************
 
 export const getIndustries = async (req, res, next) => {
     try {
@@ -163,6 +186,57 @@ export const getIndustries = async (req, res, next) => {
         return res.status(200).json({message : 'Success' , industries});
         
     } catch (error) {
+        next(error);
+    }
+}
+
+export const jobApplication = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const jobId = req.params.jobId;
+
+        if(user.role === 'Candidate'){
+            const job = await jobModel.findById(jobId);
+            
+
+            if(!job){
+                return res.status(404).json({error : 'Job not found'});
+            }
+
+            const applicantExists = await job.applicants.some((applicants) => applicants.userId.equals(user._id));
+
+            if(!applicantExists){
+
+                console.log('ha ethi');
+
+                await job.applicants.push({ userId: user._id, resumeUrl: user.resume ? user.resume : null });
+                await job.save();
+                
+                return res.status(200).json({message : 'Applied Successfully'});
+
+            } else {
+                
+                return res.status(403).json({error : 'Already Applied'});
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getApplicants = async (req, res, next) => {
+    try {
+        const jobId = req.params.jobId;
+
+        const job = await jobModel.findById(jobId).populate('applicants.userId');
+
+        if(!job){
+            return res.status(404).json({error : 'Job not Found'});
+        }
+
+        return res.json({message : 'Success' , job});
+
+    } catch(error) {
         next(error);
     }
 }

@@ -58,6 +58,8 @@ const Profile = () => {
 
   const user = useSelector((state : RootState) => state.user.userCred);
 
+  const isCompany = user?.role === 'Company'; 
+
   const{ id } = useParams();
   // console.log(id);
   
@@ -80,7 +82,7 @@ const Profile = () => {
       }).catch((error) => console.log(error , 'axios')
       )
     }
-  },[id , user , updateUI]);
+  },[id ,  updateUI]);
 
   useEffect(() => {
     if(id){
@@ -102,18 +104,24 @@ const Profile = () => {
         }
       }).catch((err) => console.log(err, 'axios posts err')
       )
-
-      axiosInstance.get(`/postedjobs/${user?.userId}`).then((res) => {
-        if(res.data.message){
-          setJobs(res.data.jobs);
-        }
-      }).catch((error) => console.log('jobs fetch error', error)
-      )
     }
-  }, [updateUI]);
+  }, [updateUI ]);
+
+  useEffect(() => {
+    axiosInstance.get(`/postedjobs`).then((res) => {
+      if(res.data.message){
+        setJobs(res.data.jobs);
+      }
+    }).catch((error) => console.log('jobs fetch error', error)
+    )
+  },[isCompany]);
 
   const navigateToInfo =(id : string) => {
     navigate(`/details/${id}`);
+  }
+
+  const navigateJobs = () => {
+    navigate('/jobs');
   }
 
 
@@ -228,7 +236,7 @@ const Profile = () => {
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                   <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                     <span>Jobs By {user?.username}</span>
-                    <button className='bg-blue px-3 rounded-lg py-1 text-white text-xs'>View in Detail</button>
+                    <button onClick={navigateJobs} className='bg-blue px-3 rounded-lg py-1 text-white text-xs'>View in Detail</button>
                   </div>
                   <div className="w-full flex flex-col gap-4 pt-4 rounded-md p-4 shadow-lg">
                     {jobs?.length > 0 ? (

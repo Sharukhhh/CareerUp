@@ -158,8 +158,8 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
             <div>
               <p className='text-ascent-2'>
-              {isShowAll ? post?.description : post?.description.slice(0, 300)}
-                  {post?.description.length > 301 && (
+              {isShowAll ? post?.description : post?.description?.slice(0, 300)}
+                  {post?.description?.length > 301 && (
                     <span
                       onClick={() => toggleShowAll(post._id)}
                       className='text-blue ml-2 font-medium cursor-pointer'>

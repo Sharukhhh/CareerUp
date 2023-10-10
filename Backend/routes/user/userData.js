@@ -24,7 +24,7 @@ router.delete('/delete_pro/:professionId' ,verify, deleteProfession);
 
 
 //routes-job posts of company
-router.get('/postedjobs/:id' , verify , getOwnPostedJobs);
+router.get('/postedjobs' , verify , getOwnPostedJobs);       
 
 router.post('/postjob' ,verify, createJob);
 

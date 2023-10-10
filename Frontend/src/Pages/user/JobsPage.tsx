@@ -18,6 +18,7 @@ const JobsPage = () => {
   const [jobs , setJobs] = useState<any>([]);
 
   const [showModal , setShowModal] = useState<boolean>(false);
+  const [updateUI , setUpdateUI] = useState<boolean>(false);
 
   const openEditModal = () => {
     setShowModal(true);
@@ -61,20 +62,20 @@ const JobsPage = () => {
       }
     }).catch((error) => console.log(error , 'jobs display err')
     )
-  },[]);
+  },[updateUI]);
   return (
     <>
       <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
         <UserNav/>
 
-        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
+        <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
-          <div className='w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
+          <div className='w-full md:w-1/4 md:flex flex-col gap-6 overflow-y-auto'>
             <ProfileCard userData={userData} openEditModal={openEditModal} />
           </div>
 
           {/* Remaining */}
-          <div className='flex-1 w-full lg:w-2/3 md:w-1/2 h-full rounded-lg bg-primary px-4 flex flex-col gap-6 overflow-y-auto'>
+          <div className='flex-1 w-full md:w-3/4 h-full rounded-lg bg-primary px-4 flex flex-col gap-6 overflow-y-auto'>
             <div className='flex items-center justify-between'>
               <h2 className='text-2xl font-bold mt-4'>Jobs For You</h2>
               <select name="dropdown" id="dropdown"
@@ -89,7 +90,7 @@ const JobsPage = () => {
                 })}
               </select>
             </div>
-            <JobCard jobs={jobs} selectedIndustry={selectedIndustry}/>
+            <JobCard jobs={jobs} setUpdateUI={setUpdateUI} selectedIndustry={selectedIndustry}/>
           </div>
         </div>
       </div>

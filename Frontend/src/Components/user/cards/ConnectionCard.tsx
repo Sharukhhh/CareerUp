@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {BsFillChatLeftTextFill} from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import RootState from '../../../Redux/rootstate/rootState';
 
 interface ConnectionCardProps{
@@ -12,6 +12,12 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({userData}) => {
 
     const user = useSelector((state : RootState) => state.user.userCred );
     const isCandidate = user?.role === 'Candidate';
+
+    const navigate = useNavigate();
+
+    const navigateChat = () => {
+        navigate('/message');
+    }
 
   return (
     <>
@@ -47,7 +53,7 @@ const ConnectionCard: React.FC<ConnectionCardProps> = ({userData}) => {
                             <button 
                             className='text-sm p-1 rounded text-blue'
                             >
-                                <BsFillChatLeftTextFill size={20} />
+                                <BsFillChatLeftTextFill onClick={navigateChat} size={20} />
                             </button>
                         </div>
                         )}

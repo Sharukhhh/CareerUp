@@ -54,6 +54,10 @@ const createJobSchema = mongoose.Schema({
                 enum : ['Pending' , 'Accepted' , 'Rejected'],
                 default : 'Pending'
             },
+
+            resumeUrl : {
+                type : String
+            }
         }
     ]
 });

@@ -16,11 +16,14 @@ const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/Edi
 
 const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
-    const [posts , setPosts] = useState<any>([])
-    const [listUsers , setListUsers] = useState<any>([]);
+    const [posts , setPosts] = useState<any[]>([])
+    const [listUsers , setListUsers] = useState<any[]>([]);
+    const [companies , setCompanies] = useState<any[]>([]);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+
 
   const openEditModal = () => {
     setShowModal(true);
@@ -34,6 +37,7 @@ const UserFeed = () => {
     const isCandidate = user?.role === 'Candidate';
 
     useEffect(() => {
+      setLoading(true);
       axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
       
         if(res.data){
@@ -58,8 +62,21 @@ const UserFeed = () => {
           toast.error(res.data.error);
         }
       }).catch((err) => console.log(err, 'axios listing err'))
+
+      axiosInstance.get('/companies').then((res) => {
+        if(res.data.message){
+          setCompanies(res.data.companies);
+        }
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((err) => console.log(err, 'axios listing err'))
       
     }, [ updateUI]);
+
+    useEffect(() => {
+      setLoading(false); // Data loading is complete
+    }, [userData, posts, listUsers, companies]);
 
     const connectAndDisconnect = (userId : string) => {
       axiosInstance.get(`/connect/${userId}`).then((res) => {
@@ -73,16 +90,29 @@ const UserFeed = () => {
           toast.error(res.data.error);
         }
       }).catch((error) => console.log('error while connection', error)
-       )
+      )
     }
 
   // Function to add a new post to the 'posts' state
   const addNewPost = (newPost : any) => {
-    setPosts([...posts, newPost]);
+    console.log(newPost , 'hahaha');
+    
+    const postWithUserData = {
+      ...newPost,
+      name: userData?.name,
+      profileImage: userData?.profileImage,
+      headline: userData?.headline,
+    };
+    setPosts((prevPosts : any[]) => [...prevPosts, postWithUserData]);
   };
   return (
     <>
-      <Suspense fallback={<Spinner className='h-20 w-20' />}>
+    {loading ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
+              <Spinner className='h-20 w-20' />
+            </div>
+    ) : (
+      <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 
@@ -104,13 +134,35 @@ const UserFeed = () => {
                 <div className='w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto'>
                     <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                         <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
-                            <span></span>
+                            <span>Follow Comapnies</span>
                         </div>
                     
                         <div className="w-full flex flex-col gap-4 pt-4">
-                            <div className="flex items-center justify-between">
-                    
+                          {companies.map((company : any)=> {
+                            return(
+                            <div className="flex items-center justify-between" key={company?._id}>
+                              <Link to=''  className='w-full flex gap-4 items-center cursor-pointer'>
+                                <img src={company?.profileImage} alt="" 
+                                className='w-10 h-10 object-cover rounded-full'
+                                />
+                                <div className='flex-1'>
+                                  <p className='text-base font-medium text-ascent-1'>
+                                    {company?.name}
+                                  </p>
+                                  <span className='text-sm text-ascent-2'>
+                                    {company?.headline}
+                                  </span>
+                                </div>
+                              </Link>
+
+                              <div className='flex gap-1'>
+                                <button className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
+                                  <BsFillPersonCheckFill size={18} /> 
+                                </button>
+                              </div>
                             </div>
+                            )
+                          })}
                         </div>
                     </div>
 
@@ -169,11 +221,10 @@ const UserFeed = () => {
                         )}
                     </div>
                 </div>
-
-
             </div>
         </div>
-      </Suspense>
+      </>
+      )}
 
         <Suspense fallback={<Spinner />}>
             <EditProfile setUpdateUI={setUpdateUI} userData={userData} visible={showModal} closeEditModal={closeEditModal} />
