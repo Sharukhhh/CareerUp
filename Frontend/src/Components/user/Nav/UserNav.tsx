@@ -115,7 +115,9 @@ const UserNav:React.FC<UserNavProps> = () => {
               <BsBriefcaseFill className='hover:scale-125'/>
             </NavLink>
 
-            <IoMdNotificationsOutline className='hover:scale-125'/>
+            <NavLink to='/notifications'>
+              <IoMdNotificationsOutline className='hover:scale-125'/>
+            </NavLink>
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
           {/* <CgProfile className='hover:scale-125' /> */}

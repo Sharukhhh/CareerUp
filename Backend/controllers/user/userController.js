@@ -5,6 +5,7 @@ import postModel from '../../models/posts.js';
 import categoryModel from '../../models/category.js';
 import cloudinary from '../../utils/cloudinary.js';
 import jobModel from '../../models/jobs.js';
+import notifyModel from '../../models/notificationModel.js';
 
 
 
@@ -78,6 +79,98 @@ export const listCompanies = async (req , res, next) => {
 // *********************************************************************************
 // *********************************************************************************
 
+export const sendConnectionRequest = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const user = req.user;
+
+        if(!user){
+            return res.status(404).json({error : 'No user found'});
+        }
+
+        if(user._id.equals(id)){
+            return res.status(400).json({ error: 'You cannot connect with yourself' });
+        }
+
+        let targetUser = await userModel.findById(id);
+        if(!targetUser){
+            const targetCompany = await companyModel.findById(id);
+
+            if(!targetCompany){
+                return res.status(404).json({error : 'Company not found'});
+            }
+
+            targetUser = targetCompany;
+        }
+
+        if(!targetUser._id || !user._id){
+            return res.status(400).json({error : 'Invalid user'});
+        }
+
+        const requestExists = user.pendingRequests.some((reqst) => reqst.userId.equals(targetUser._id));
+        if(requestExists){
+            return res.status(400).json({ error: 'Connection request already sent' });
+        }
+
+        user.pendingRequests.push({userId : targetUser._id});
+
+        targetUser.pendingRequests.push({userId : user._id});
+
+        await user.save();
+
+        const notification = new notifyModel({
+            message : `You have a new connection request from ${user.name}`,
+            type : 'connection',
+            senderUserId : user._id
+        });
+
+        await notification.save();
+
+        return res.json({ message: `Connection request sent to ${targetUser.name}` });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const acceptConnectionRequest = async (req, res, next) => {
+    try {
+        const requestId = req.params.id;
+        const user = req.user;
+
+        const connectionRequest = await user.pendingRequests.find((reqst) => reqst.userId.equals(requestId));
+        if(!connectionRequest){
+            return res.status(404).json({ error: 'Connection request not found' });
+        }
+
+        // Add the sender of the request to the user's connections
+        user.connections.push({userId : connectionRequest.userId});
+
+        // Add the user to the sender's connections
+        let sender = await userModel.findById(connectionRequest.userId);
+        if (sender) {
+            sender.connections.push({ userId: user._id });
+            await sender.save();
+        }
+
+        //removing connection request from the user's pendingRequests
+        user.pendingRequests = user.pendingRequests.filter((reqst) => !reqst.userId.equals(requestId));
+
+        //removing the request from the sender's pendingRequests
+        sender = await userModel.findById(connectionRequest.userId);
+        if(sender){
+            sender.pendingRequests = sender.pendingRequests.filter((reqst) => !reqst.userId.equals(user._id));
+            await sender.save();
+        }
+
+        await user.save();
+        return res.json({ message: 'Connection request accepted' });
+
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const connectAndDisconnectUser = async (req, res, next) => {
     try {

@@ -10,7 +10,7 @@ router.get(`/editdata/:id` , verify , getEditData);
 //routes-education of user
 router.post('/add_edu/:id', verify, addEducation);
 
-router.put('/edit_edu/:id' ,verify, editEducation);
+router.put('/edit_edu/:id' ,verify, editEducation); 
 
 router.delete('/delete_edu/:educationId' ,verify, deleteEducation); 
 

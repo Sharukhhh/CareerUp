@@ -22,6 +22,7 @@ import CategoryAdd from './Pages/admin/CategoryAdd';
 import Applicants from './Pages/user/Applicants';
 import Dashboard from './Pages/admin/Dashboard';
 import PostTable from './Pages/admin/PostTable';
+import Notifications from './Pages/user/Notifications';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
           <Route path='/details/:id' element={<AddInfoPage/>}/>
           <Route path='/saved' element={<SavedPosts/>}/>
           <Route path='/message' element={<Chat />}/>
+          <Route path='/notifications' element={<Notifications/>}/>
           {isCandidate ? (
             <Route path='/jobs' element={<JobsPage />} />
           ) : (

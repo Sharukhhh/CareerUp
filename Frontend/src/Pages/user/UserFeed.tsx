@@ -18,7 +18,7 @@ const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
     const [posts , setPosts] = useState<any[]>([])
     const [listUsers , setListUsers] = useState<any[]>([]);
-    const [companies , setCompanies] = useState<any[]>([]);
+    // const [companies , setCompanies] = useState<any[]>([]);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
@@ -63,20 +63,20 @@ const UserFeed = () => {
         }
       }).catch((err) => console.log(err, 'axios listing err'))
 
-      axiosInstance.get('/companies').then((res) => {
-        if(res.data.message){
-          setCompanies(res.data.companies);
-        }
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((err) => console.log(err, 'axios listing err'))
+      // axiosInstance.get('/companies').then((res) => {
+      //   if(res.data.message){
+      //     setCompanies(res.data.companies);
+      //   }
+      //   if(res.data.error){
+      //     toast.error(res.data.error);
+      //   }
+      // }).catch((err) => console.log(err, 'axios listing err'))
       
     }, [ updateUI]);
 
     useEffect(() => {
       setLoading(false); // Data loading is complete
-    }, [userData, posts, listUsers, companies]);
+    }, [userData, posts, listUsers]);
 
     const connectAndDisconnect = (userId : string) => {
       axiosInstance.get(`/connect/${userId}`).then((res) => {
@@ -132,7 +132,7 @@ const UserFeed = () => {
 
                 {/* right-side */}
                 <div className='w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto'>
-                    <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                    {/* <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                         <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                             <span>Follow Comapnies</span>
                         </div>
@@ -164,7 +164,7 @@ const UserFeed = () => {
                             )
                           })}
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="lg:hidden mt-4"></div>
 

@@ -7,6 +7,7 @@ import IndustryTable from '../../Components/admin/IndustryTable';
 const CategoryAdd = () => {
     const [industry , setIndustry] = useState<string>('');
     const [items , setItems] = useState<any>([]);
+    const [updateUI , setUpDateUI] = useState<boolean>(false);
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,7 +41,7 @@ const CategoryAdd = () => {
                 toast.error(response.data.error , {duration : 2000});
             }
         }).catch((error) => console.log('industry fetch error' , error))
-    },[industry]);
+    },[industry , updateUI]);
   return (
     <>
         <TopBar/>
@@ -84,7 +85,7 @@ const CategoryAdd = () => {
             </div>
         </div>
 
-        <IndustryTable items={items} />
+        <IndustryTable setUpdateUI={setUpDateUI} items={items} />
     </>
   )
 }

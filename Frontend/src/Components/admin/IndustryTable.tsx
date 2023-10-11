@@ -4,15 +4,18 @@ import toast from 'react-hot-toast';
 
 interface IndustryTableProps {
     items : any
+    setUpdateUI :(data: any) => void;
 }
 
-const IndustryTable: React.FC<IndustryTableProps> = ({items}) => {
+const IndustryTable: React.FC<IndustryTableProps> = ({items , setUpdateUI}) => {
 
     const handleDelete  = (industryId : string) => {
         adminAxiosInstance.delete(`/deleteCat/${industryId}`)
         .then((res) => {
             if(res.data.message){
                 toast.success(res.data.message);
+
+                setUpdateUI((prev : any) => !prev);
             }
 
             if(res.data.error){
@@ -42,16 +45,16 @@ const IndustryTable: React.FC<IndustryTableProps> = ({items}) => {
                     <tbody className='border-t divide-y bg-[#efecec]'>
                     {items.map((item : any, index : number) => {
                         return (
-                            <tr key={item._id} >
+                            <tr key={item?._id} >
                             <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
                                 {index + 1}
                             </td>
                             <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
-                                {item.industry}
+                                {item?.industry}
                             </td>
                             <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                                 <button
-                                onClick={() => handleDelete(item.id)}
+                                onClick={() => handleDelete(item?._id)}
                                 className="bg-[#dc7979] hover:bg-[#dc6363] px-3 py-2 rounded-md text-white focus:outline-none focus:underline"
                                 >
                                 Delete

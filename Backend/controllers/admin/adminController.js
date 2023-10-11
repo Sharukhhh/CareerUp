@@ -207,7 +207,7 @@ export const getIndustries = async (req, res, next) => {
 
 export const deleteIndustry = async (req, res, next) => {
     try {
-        const industryId = req.params.itemId;
+        const industryId = req.params.industryId;
 
         if(!industryId){
             return res.status(404).json({error : 'Industry Not Found'});
@@ -231,13 +231,36 @@ export const deleteIndustry = async (req, res, next) => {
 
 export const getAllPosts = async (req, res, next) => {
     try {
-        const posts = await postModel.find().sort({createdAt : -1});
+        const posts = await postModel.find()
+        .populate('user')
+        .populate('company')
+        .sort({createdAt : -1});
 
         if(!posts){
             return res.status(404).json({error : 'No Posts available'});
         }
 
         return res.status(200).json({message : 'Posts fetched successfully' , posts});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const PostDelete = async (req, res , next) => {
+    try {
+        const postId = req.params.postId;
+        if(!postId){
+            return res.status(404).json({error : 'Invalid'})
+        }
+
+        const post = await postModel.findByIdAndRemove(postId);
+
+        if(!post){
+            return res.status(404).json({error : 'post not found'});
+        }
+
+        return res.status(200).json({message : 'Deleted Successfully'});
 
     } catch (error) {
         next(error);

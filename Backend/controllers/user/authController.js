@@ -5,9 +5,9 @@ import companyModel from '../../models/companyModel.js';
 import validator from 'validator';
 import twilio from 'twilio';
 
-const twilioSid = "AC4ecd9872cdd998d1c87ef6dc05ccf976";
-const twilioToken = "5c3e75f58d501aa4b414e2c79a302ece";
-const serviceSid = "VA4852ec07caa61a8a74ed6147563dc707";
+const twilioSid = "AC031996d9ac58e11fa2157da8e9cf3934";
+const twilioToken = "b155a6882fa0d2c808d09e70deb475ab";
+const serviceSid = "VAc6d7f1fc4b4c8b056bfc94df5c91cb88";
 const client = twilio(twilioSid , twilioToken);
 
 

@@ -88,6 +88,20 @@ const userSchema = mongoose.Schema({
         }
     }],
 
+    pendingRequests : [{
+        userId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        }
+    }],
+
+    manageRequests : [{
+        userId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        }
+    }],
+
     connections : [{
         userId : {
             type : mongoose.Schema.Types.ObjectId,
