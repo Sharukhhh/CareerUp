@@ -6,17 +6,36 @@ import { axiosInstance } from '../../api/axiosInstance';
 
 const Applicants = () => {
     const {jobId} = useParams();
+
+    const [updateUI , setUpdateUI] = useState<boolean>(false);
     const [job , setJob] = useState<any>([]);
+    const [applicationStatus , setApplicationStatus] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
         axiosInstance.get(`/applicants/${jobId}`)
         .then((res) => {
             if(res.data.message){
                 setJob(res.data.job);
+
+                const initialStatus: { [key: string]: string } = {};
+                res.data?.job?.applicants?.forEach((applicant : any) => {
+                    initialStatus[applicant._id] = 'Pending';
+                });
+                setApplicationStatus(initialStatus);
             }
         }).catch(error => console.log(error)
         )
-    },[]);
+    },[jobId]);
+
+    const handleStatusChange = (applicantId : string , newStatus : string) => {
+        setApplicationStatus((prevStatus) => ({
+            ...prevStatus , [applicantId] : newStatus
+        }))
+    }
+
+    const handleUpdateStatus = () => {
+        
+    }
 
   return (
     <>
@@ -39,9 +58,7 @@ const Applicants = () => {
                     <thead className='bg-gray-800 text-white'>
                         <tr>
                             <th className='px-4 py-2'>Sl no.</th>
-                            <th className='px-4 py-2'>Name</th>
-                            <th className='px-4 py-2'>Header 3</th>
-                            <th className='px-4 py-2'>Header 3</th>
+                            <th className='px-4 py-2'>Applicants</th>
                             <th className='px-4 py-2'>Actions</th>
                         </tr>
                     </thead>
@@ -50,7 +67,7 @@ const Applicants = () => {
                         <tbody className='divide-y text-center divide-gray-100 border-t bg-gray-100' key={item?._id}>
                             <tr className='hover:bg-gray-200'>
                                 <td className='px-3'>{index + 1}</td>
-                                <th className="flex gap-3 px-4 py-4 font-normal text-gray-900">
+                                <th className="flex gap-3 px-4 py-4 font-normal justify-center text-gray-900">
                                 <div className="relative h-10 w-10">
                                     <Link to={`/account/${item?.userId?._id}`}>
                                         <img
@@ -78,9 +95,23 @@ const Applicants = () => {
                                 </div>
                             </th>
                                 <td className='px-3'>
+                                    <select className='ring-1 rounded-sm px-2 py-2'
+                                    value={applicationStatus[item._id] || 'Pending'}
+                                    onChange={(e) => {
+                                        const newStatus = e.target.value;
+                                        handleStatusChange(item?._id , newStatus)
+                                    }}
+                                    name="status" id="status">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Accepted">Accepted</option>
+                                        <option value="Rejected">Rejected</option>
+                                    </select>
+
+                                    <button type='button' onClick={handleUpdateStatus}
+                                    className='bg-blue p-2 rounded text-white ml-3 shadow-md'>
+                                        Update
+                                    </button>
                                 </td>
-                                <td className='px-3'>Data 4</td>
-                                <td className='px-3'>Data 4</td>
                             </tr>
                         </tbody>
                     )

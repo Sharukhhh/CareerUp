@@ -18,7 +18,12 @@ const notifySchema = mongoose.Schema({
     senderUserId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users' // Reference to the user who sent the request
-    }
+    },
+
+    receiverUserId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    },
 });
 
 const notifyModel = mongoose.model('notifications' , notifySchema);

@@ -6,6 +6,7 @@ import categoryModel from '../../models/category.js';
 import cloudinary from '../../utils/cloudinary.js';
 import jobModel from '../../models/jobs.js';
 import notifyModel from '../../models/notificationModel.js';
+import mongoose from 'mongoose';
 
 
 
@@ -81,7 +82,7 @@ export const listCompanies = async (req , res, next) => {
 
 export const sendConnectionRequest = async (req, res, next) => {
     try {
-        const id = req.params.id;
+        const id = req.params.userId;
         const user = req.user;
 
         if(!user){
@@ -114,14 +115,15 @@ export const sendConnectionRequest = async (req, res, next) => {
 
         user.pendingRequests.push({userId : targetUser._id});
 
-        targetUser.pendingRequests.push({userId : user._id});
+        targetUser.pendingRequests.push({userId : user._id}); 
 
         await user.save();
 
         const notification = new notifyModel({
             message : `You have a new connection request from ${user.name}`,
             type : 'connection',
-            senderUserId : user._id
+            senderUserId : new mongoose.Types.ObjectId(user._id),
+            receiverUserId : new mongoose.Types.ObjectId(targetUser._id)
         });
 
         await notification.save();
@@ -264,6 +266,34 @@ export const search = async (req, res, next) => {
 // *********************************************************************************
 // *********************************************************************************
 
+export const displayNotifications = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const notifications = await notifyModel.find({receiverUserId : user._id})
+        .populate("senderUserId")
+        .populate("receiverUserId")
+        .sort({createdAt : -1}).exec();
+
+        if(!notifications){
+            return res.status(404).json({message : 'No new Notifications'});
+        }
+
+        return res.status(200).json({message : 'notifications exist' , notifications});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+
+
+
+
+// *********************************************************************************
+// *********************************************************************************
 export const getIndustries = async (req, res, next) => {
     try {
         const user = req.user;

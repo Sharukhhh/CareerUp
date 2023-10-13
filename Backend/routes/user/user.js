@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
-import {connectAndDisconnectUser,  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies } from '../../controllers/user/userController.js';
+import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies, 
+    // sendConnectionRequest, acceptConnectionRequest, 
+    displayNotifications, connectAndDisconnectUser } from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
 getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment, reportPost } 
@@ -45,6 +47,15 @@ router.patch('/report/:postId' , verify , reportPost )
 
 //user-connections
 router.get('/connect/:userId' , verify , connectAndDisconnectUser);
+
+// router.get('/send/:userId' , verify , sendConnectionRequest);
+
+// router.get('/accept/:userId' , verify , acceptConnectionRequest);
+
+
+
+//user-notifications
+router.get('/notifies' , verify , displayNotifications);
 
 //user-job
 router.get('/apply/:jobId' , verify , jobApplication);
