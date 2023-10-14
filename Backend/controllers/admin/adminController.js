@@ -4,6 +4,7 @@ import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
 import categoryModel from "../../models/category.js";
 import postModel from "../../models/posts.js";
+import jobModel from "../../models/jobs.js";
 
 // ADMIN - auth
 export const adminLogin = async (req, res) => {
@@ -29,6 +30,43 @@ export const adminLogin = async (req, res) => {
 }
 // *********************************************************************************
 // *********************************************************************************
+
+export const dashboardValues = async(req, res, next) => {
+    try {
+        const adminUser = req.user;
+
+        //total users
+        const totalUsers = await userModel.countDocuments();
+
+        //total companies
+        const totalCompanies = await companyModel.countDocuments();
+
+        //total posts
+        const totalPosts = await postModel.countDocuments();
+
+        //total jobs openings posted
+        const totalJobs = await jobModel.countDocuments();
+
+        if(!totalUsers || !totalCompanies || !totalPosts || !totalJobs){
+            return res.status(404).json({error : 'documents not found'});
+        }
+
+        return res.status(200).json({message : 'success',
+        totalUsers ,
+        totalCompanies,
+        totalJobs,
+        totalPosts
+    });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+// *********************************************************************************
+// *********************************************************************************
+
 
 // ADMIN - User Managment
 export const getUsers = async (req, res) => {

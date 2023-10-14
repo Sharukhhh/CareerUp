@@ -2,13 +2,18 @@ import express from 'express';
 const router = express.Router();
 import {
     adminLogin, getCompanies, getUsers, blockUser, unBlockUser ,
-    verifyCompany ,blockCompany , unBlockCompany, addCategory, deleteIndustry, getIndustries, getAllPosts, PostDelete 
+    verifyCompany ,blockCompany , unBlockCompany, addCategory, 
+    deleteIndustry, getIndustries, getAllPosts, PostDelete, dashboardValues 
 } 
 from '../../controllers/admin/adminController.js';
 import { verifyAdmin } from '../../middlewares/adminAuth.js';
 
 //auth
 router.post('/' , adminLogin);
+
+//admin-dashboard 
+router.get('/dashboard' , verifyAdmin , dashboardValues);
+
 
 
 //user-management-routes
