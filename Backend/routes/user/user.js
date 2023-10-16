@@ -3,7 +3,7 @@ const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies, 
     // sendConnectionRequest, acceptConnectionRequest, 
-    displayNotifications, connectAndDisconnectUser } from '../../controllers/user/userController.js';
+    displayNotifications, connectAndDisconnectUser, getChatUsers } from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
 getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment, reportPost } 
@@ -61,6 +61,10 @@ router.get('/notifies' , verify , displayNotifications);
 router.get('/apply/:jobId' , verify , jobApplication);
 
 router.get('/applicants/:jobId' , verify , getApplicants)
+
+
+//user-chats
+router.get('/chatusers' , verify,  getChatUsers);
 
 
 export default router;

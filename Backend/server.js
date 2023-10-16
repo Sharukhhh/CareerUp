@@ -8,7 +8,13 @@ import http from 'http';
 
 const app = express(); 
 const server = http.createServer(app);  
-const io = new SocketIoServer(server);
+const io = new SocketIoServer(server , {
+    cors : {
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"],
+        credentials : true
+    }
+});
 
 const corsOptions = {
     origin: 'http://localhost:5173',
@@ -32,6 +38,10 @@ app.use('/' , userRoutes);
 import userDataRoutes from './routes/user/userData.js'
 app.use('/' , userDataRoutes);
 
+//chat routes
+import chatRoutes from './routes/user/chatRoutes.js';
+app.use('/' , chatRoutes);
+
 //admin routes
 import adminRoutes from './routes/admin/admin.js'
 app.use('/admin' , adminRoutes);
@@ -41,6 +51,23 @@ app.use(errorHandler);
 
 import { connectDB } from './connection/databse.js';
 connectDB();
+
+io.on('connection' , (socket) => {
+    // console.log('connected');
+
+    //chat related events starting
+    socket.on('start' , (userData) => {
+        socket.join(userData);   //joining a chat room
+    });
+
+    socket.on('new chat message' , (room , message) => {
+        io.to(room).emit('new chat message' , message);    //broadcasting the message
+    });
+
+    socket.on('disconnect' , () => {
+        // console.log('disconnected');
+    });
+})
 
 
 const port = process.env.PORT || 3000;

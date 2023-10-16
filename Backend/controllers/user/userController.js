@@ -294,6 +294,7 @@ export const displayNotifications = async (req, res, next) => {
 
 // *********************************************************************************
 // *********************************************************************************
+
 export const getIndustries = async (req, res, next) => {
     try {
         const user = req.user;
@@ -360,6 +361,32 @@ export const getApplicants = async (req, res, next) => {
         return res.json({message : 'Success' , job});
 
     } catch(error) {
+        next(error);
+    }
+}
+
+
+// *********************************************************************************
+// *********************************************************************************
+
+
+
+export const getChatUsers = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const findUser = await userModel.findById(user._id);
+        if(!findUser){
+            return res.status(400).json({error : 'USer not found'});
+        }
+
+        const connectionUsers = findUser.connections.map((connection) => connection.userId);
+
+        const chatUsers = await userModel.find({_id : {$in : connectionUsers}});
+
+        return res.status(200).json({message : 'fetched' , chatUsers});
+
+    } catch (error) {
         next(error);
     }
 }
