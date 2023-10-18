@@ -3,6 +3,7 @@ import companyModel from "../../models/companyModel.js";
 import jobModel from "../../models/jobs.js";
 import cloudinary from "../../utils/cloudinary.js";
 import categoryModel from "../../models/category.js";
+import fs from 'fs';
 
 export const getEditData = async (req, res, next) => {
     try {
@@ -68,10 +69,19 @@ export const addBasic = async (req, res, next) => {
             profileImagerUrl = result.secure_url;
         }
 
-        let resumeUrl = null;
+        let resumePath = null;
         if(data && data.resume){
-            const result = await cloudinary.uploader.upload(data.resume[0].path);
-            resumeUrl = result.secure_url;
+            const resumeFile = data.resume[0];
+            resumePath = `../Frontend/public/resumes/${resumeFile.filename}`;
+
+            fs.rename(resumeFile.path , resumePath , (err) => {
+                if(err){
+                    return res.status(400).json({error : 'error while changing pathname'});
+                }
+            });
+
+            // const result = await cloudinary.uploader.upload(data.resume[0].path);
+            // resumeUrl = result.secure_url;
         }
 
         if(user.role === 'Candidate'){
@@ -79,7 +89,7 @@ export const addBasic = async (req, res, next) => {
                 location : location, 
                 headline : headline,
                 profileImage : profileImagerUrl,
-                resume: resumeUrl 
+                resume: resumePath
             } , 
             {new : true});
             console.log(updatedUser);

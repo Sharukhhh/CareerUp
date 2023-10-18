@@ -13,6 +13,7 @@ const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDo
 import { Spinner } from '@material-tailwind/react';
 import RootState from '../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../api/axiosInstance';
+import notificationRootState from '../../../Redux/rootstate/NotifyRootState';
 
 interface UserNavProps {
  
@@ -22,6 +23,8 @@ interface UserNavProps {
 const UserNav:React.FC<UserNavProps> = () => {
   // const {theme} = useSelector((state : ThemeRootState) => state.theme);
   const user = useSelector((state : RootState) => state.user.userCred);
+  const notifications = useSelector((state : notificationRootState) => state.notification);
+
 
   const [userData , setUserData] = useState<any>([]);
 
@@ -116,13 +119,22 @@ const UserNav:React.FC<UserNavProps> = () => {
             </NavLink>
 
             <NavLink to='/notifications'>
-              <IoMdNotificationsOutline className='hover:scale-125'/>
+              {notifications?.hasNewNotification ? (
+                <span className='relative'>
+                  <IoMdNotificationsOutline className='hover:scale-125'/>
+                  <span className='bg-red-500 text-white text-xs w-3 h-3 rounded-full absolute -top-1 -right-1'>
+                    *
+                  </span>
+                </span>
+              ) : (
+                <IoMdNotificationsOutline className='hover:scale-125'/>
+              )}
             </NavLink>
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
-          {/* <CgProfile className='hover:scale-125' /> */}
-          <img src={userData ? userData.profileImage : null} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+            <img src={userData ? userData.profileImage : null} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
           </span>
+
             {
               openDropProfile && (
               <Suspense fallback={<div><Spinner/></div>}>

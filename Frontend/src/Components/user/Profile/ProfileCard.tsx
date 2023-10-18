@@ -23,7 +23,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
     <div>
         <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4'>
             <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
-                 <Link to='' className='flex gap-2'>
+                <Link to='' className='flex gap-2'>
                     <img src={userData?.profileImage} alt="profile img" className='w-14 h-14 object-cover rounded-full bg-gray-600' />
 
                     <div className='flex flex-col justify-center'>
@@ -35,7 +35,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                             {userData?.headline}
                         </span>
                     </div>
-                 </Link>
+                </Link>
 
             {user?.userId === userData?._id ? (
                 <div className='' onClick={openEditModal}>

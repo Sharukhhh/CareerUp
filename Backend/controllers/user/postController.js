@@ -1,5 +1,6 @@
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js'; 
+import notifyModel from '../../models/notificationModel.js';
 import commentModel from '../../models/comments.js';
 import postModel from '../../models/posts.js';
 import cloudinary from '../../utils/cloudinary.js';
@@ -111,18 +112,26 @@ export const getIndividualPosts = async (req, res, next) => {
   try {
     const userId = req.params.id;
 
-    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const userObjectId = new mongoose.Types.ObjectId(userId); 
     
-    const posts = await postModel.find({user : userObjectId})
-    .populate('user').populate('company');
+    let posts = await postModel.find({user : userObjectId})
+    .populate('user');
 
     if(!posts){
-      return res.status(404).json({error : 'Users post not found'});
+
+      posts = await postModel.find({company : userObjectId});
+
+      if(!posts){
+        return res.status(404).json({error : 'Users post not found'});
+      }
+
+      return res.status(200).json({message : 'Posts avaialable' , posts});
     }
 
-    console.log(posts);
+    console.log('$$$$$$$',posts);
 
     return res.status(200).json({message : 'Posts avaialable' , posts});
+    
   } catch (error) {
     next(error);
   }
@@ -165,11 +174,28 @@ export const likeandDislikePost = async (req, res, next) =>{
       post.likes = post.likes.filter((userId) => userId.toString() !== user._id.toString() );
       await post.save();
 
+      await notifyModel.deleteOne({
+        message : `${user.name} Liked Your Post`,
+        receiverUser : post.user,
+        senderUser : user._id,
+        post : post._id,
+        type : 'posts'
+      })
+
       return res.status(200).json({message: 'DisLiked Post'});
+
     } else {
 
       post.likes.push(user._id);
       await post.save();
+
+      await notifyModel.create({
+        message : `${user.name} Liked Your Post`,
+        receiverUser : post.user,
+        senderUser : user._id,
+        post : post._id,
+        type : 'posts'
+      });
 
       return res.status(200).json({message : 'Post Likes Successfully'});
     }
@@ -253,6 +279,14 @@ export const addComment = async (req, res, next) => {
       findPost.comments.push(newComment._id);
       await findPost.save();
 
+      await notifyModel.create({
+        senderUser : user._id,
+        receiverUser : findPost.user,
+        type : 'posts',
+        message: `${user.name} commented on your post`,
+        post : findPost._id
+      })
+
     } else {
 
       const newComment = new commentModel({
@@ -263,6 +297,14 @@ export const addComment = async (req, res, next) => {
   
       findPost.comments.push(newComment._id);
       await findPost.save();
+
+      await notifyModel.create({
+        senderUser : user._id,
+        receiverUser : findPost.user,
+        type : 'posts',
+        message: `${user.name} commented on your post`,
+        post : findPost._id
+      })
     }
 
     return res.json({message : 'Comment Added'});

@@ -216,6 +216,13 @@ export const connectAndDisconnectUser = async (req, res, next) => {
             await user.save();
             await targetUser.save();
 
+            await notifyModel.deleteOne({
+                receiverUser : targetUser._id,
+                senderUser : user._id,
+                message : `${user.name} Followed You`,
+                type : 'connection'
+            })
+
             return res.json({message : `Connection Removed with ${targetUser.name}`});
 
         } else {
@@ -226,6 +233,13 @@ export const connectAndDisconnectUser = async (req, res, next) => {
 
             await user.save();
             await targetUser.save();
+
+            await notifyModel.create({
+                receiverUser : targetUser._id,
+                senderUser : user._id,
+                message : `${user.name} Followed You`,
+                type : 'connection'
+            });
 
             return res.json({message : `Connected with ${targetUser.name}`});
         }
@@ -270,9 +284,9 @@ export const displayNotifications = async (req, res, next) => {
     try {
         const user = req.user;
 
-        const notifications = await notifyModel.find({receiverUserId : user._id})
-        .populate("senderUserId")
-        .populate("receiverUserId")
+        const notifications = await notifyModel.find({receiverUser : user._id})
+        .populate("senderUser")
+        .populate('post')
         .sort({createdAt : -1}).exec();
 
         if(!notifications){

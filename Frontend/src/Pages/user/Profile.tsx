@@ -92,12 +92,7 @@ const Profile = () => {
         }
       }).catch((error) => console.log(error , 'user own posts fetch error')
       )
-    }
-  },[id]);
-
-
-  useEffect(() => {
-    if(!id){
+    } else {
       axiosInstance.get('/getposts').then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
@@ -105,7 +100,20 @@ const Profile = () => {
       }).catch((err) => console.log(err, 'axios posts err')
       )
     }
-  }, [updateUI ]);
+    
+  },[id , updateUI]);
+
+
+  // useEffect(() => {
+  //   if(!id){
+  //     axiosInstance.get('/getposts').then((res) => {
+  //       if(res.data.message){
+  //         setPosts(res.data.posts);
+  //       }
+  //     }).catch((err) => console.log(err, 'axios posts err')
+  //     )
+  //   }
+  // }, [updateUI ]);
 
   useEffect(() => {
     axiosInstance.get(`/postedjobs`).then((res) => {

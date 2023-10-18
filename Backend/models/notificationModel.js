@@ -1,6 +1,22 @@
 import mongoose from 'mongoose';
 
 const notifySchema = mongoose.Schema({
+
+    senderUser : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users' // Reference to the user who did action which created a notification
+    },
+
+    receiverUser : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'  //Reference to the user who recieve the notification
+    },
+
+    post : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'posts'
+    },
+    
     message : {
         type : String,
     }, 
@@ -12,19 +28,14 @@ const notifySchema = mongoose.Schema({
 
     type : {
         type : String,
-        enum : ['connection' , 'notify' , 'job']
     },
 
-    senderUserId : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users' // Reference to the user who sent the request
-    },
+    read : {
+        type : Boolean,
+        default : false
+    }
 
-    receiverUserId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'users'
-    },
-});
+} , {timestamps : true});
 
 const notifyModel = mongoose.model('notifications' , notifySchema);
 

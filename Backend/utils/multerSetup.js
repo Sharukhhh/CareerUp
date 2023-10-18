@@ -3,7 +3,17 @@ import path from 'path';
 import express from 'express';
 
 const upload = multer({
-    storage : multer.diskStorage({}) ,
+    storage : multer.diskStorage({
+        destination : (req, file, cb) => {
+            cb(null , '../Frontend/public/resumes/');
+        },
+
+        filename : (req, file, cb) => {
+            const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+
+            cb(null, `${uniqueSuffix}-${file.originalname}`);
+        }
+    }) ,
 
     fileFilter : (req, file , cb) => {
 
