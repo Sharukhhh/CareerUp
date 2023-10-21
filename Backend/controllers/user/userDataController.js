@@ -87,7 +87,7 @@ export const addBasic = async (req, res, next) => {
         if(user.role === 'Candidate'){
             const updatedUser = await userModel.findByIdAndUpdate(user._id , {
                 location : location, 
-                headline : headline,
+                headline : headline, 
                 profileImage : profileImagerUrl,
                 resume: resumePath
             } , 
@@ -129,11 +129,11 @@ export const addEducation = async (req, res , next) => {
     try {
 
         const id = req.params.id;
-        const {institute , location , fieldOfStudy , from , to} = req.body;
+        const {institute , instituteLocation , fieldOfStudy } = req.body;
 
-        if (!institute || !fieldOfStudy || !from || !to) {
+        if (!institute || !fieldOfStudy || !instituteLocation) {
             return res.status(400).json({ error: 'Fill All The Fields!' });
-          }
+        }
 
         const user = await userModel.findById(id);
 
@@ -143,10 +143,8 @@ export const addEducation = async (req, res , next) => {
 
         const newEducation = {
             institute,
-            location,
+            instituteLocation,
             fieldOfStudy,
-            from,
-            to
         };
         await user.education.push(newEducation);
 
@@ -160,8 +158,44 @@ export const addEducation = async (req, res , next) => {
 
 export const editEducation  = async (req, res, next) => {
     try {
-        const itemId = req.params.id;
         
+        const {institute , fieldOfStudy , instituteLocation} = req.body;
+
+        if (!institute || !fieldOfStudy || !instituteLocation) {
+            return res.status(400).json({ error: 'Fill All The Fields!' });
+        }
+
+        const itemId = req.params.educationId;
+        const user = req.user;
+
+        
+        if(!itemId){
+            return res.status(404).json({error : 'Item not found'});
+        }
+
+        const updatedEducation = await userModel.findOneAndUpdate(
+            {
+                _id : user._id,
+                'education' : {
+                    $elemMatch : {_id : itemId}
+                }
+            },
+
+            {$set : {
+                'education.$.institute': institute,
+                'education.$.fieldOfStudy': fieldOfStudy,
+                'education.$.instituteLocation': instituteLocation
+            }},
+
+            {new : true}
+        );
+
+        if(!updatedEducation){
+            return res.status(404).json({error : 'No document to update' });
+        }
+
+        return res.status(200).json({message : 'updated Successfully'});
+
     } catch (error) {
         next(error);
     }
@@ -203,9 +237,9 @@ export const addProfession = async (req, res, next) => {
     try {
 
         const id = req.params.id;
-        const {companyName , location , role } = req.body;
+        const {companyName , jobLocation , role } = req.body;
 
-        if(!companyName || !location || !role){
+        if(!companyName || !jobLocation || !role){
             return res.status(400).json({error : 'Please provide all required fields for Profession'})
         }
 
@@ -215,7 +249,7 @@ export const addProfession = async (req, res, next) => {
         }
 
         const newProfession = {
-            companyName, location, role
+            companyName, jobLocation, role
         };
         await user.profession.push(newProfession);
 
@@ -229,7 +263,42 @@ export const addProfession = async (req, res, next) => {
 
 export const editProfession = async (req, res, next) => {
     try {
-        const id = req.params.id;
+        const {companyName , jobLocation , role } = req.body;
+
+        const itemId = req.params.professionId;
+        const user = req.user;
+
+        if(!companyName || !jobLocation || !role){
+            return res.status(400).json({error : 'Please provide all required fields for Profession'})
+        }
+
+        if(!itemId){
+            return res.status(404).json({error : 'Item not found'});
+        }
+
+        const updatedProfession = await userModel.findOneAndUpdate(
+            {
+                _id : user._id,
+                'profession' : {
+                    $elemMatch : {_id : itemId}
+                }
+            },
+
+            {$set : {
+                'profession.$.companyName' : companyName,
+                'profession.$.jobLocation' : jobLocation,
+                'profession.$.role' : role
+            }},
+
+            {new  : true}
+        );
+
+        if(!updatedProfession){
+            return res.status(404).json({error : 'No document to update' });
+        }
+
+        return res.status(200).json({message : 'updated Successfully'});
+
 
     } catch (error) {
         next(error);

@@ -56,16 +56,14 @@ const userSchema = mongoose.Schema({
         {
             institute : String ,
             fieldOfStudy : String,
-            location : String,
-            from : Date,
-            to : Date
+            instituteLocation : String,
         }  
     ],
 
     profession : [
         {
             companyName : String,
-            location : String,
+            jobLocation : String,
             role : String,
         }
     ],

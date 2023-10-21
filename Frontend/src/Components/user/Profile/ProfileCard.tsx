@@ -1,8 +1,8 @@
 import React , {useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 // import {BsThreeDotsVertical} from 'react-icons/bs'
 import {BiEdit} from 'react-icons/bi';
-import {BsPersonFillAdd , BsBriefcase} from 'react-icons/bs';
+import {BsPersonFillAdd , BsBriefcase , BsFillChatLeftTextFill} from 'react-icons/bs';
 import {CiLocationOn} from 'react-icons/ci';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
@@ -14,8 +14,14 @@ interface ProfileCardProps {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => {
 
+    const navigate = useNavigate();
 
     const user = useSelector((state : RootState) => state.user.userCred);
+    const isCandidate = user?.userId;
+
+    const navigateChat = () => {
+        navigate('/message');
+    }
 
     
   return (
@@ -58,18 +64,64 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                 </div>
             </div>
 
-            <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
-                <p className='text-ascent-1'>{userData?.connections?.length} Connections</p>
+            <div className='w-full flex flex-col gap-2 py-4 '>
+                <div className='flex items-center justify-between text-ascent-1 pb-2 border-b border-[#66666645]'>
+                    <span>CONNECTIONS</ span>
+                    <span>
+                        {userData?.connections?.length}
+                    </span>
+                </div>
+
+                {isCandidate ?  (
+                <div className='w-full flex flex-col gap-4 pt-4'>
+                    {userData?.connections?.map((connection : any) => {
+                        return(
+                        <div className='flex items-center justify-between' key={connection._id}>
+                            <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
+                                <img src={connection?.userId?.profileImage}
+                                className='w-10 h-10 object-cover rounded-full' alt="" 
+                                />
+                                <div className='flex-1'>
+                                    <p className='text-base font-medium text-ascent-1'>
+                                        {connection?.userId?.name}
+                                    </p>
+                                    <span className='text-sm text-ascent-2'>
+                                        {connection?.userId?.headline}
+                                    </span>
+                                </div>
+                            </Link>
+
+                            {user.userId === userData._id && (
+                            <div className='flex gap-1'>
+                                <button 
+                                className='text-sm p-1 rounded text-blue'
+                                >
+                                    <BsFillChatLeftTextFill onClick={navigateChat} size={20} />
+                                </button>
+                            </div>
+                            )}
+                        </div>       
+                        )
+                    })}
+                </div>
+                ) : (
+                    <div className='w-full flex flex-col gap-4 pt-4'>
+                        <p className="text-ascent-2 text-center py-4">
+                            Loading....................
+                        </p>
+                    </div>
+                )}
+                {/* <p className='text-ascent-1'>{userData?.connections?.length} Connections</p> */}
 
                 {/* <div className='flex items-center justify-between'>
                     {/* <span className='text-ascent-1'>Who viewed your profile</span> */}
                     {/* <span></span>
                 </div> */} 
 
-                <div className='flex items-center justify-between'>
+                {/* <div className='flex items-center justify-between'>
                     <span className='text-ascent-2'></span>
                     <span></span>
-                </div>
+                </div> */}
             </div>   
 
             {/* <div className='w-full flex flex-col gap-4 py-4 pb-6'>

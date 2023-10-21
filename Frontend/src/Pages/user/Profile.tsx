@@ -139,15 +139,15 @@ const Profile = () => {
         <Toaster position="top-center" />
         <UserNav />
 
-        <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
+        <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto">
           {/* Left */}
-          <div className="w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
+          <div className="w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto">
             <ProfileCard userData = {userData} openEditModal={openEditModal} />
-            <ConnectionCard userData={userData} />
+            {/* <ConnectionCard userData={userData} /> */}
           </div>
 
           {/* center */}
-          <div className="flex-1 h-full bg-bgColor px-4 flex flex-col gap-6 overflow-y-auto">
+          <div className="w-full flex-1 bg-bgColor px-4 flex flex-col gap-6 overflow-y-auto">
             <PostCards setUpdateUI={setUpdateUI} userData={userData} showAllposts={false} posts={posts} />
 
           </div>
@@ -155,7 +155,7 @@ const Profile = () => {
           {/* right */}
             {/* User Profession /  */}
             {user?.role === 'Candidate' ? (
-              <div className="w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+              <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
                 <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                   <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
                     <span>Experience / Profession</span>
@@ -212,9 +212,6 @@ const Profile = () => {
                           <p className='font-bold text-lg text-gray-900'>{item?.fieldOfStudy}</p>
                           <span className='text-md'>{item?.institute}</span> <br />
                           <span className='text-ascent-2 text-sm'>{item?.location}</span> <br />
-                          <span className='text-ascent-1 text-xs'>
-                          {new Date(item?.from).toLocaleDateString()} - {new Date(item?.to).toLocaleDateString()}
-                          </span>
                         </div>
 
                         {user.userId === userData._id && (

@@ -116,22 +116,21 @@ const UserFeed = () => {
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 
-            <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
+            <div className='w-full flex flex-col md:flex-row  gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto'>
 
                 {/* left-side */}
-                <div className='w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto'>
+                <div className='w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto'>
                     <ProfileCard userData={userData} openEditModal={openEditModal} />
-                    <ConnectionCard userData={userData} />
                 </div>
 
                 {/* center */}   
-                <div className='flex-1 bg-bgColor pt-5 pb-10 flex flex-col gap-6 overflow-y-auto'>
+                <div className='w-full flex-1 bg-bgColor flex flex-col gap-6 overflow-y-auto'>
                     <CreatePost  userData={userData} addNewPost={addNewPost} />
                     <PostCards userData={userData} posts={posts} setUpdateUI={setUpdateUI} showAllposts={true} />
                 </div>
 
                 {/* right-side */}
-                <div className='w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto'>
+                <div className='hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto'>
                     {/* <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
                         <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
                             <span>Follow Comapnies</span>

@@ -1,5 +1,5 @@
 import React  , {useState , useEffect} from 'react';
-import { Link , useParams } from 'react-router-dom';
+import { Link , useParams ,useNavigate } from 'react-router-dom';
 import {IoArrowBackCircle} from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
@@ -9,30 +9,55 @@ import {BsFillSave2Fill} from 'react-icons/bs';
 import {BiSolidError} from 'react-icons/bi';
 
 const AddInfoPage = () => {
-  const currentDate = new Date();
 
   const user = useSelector((state : RootState) => state.user.userCred);
   
   const isCompany = user?.role === 'Company';
 
+  const navigate = useNavigate();
+
   const {id} = useParams();
-  const [editData , setEditData] = useState<any>([]);
-  const [industries , setIndustries] = useState<any>([]);
+  const isEdit = !!id;
+
+  const [industries , setIndustries] = useState<any[]>([]);
+
+    //education
+    const [institute , setInstitute] = useState<string>('');
+    const [field , setField] = useState<string>('');
+    const [instituteLocation , setInstituteLocation] = useState<string>('');
+
+    //profession/experience
+    const [companyName , setCompanyName] = useState<string>('');
+    const [role , setRole] = useState<string>('');
+    const [companyLocation , setCompanyLocation] = useState<string>('');
+
+    //post-job
+    const [position , setPosition] = useState<string>('');
+    const [location, setJobLocation] = useState<string>('');
+    const [salaryPackage , setSalaryPackage] = useState<string>('');
+    const [requirements , setRequirements] = useState<string>('');
+    const [industry , setIndustry] = useState<string >('');
+
 
   useEffect(() => {
-    if(id){
+    if(isEdit){
       axiosInstance.get(`/editdata/${id}`)
       .then((res) => {
         if(res.data.message){
-          setEditData(res.data.info);
-          console.log(res.data.info);
-          
-          
+          console.log(res.data?.info);
+
+          setInstitute(res.data?.info?.institute);
+          setField(res.data?.info?.fieldOfStudy);
+          setInstituteLocation(res.data?.info?.instituteLocation);
+
+          setCompanyName(res.data?.info?.companyName);
+          setCompanyLocation(res.data?.info?.jobLocation);
+          setRole(res?.data?.info?.role);
         }
       }).catch((error) => console.log(error , 'axios bringerror')
       )
     }
-  }, [id]);
+  }, [isEdit , id]);
 
   useEffect(() => {
     if(isCompany){
@@ -52,22 +77,29 @@ const AddInfoPage = () => {
 
   
   
-  //education
-  const [institute , setInstitute] = useState<string>(editData?.institute || '');
-  const [field , setField] = useState<string>(editData?.fieldOfStudy || '');
-  const [instituteLocation , setInstituteLocation] = useState<string>(editData?.location || '');
-  const [eFromDate , setFromDate] = useState<Date>(editData?.from || currentDate);
-  const [eEndDate , setEEndDate] = useState<Date>(editData?.to || currentDate);
+
 
   const handleEducationFormSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if(!institute || !field || !instituteLocation || !eFromDate || !eEndDate){
+    if(!institute || !field || !instituteLocation ){
       return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
     }
 
-    axiosInstance.post(`/add_edu/${user?.userId}`, {institute , fieldOfStudy : field , location : instituteLocation , 
-      from : eFromDate , to : eEndDate})
+    if(isEdit){
+      axiosInstance.put(`/editedu/${id}` , {institute , fieldOfStudy : field , instituteLocation})
+      .then((res) => {
+        if(res.data.message){
+          navigate('/account');
+          toast.success(res.data.message);
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
+
+    } else {
+
+      axiosInstance.post(`/add_edu/${user?.userId}`, {institute , fieldOfStudy : field ,  instituteLocation })
       .then((res) => {
         if(res.data.message){
           toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
@@ -75,8 +107,6 @@ const AddInfoPage = () => {
           setInstitute('');
           setField('');
           setInstituteLocation('');
-          setFromDate(currentDate);
-          setEEndDate(currentDate);
         }
 
         if(res.data.error){
@@ -84,13 +114,9 @@ const AddInfoPage = () => {
         }
       }).catch((err) => console.log('axios error' , err)
       )
+    }
   }
 
-
-  //profession/experience
-  const [companyName , setCompanyName] = useState<string>(editData?.companyName || '');
-  const [role , setRole] = useState<string>(editData?.role || '');
-  const [companyLocation , setCompanyLocation] = useState<string>(editData?.location || '');
 
   const handleProfessionFormSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,32 +125,42 @@ const AddInfoPage = () => {
       return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> , });
     }
 
-    axiosInstance.post(`/add_pro/${user?.userId}` , {companyName , role , location : companyLocation})
-    .then((res) =>{
+    if(isEdit){
+      axiosInstance.put(`/editpro/${id}` , {companyName , role , jobLocation : companyLocation})
+      .then((res) => {
+        if(res.data.message){
+          navigate('/account');
+          toast.success(res.data.message);
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
 
-      if(res.data.message){
-        toast.success(res.data.message, {icon : <BsFillSave2Fill/> });
+    } else {
 
-        setCompanyName('');
-        setRole('');
-        setCompanyLocation('');
-      }
-
-      if(res.data.error){
-        toast.error(res.data.error);
-      }
-
-    }).catch((err) => console.log('axios errpr' , err)
-    )
+      axiosInstance.post(`/add_pro/${user?.userId}` , {companyName , role , jobLocation : companyLocation})
+      .then((res) =>{
+  
+        if(res.data.message){
+          toast.success(res.data.message, {icon : <BsFillSave2Fill/> });
+  
+          setCompanyName('');
+          setRole('');
+          setCompanyLocation('');
+  
+        }
+  
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+  
+      }).catch((err) => console.log('axios errpr' , err)
+      )
+    }
   } 
 
 
-  //post-job
-  const [position , setPosition] = useState<string>(editData?.Position || '');
-  const [location, setJobLocation] = useState<string>(editData?.location || '');
-  const [salaryPackage , setSalaryPackage] = useState<string>(editData?.package || '');
-  const [requirements , setRequirements] = useState<string>(editData?.requirements || '');
-  const [industry , setIndustry] = useState<string >('');
+
 
   const handleJobPost = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -199,25 +235,10 @@ const AddInfoPage = () => {
                   outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
                   type="text" name='location' placeholder='location' />
             
-                  <label className='text-ascent-2 text-sm mb-2' htmlFor="from Date">From</label>
-
-                  <input onChange={(e) => setFromDate(new Date(e.target.value))}
-                  value={editData ? editData.from :  eFromDate.toISOString().split('T')[0]}
-                  className='bg-secondary rounded border border-[#66666690] 
-                  outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
-                  type="date" name="date" placeholder='from' />
-
-                  <label className='text-ascent-2 text-sm mb-2' htmlFor="upto date">Upto</label>
-
-                  <input onChange={(e) => setEEndDate(new Date(e.target.value))}
-                  value={editData ? editData.to :  eEndDate.toISOString().split('T')[0]}
-                  className='bg-secondary rounded border border-[#66666690] 
-                  outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text=[#666] shadow-md'
-                  type="date" name="upto" placeholder='upto'/>
                 </div>
 
                 <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
-                  Save 
+                  {isEdit ? 'Update' : 'Save'}
                 </button>
               </form>  
 
@@ -255,7 +276,7 @@ const AddInfoPage = () => {
                 </div>
 
                 <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
-                  Save 
+                  {isEdit ? 'Update' : 'Save'}
                 </button>
               </form>  
               </>

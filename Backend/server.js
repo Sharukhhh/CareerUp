@@ -25,7 +25,7 @@ app.use(cors(corsOptions));
 
 app.use(express.json()); 
 app.use(express.urlencoded({extended : true})); 
-app.use(express.static('../Frontend/public'));
+app.use(express.static('../Frontend/public')); 
 
 //user auth routes
 import authRoutes from './routes/auth/authRoutes.js'; 
