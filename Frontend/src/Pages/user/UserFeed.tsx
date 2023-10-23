@@ -10,7 +10,8 @@ import PostCards from '../../Components/user/postss/PostCards'
 import { Spinner } from '@material-tailwind/react';
 import CreatePost from '../../Components/user/postss/CreatePost';
 import toast from 'react-hot-toast';
-import {BsPersonFillAdd , BsFillPersonCheckFill} from 'react-icons/bs';
+import {BsPersonFillAdd , BsFillPersonCheckFill , BsSendCheck} from 'react-icons/bs';
+import {ImInfo} from 'react-icons/im';
 const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 
 
@@ -22,7 +23,6 @@ const UserFeed = () => {
     const [updateUI , setUpdateUI] = useState<boolean>(false);
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
 
 
   const openEditModal = () => {
@@ -37,7 +37,6 @@ const UserFeed = () => {
     const isCandidate = user?.role === 'Candidate';
 
     useEffect(() => {
-      setLoading(true);
       axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
       
         if(res.data){
@@ -74,12 +73,9 @@ const UserFeed = () => {
       
     }, [ updateUI]);
 
-    useEffect(() => {
-      setLoading(false); // Data loading is complete
-    }, [userData, posts, listUsers]);
 
-    const connectAndDisconnect = (userId : string) => {
-      axiosInstance.get(`/connect/${userId}`).then((res) => {
+    const sendConnectionRequest = (userId : string) => {
+      axiosInstance.get(`/send/${userId}`).then((res) => {
         if(res.data.message){
           toast.success(res.data.message);
 
@@ -87,7 +83,7 @@ const UserFeed = () => {
         }
 
         if(res.data.error){
-          toast.error(res.data.error);
+          toast.error(res.data.error , {duration : 2000 , icon : <ImInfo/> });
         }
       }).catch((error) => console.log('error while connection', error)
       )
@@ -107,12 +103,6 @@ const UserFeed = () => {
   };
   return (
     <>
-    {loading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
-              <Spinner className='h-20 w-20' />
-            </div>
-    ) : (
-      <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 
@@ -120,7 +110,7 @@ const UserFeed = () => {
 
                 {/* left-side */}
                 <div className='w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto'>
-                    <ProfileCard userData={userData} openEditModal={openEditModal} />
+                    <ProfileCard updateUI={updateUI} userData={userData} openEditModal={openEditModal} />
                 </div>
 
                 {/* center */}   
@@ -190,10 +180,10 @@ const UserFeed = () => {
                                   </div>
                                 </Link>
 
-                                {userData?.connections?.some((conn : any) => conn.userId === user?._id) ? (
+                                {userData?.connections?.some((conn : any) => conn.userId.toString() === user?._id) ? (
                                 // Render this when the user is connected
                                   <div className='flex gap-1'>
-                                    <button onClick={() => connectAndDisconnect(user?._id) }
+                                    <button 
                                       className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
                                       <BsFillPersonCheckFill size={18} /> 
                                     </button>
@@ -201,7 +191,7 @@ const UserFeed = () => {
                                 ) : (
                                 // Render this when the user is not connected
                                   <div className='flex gap-1'>
-                                    <button onClick={() => connectAndDisconnect(user?._id) }
+                                    <button onClick={() => sendConnectionRequest(user?._id) }
                                       className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
                                       <BsPersonFillAdd size={18} /> 
                                     </button>
@@ -222,8 +212,6 @@ const UserFeed = () => {
                 </div>
             </div>
         </div>
-      </>
-      )}
 
         <Suspense fallback={<Spinner />}>
             <EditProfile setUpdateUI={setUpdateUI} userData={userData} visible={showModal} closeEditModal={closeEditModal} />

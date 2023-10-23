@@ -2,8 +2,10 @@ import express from 'express';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies, 
-    // sendConnectionRequest, acceptConnectionRequest, 
-    displayNotifications, connectAndDisconnectUser, getChatUsers } from '../../controllers/user/userController.js';
+    // connectAndDisconnectUser,
+    sendConnectionRequest, acceptConnectionRequest,  rejectConnectionRequest ,
+    displayNotifications,  getChatUsers, updateApplicationStatus, displayConnections} 
+from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
 getSavedPosts,  likeandDislikePost, saveandUnsavePosts, showComment, reportPost } 
@@ -15,6 +17,8 @@ router.get('/search' , verify , search);
 
 //profile-management
 router.get('/profile/:id' , verify,  getProfile);
+
+router.get('/getConnections' , verify , displayConnections);
 
 router.put('/addBasic' , verify, upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), addBasic);
 
@@ -46,21 +50,23 @@ router.patch('/report/:postId' , verify , reportPost )
 
 
 //user-connections
-router.get('/connect/:userId' , verify , connectAndDisconnectUser);
+// router.get('/connect/:userId' , verify , connectAndDisconnectUser);
 
-// router.get('/send/:userId' , verify , sendConnectionRequest);
+router.get('/send/:userId' , verify , sendConnectionRequest);
 
-// router.get('/accept/:userId' , verify , acceptConnectionRequest);
+router.get('/accept/:userId' , verify , acceptConnectionRequest);
 
-
+router.get('/reject/:userId' , verify , rejectConnectionRequest);
 
 //user-notifications
 router.get('/notifies' , verify , displayNotifications);
 
-//user-job
+//user-job-application
 router.get('/apply/:jobId' , verify , jobApplication);
 
-router.get('/applicants/:jobId' , verify , getApplicants)
+router.get('/applicants/:jobId' , verify , getApplicants);
+
+router.patch('/updateStatus/:applicationId' , verify , updateApplicationStatus);
 
 
 //user-chats

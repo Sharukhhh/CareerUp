@@ -53,9 +53,14 @@ app.use(errorHandler);
 import { connectDB } from './connection/databse.js';
 connectDB();
 
+
 io.on('connection' , (socket) => {
     // console.log('connected');
 
+    //for notifications
+    socket.on('new notification' , ({userSocketId  , notificationData}) => {
+        io.to(userSocketId).emit('new notification' , notificationData);
+    })
     //chat related events starting
     socket.on('start' , (userData) => {
         socket.join(userData);   //joining a chat room

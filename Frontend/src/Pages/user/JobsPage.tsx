@@ -71,7 +71,7 @@ const JobsPage = () => {
         <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
           <div className='w-full md:w-1/4 md:flex flex-col gap-6 overflow-y-auto'>
-            <ProfileCard userData={userData} openEditModal={openEditModal} />
+            <ProfileCard updateUI={updateUI} userData={userData} openEditModal={openEditModal} />
           </div>
 
           {/* Remaining */}

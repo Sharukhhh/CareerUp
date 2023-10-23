@@ -1,6 +1,6 @@
 import React , {useEffect , useState , lazy , Suspense} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 // import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
 // import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
@@ -23,7 +23,9 @@ interface UserNavProps {
 const UserNav:React.FC<UserNavProps> = () => {
   // const {theme} = useSelector((state : ThemeRootState) => state.theme);
   const user = useSelector((state : RootState) => state.user.userCred);
-  const notifications = useSelector((state : notificationRootState) => state.notification);
+
+  const notifcation = useSelector((state : notificationRootState) => state.notification.notificationCount);
+
 
 
   const [userData , setUserData] = useState<any>([]);
@@ -31,7 +33,7 @@ const UserNav:React.FC<UserNavProps> = () => {
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
   const [searchQuery , setSearchQuery] = useState<string>('');
 
-
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -119,16 +121,12 @@ const UserNav:React.FC<UserNavProps> = () => {
             </NavLink>
 
             <NavLink to='/notifications'>
-              {notifications?.hasNewNotification ? (
-                <span className='relative'>
-                  <IoMdNotificationsOutline className='hover:scale-125'/>
-                  <span className='bg-red-500 text-white text-xs w-3 h-3 rounded-full absolute -top-1 -right-1'>
-                    *
-                  </span>
-                </span>
-              ) : (
                 <IoMdNotificationsOutline className='hover:scale-125'/>
-              )}
+                {notifcation  && notifcation.notificationCount > 0 && (
+                  <span className='absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full'>
+                    {notifcation.notificationCount}
+                  </span>
+                )}
             </NavLink>
 
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>

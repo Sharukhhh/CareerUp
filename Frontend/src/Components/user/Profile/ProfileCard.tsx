@@ -1,4 +1,4 @@
-import React , {useEffect} from 'react';
+import React , {useEffect  ,useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 // import {BsThreeDotsVertical} from 'react-icons/bs'
 import {BiEdit} from 'react-icons/bi';
@@ -6,13 +6,17 @@ import {BsPersonFillAdd , BsBriefcase , BsFillChatLeftTextFill} from 'react-icon
 import {CiLocationOn} from 'react-icons/ci';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
+import { axiosInstance } from '../../../api/axiosInstance';
 
 interface ProfileCardProps {
+    updateUI : boolean
     userData : any;
     openEditModal : () => void; 
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , updateUI}) => {
+
+    const [userConnections, setUserConnections] = useState<any>([]);
 
     const navigate = useNavigate();
 
@@ -22,6 +26,16 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
     const navigateChat = () => {
         navigate('/message');
     }
+
+    useEffect(() => {
+        axiosInstance.get('/getConnections')
+        .then((res) => {
+            if(res.data.message){
+                setUserConnections(res.data.users);
+            }
+        }).catch((error) => console.log(error , 'fetch err')
+        )
+    } , [updateUI]);
 
     
   return (
@@ -43,15 +57,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                     </div>
                 </Link>
 
-            {user?.userId === userData?._id ? (
+            {user?.userId === userData?._id && (
                 <div className='' onClick={openEditModal}>
                     <BiEdit size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
                 </div>
-            ) : (
+            // ) : (
                 
-                <div className=''>
-                    <BsPersonFillAdd size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
-                </div>
+            //     <div className=''>
+            //         <BsPersonFillAdd size={20} className='text-blue cursor-pointer hover:text-light-blue-300' />
+            //     </div>
             )}
             </div>
 
@@ -64,6 +78,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                 </div>
             </div>
 
+            
             <div className='w-full flex flex-col gap-2 py-4 '>
                 <div className='flex items-center justify-between text-ascent-1 pb-2 border-b border-[#66666645]'>
                     <span>CONNECTIONS</ span>
@@ -74,7 +89,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
 
                 {isCandidate ?  (
                 <div className='w-full flex flex-col gap-4 pt-4'>
-                    {userData?.connections?.map((connection : any) => {
+                    {userConnections?.connections?.map((connection : any) => {
                         return(
                         <div className='flex items-center justify-between' key={connection._id}>
                             <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
@@ -122,7 +137,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData , openEditModal}) => 
                     <span className='text-ascent-2'></span>
                     <span></span>
                 </div> */}
-            </div>   
+            </div>
+ 
 
             {/* <div className='w-full flex flex-col gap-4 py-4 pb-6'>
                 <p></p>

@@ -1,7 +1,7 @@
 import React , {useState , useEffect} from 'react'
 import {Link , useParams} from 'react-router-dom';
 import {IoArrowBackCircle} from 'react-icons/io5';
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { axiosInstance } from '../../api/axiosInstance';
 
 const Applicants = () => {
@@ -19,13 +19,13 @@ const Applicants = () => {
 
                 const initialStatus: { [key: string]: string } = {};
                 res.data?.job?.applicants?.forEach((applicant : any) => {
-                    initialStatus[applicant._id] = 'Pending';
+                    initialStatus[applicant._id] = applicant?.status;
                 });
                 setApplicationStatus(initialStatus);
             }
         }).catch(error => console.log(error)
         )
-    },[jobId]);
+    },[jobId ]);
 
     const handleStatusChange = (applicantId : string , newStatus : string) => {
         setApplicationStatus((prevStatus) => ({
@@ -33,8 +33,25 @@ const Applicants = () => {
         }))
     }
 
-    const handleUpdateStatus = () => {
-        
+    const handleUpdateStatus = (applicationId : string) => {
+        const newStatus = applicationStatus[applicationId];
+
+        axiosInstance.patch(`/updateStatus/${applicationId}` , {newStatus})
+        .then((res) => {
+            if(res.data.message){
+                toast.success(res.data.message);
+
+                // Update the applicationStatus state with the new status
+                setApplicationStatus((prevStatus) => ({
+                    ...prevStatus,
+                    [applicationId]: newStatus,
+                }));
+
+                // setUpdateUI((prev) => !prev);
+            }
+        }).catch((error) => {
+            console.log(error.response.data.message);
+        })
     }
 
   return (
@@ -96,7 +113,7 @@ const Applicants = () => {
                             </th>
                                 <td className='px-3'>
                                     <select className='ring-1 rounded-sm px-2 py-2'
-                                    value={applicationStatus[item._id] || 'Pending'}
+                                    value={applicationStatus[item._id] || item?.status}
                                     onChange={(e) => {
                                         const newStatus = e.target.value;
                                         handleStatusChange(item?._id , newStatus)
@@ -107,7 +124,7 @@ const Applicants = () => {
                                         <option value="Rejected">Rejected</option>
                                     </select>
 
-                                    <button type='button' onClick={handleUpdateStatus}
+                                    <button type='button' onClick={() => handleUpdateStatus(item?._id)}
                                     className='bg-blue p-2 rounded text-white ml-3 shadow-md'>
                                         Update
                                     </button>
@@ -118,7 +135,7 @@ const Applicants = () => {
                     })}
                 </table>
                 ) : (
-                    <div className='bg-gray-800 text-white py-4 font-semibold text-center'>
+                    <div className='bg-gray-800 opacity-70 text-white py-4 font-semibold text-center'>
                         <p>No Applicants Yet</p>
                     </div>
                 )}

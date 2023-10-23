@@ -23,6 +23,7 @@ import Applicants from './Pages/user/Applicants';
 import Dashboard from './Pages/admin/Dashboard';
 import PostTable from './Pages/admin/PostTable';
 import Notifications from './Pages/user/Notifications';
+import NotFound from './Pages/intro/NotFound';
 
 
 function App() {
@@ -62,6 +63,8 @@ function App() {
         <Route path='/admin/categories' element={<CategoryAdd />}/>
         <Route path='/admin/dashboard' element={<Dashboard />}/>
         <Route path='/admin/posts' element={<PostTable/>}/>
+
+        <Route path='*' element={<NotFound/>}/>
       </Routes>
     </>
   )

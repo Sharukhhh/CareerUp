@@ -93,7 +93,12 @@ const userSchema = mongoose.Schema({
         }
     }],
 
-
+    manageRequests : [{
+        userId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'users'
+        }
+    }],
 
     connections : [{
         userId : {

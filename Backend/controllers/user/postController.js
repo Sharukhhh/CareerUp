@@ -243,7 +243,10 @@ export const showComment = async (req, res, next) => {
   try {
     const postId = req.params.postId;
 
-    const postWithComments = await postModel.findById(postId).populate('comments').exec();
+    const postWithComments = await postModel.findById(postId).populate({
+      path : 'comments.userId ',
+      select : 'name profileImage'
+    }).exec();
 
     if(!postWithComments){
       return res.status(404).json({error : 'Post not found'});

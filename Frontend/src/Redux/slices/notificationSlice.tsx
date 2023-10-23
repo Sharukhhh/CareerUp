@@ -1,18 +1,15 @@
 import { createSlice ,  PayloadAction} from "@reduxjs/toolkit";
 
-export interface Notification {
-    id : string;
-    message : string;
+export interface NotificationCount {
+    notificationCount : number;
 }
 
 export interface notificationState {
-    notifications : Notification[];
-    hasNewNotification : boolean;
+    notificationCount : NotificationCount | null;
 }
 
 const initialState : notificationState = {
-    notifications : [],
-    hasNewNotification : false,
+    notificationCount : {notificationCount : 0}
 }
 
 
@@ -21,17 +18,11 @@ export const notificationSlice = createSlice ({
     initialState ,
 
     reducers : {
-        addNotification : (state , action : PayloadAction<Notification>) => {
-            state.notifications.push(action.payload);
-            state.hasNewNotification = true;
-        },
-
-        clearNotification : (state) => {
-            state.hasNewNotification = false;
-            state.notifications = [];
+        updateNotificationCount : (state , action : PayloadAction<NotificationCount | null>) => {
+            state.notificationCount = action.payload
         }
     }
 })
 
-export const {addNotification , clearNotification} = notificationSlice.actions;
+export const {updateNotificationCount} = notificationSlice.actions;
 export default notificationSlice.reducer;

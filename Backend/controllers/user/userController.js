@@ -16,10 +16,13 @@ export const getProfile = async (req, res , next) => {
 
         const loggedUser = req.user;
         
-        const user = await userModel.findById(id).populate({
-            path: 'connections.userId',
+        const user = await userModel.findById(id)
+        .select('name headline profileImage connections') // Only select the necessary fields
+        .populate({
+            path: 'connections',
             select: 'name profileImage',
-        }); 
+        }).exec();
+        
         if(!user){
             const company = await companyModel.findById(id).populate('followers'); 
 
@@ -31,6 +34,21 @@ export const getProfile = async (req, res , next) => {
 
         res.status(200).json({message : 'success' , user})
         
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const displayConnections = async (req, res, next) => {
+    try {
+        const user = req.user;
+
+        const findUser = await userModel.findById(user._id).populate('connections.userId').exec();
+        if(!findUser){
+            return res.status(404).json({error : 'Not found'});
+        }
+
+        return res.status(200).json({message : 'success', users : findUser});
     } catch (error) {
         next(error);
     }
@@ -108,22 +126,33 @@ export const sendConnectionRequest = async (req, res, next) => {
             return res.status(400).json({error : 'Invalid user'});
         }
 
+        const isConnected = user.connections.some((connection) => connection.userId.equals(targetUser._id))
+        if(isConnected){
+            return res.status(400).json({error : `Already connected with ${targetUser.name}`});
+        }
+
         const requestExists = user.pendingRequests.some((reqst) => reqst.userId.equals(targetUser._id));
         if(requestExists){
             return res.status(400).json({ error: 'Connection request already sent' });
         }
 
+        const checkRequestHasBeenSendByOtherUser = user.manageRequests.some((reqst) => reqst.userId.equals(targetUser._id));
+        if(checkRequestHasBeenSendByOtherUser){
+            return res.status(400).json({error : `${targetUser.name} already sent you connection request! Check`});
+        }
+
         user.pendingRequests.push({userId : targetUser._id});
 
-        targetUser.pendingRequests.push({userId : user._id}); 
+        targetUser.manageRequests.push({userId : user._id}); 
 
         await user.save();
+        await targetUser.save();
 
         const notification = new notifyModel({
             message : `You have a new connection request from ${user.name}`,
             type : 'connection',
-            senderUserId : new mongoose.Types.ObjectId(user._id),
-            receiverUserId : new mongoose.Types.ObjectId(targetUser._id)
+            senderUser : user._id,
+            receiverUser : targetUser._id
         });
 
         await notification.save();
@@ -138,26 +167,32 @@ export const sendConnectionRequest = async (req, res, next) => {
 
 export const acceptConnectionRequest = async (req, res, next) => {
     try {
-        const requestId = req.params.id;
+        let requestId = req.params.userId;
+        // requestId = requestId.toString();
+
+        console.log(requestId , 'ith request id');
         const user = req.user;
 
-        const connectionRequest = await user.pendingRequests.find((reqst) => reqst.userId.equals(requestId));
+        const connectionRequest = await user.manageRequests.find((reqst) => reqst.userId.equals(requestId));
         if(!connectionRequest){
             return res.status(404).json({ error: 'Connection request not found' });
         }
 
         // Add the sender of the request to the user's connections
-        user.connections.push({userId : connectionRequest.userId});
+        console.log(connectionRequest.userId , 'aysheri');
+        user.connections.push({userId : requestId});
 
         // Add the user to the sender's connections
         let sender = await userModel.findById(connectionRequest.userId);
         if (sender) {
             sender.connections.push({ userId: user._id });
             await sender.save();
+        } else {
+            return res.status(404).json({error : 'sender not found'});
         }
 
-        //removing connection request from the user's pendingRequests
-        user.pendingRequests = user.pendingRequests.filter((reqst) => !reqst.userId.equals(requestId));
+        //removing recieved connection request from the user's manageRequests
+        user.manageRequests = user.manageRequests.filter((reqst) => !reqst.userId.equals(requestId));
 
         //removing the request from the sender's pendingRequests
         sender = await userModel.findById(connectionRequest.userId);
@@ -165,93 +200,142 @@ export const acceptConnectionRequest = async (req, res, next) => {
             sender.pendingRequests = sender.pendingRequests.filter((reqst) => !reqst.userId.equals(user._id));
             await sender.save();
         }
+        await notifyModel.deleteOne({
+            message : `You have a new connection request from ${sender.name}`,
+            type : 'connection',
+            receiverUser : user._id,
+            senderUser : sender._id
+        });
 
+        // await sender.save();
         await user.save();
-        return res.json({ message: 'Connection request accepted' });
+
+        await notifyModel.create({
+            senderUser : user._id,
+            receiverUser : connectionRequest.userId,
+            message : `Request Accepted! You are connected with ${user.name}`,
+        });
+
+        return res.status(200).json({message : 'Request Accepted'});
 
     } catch (error) {
         next(error);
     }
 }
 
-export const connectAndDisconnectUser = async (req, res, next) => {
+export const rejectConnectionRequest = async (req, res, next) => {
     try {
-        const id = req.params.userId;
-        const user = req.user; 
-
-        if(!user){
-            return res.status(404).json({error : 'No user found'});
+        const requestId = req.params.userId;
+        const user = req.user;
+    
+        const connectionRequest = await user.manageRequests.find((reqst) => reqst.userId.equals(requestId));
+        if(!connectionRequest){
+            return res.status(404).json({ error: 'Connection request not found' });
         }
 
-        let targetUser = await userModel.findById(id);
-        if(!targetUser){
-            const targetCompany = await companyModel.findById(id);
+        user.manageRequests = user.manageRequests.filter((reqst) => !reqst.userId.equals(requestId));
+        await user.save();
 
-            if(!targetCompany){
-                return res.status(404).json({error : 'Company not found'});
-            }
-
-            targetUser = targetCompany;
-        }
-
-        if(!targetUser._id || !user._id){
-            return res.status(400).json({error : 'Invalid user'});
-        }
-
-        if (Array.isArray(user.connections)) {
-            const isConnected = user.connections.some((conn) => {
-                return conn.userId && conn.userId.equals(targetUser._id);
-            });
-
-        if(isConnected){
-
-            user.connections = user.connections.filter((conn) => {
-                return conn.userId && !conn.userId.equals(targetUser._id);
-            });
-
-            targetUser.connections = targetUser.connections.filter((conn) => {
-                return conn.userId && !conn.userId.equals(user._id);
-            });
-
-            await user.save();
-            await targetUser.save();
-
-            await notifyModel.deleteOne({
-                receiverUser : targetUser._id,
-                senderUser : user._id,
-                message : `${user.name} Followed You`,
-                type : 'connection'
-            })
-
-            return res.json({message : `Connection Removed with ${targetUser.name}`});
-
+        let sender = await userModel.findById(requestId);
+        if(sender){
+            sender.pendingRequests = sender.pendingRequests.filter((userr) => !userr.userId.equals(user._id));
+            await sender.save();
         } else {
-
-            user.connections.push({ userId: targetUser._id });
-
-            targetUser.connections.push({userId : user._id});
-
-            await user.save();
-            await targetUser.save();
-
-            await notifyModel.create({
-                receiverUser : targetUser._id,
-                senderUser : user._id,
-                message : `${user.name} Followed You`,
-                type : 'connection'
-            });
-
-            return res.json({message : `Connected with ${targetUser.name}`});
+            return res.status(404).json({error : 'Sender not found'});
         }
 
-    }else{
-        return res.status(400).json({ error: 'Invalid connections or targetUser._id' });
-    }
+        await notifyModel.deleteOne({
+            message : `You have a new connection request from ${sender.name}`,
+            type : 'connection',
+            receiverUser : user._id,
+            senderUser : sender._id
+        });
 
+        return res.json({message: 'Connection Request removed '});
+    
     } catch (error) {
         next(error);
     }
 }
+
+// export const connectAndDisconnectUser = async (req, res, next) => {
+//     try {
+//         const id = req.params.userId;
+//         const user = req.user; 
+
+//         if(!user){
+//             return res.status(404).json({error : 'No user found'});
+//         }
+
+//         let targetUser = await userModel.findById(id);
+//         if(!targetUser){
+//             const targetCompany = await companyModel.findById(id);
+
+//             if(!targetCompany){
+//                 return res.status(404).json({error : 'Company not found'});
+//             }
+
+//             targetUser = targetCompany;
+//         }
+
+//         if(!targetUser._id || !user._id){
+//             return res.status(400).json({error : 'Invalid user'});
+//         }
+
+//         if (Array.isArray(user.connections)) {
+//             const isConnected = user.connections.some((conn) => {
+//                 return conn.userId && conn.userId.equals(targetUser._id);
+//             });
+
+//         if(isConnected){
+
+//             user.connections = user.connections.filter((conn) => {
+//                 return conn.userId && !conn.userId.equals(targetUser._id);
+//             });
+
+//             targetUser.connections = targetUser.connections.filter((conn) => {
+//                 return conn.userId && !conn.userId.equals(user._id);
+//             });
+
+//             await user.save();
+//             await targetUser.save();
+
+//             await notifyModel.deleteOne({
+//                 receiverUser : targetUser._id,
+//                 senderUser : user._id,
+//                 message : `${user.name} Followed You`,
+//                 type : 'connection'
+//             })
+
+//             return res.json({message : `Connection Removed with ${targetUser.name}`});
+
+//         } else {
+
+//             user.connections.push({ userId: targetUser._id });
+
+//             targetUser.connections.push({userId : user._id});
+
+//             await user.save();
+//             await targetUser.save();
+
+//             await notifyModel.create({
+//                 receiverUser : targetUser._id,
+//                 senderUser : user._id,
+//                 message : `${user.name} Followed You`,
+//                 type : 'connection'
+//             });
+
+//             return res.json({message : `Connected with ${targetUser.name}`});
+//         }
+
+//     }else{
+//         return res.status(400).json({ error: 'Invalid connections or targetUser._id' });
+//     }
+
+//     } catch (error) {
+//         next(error);
+//     }
+// }
 
 
 
@@ -375,6 +459,49 @@ export const getApplicants = async (req, res, next) => {
         return res.json({message : 'Success' , job});
 
     } catch(error) {
+        next(error);
+    }
+}
+
+export const updateApplicationStatus = async (req, res, next) => {
+    try {
+        const newStatus = req.body.newStatus;
+        const applicationId = req.params.applicationId;
+        const user = req.user;
+
+        //to find job with specific appplication
+        const job = await jobModel.findOne({'applicants._id' : applicationId});
+
+        if(!job){
+            return res.status(404).json({ message: 'Job not found' });
+        }
+
+        //to find specific application within applicants array of finded job
+        const application = job.applicants.find((appli) => appli._id.toString() === applicationId);
+
+        if(!application){
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        application.status = newStatus;
+
+        // if(application.status === 'Rejected'){
+        //     job.applicants = job.applicants.filter((appli) => appli._id.toString() !== applicationId);
+        // }
+
+        if(application.status === 'Accepted' || application.status === 'Rejected'){
+            await notifyModel.create({
+                senderUser : user._id,
+                receiverUser : application.userId,
+                message : `Your Job Application for ${job.position} was ${application.status} by ${user.name}`,
+                type : 'job'
+            });
+        }
+        await job.save();
+
+        return res.status(200).json({message : 'updated Successfully'});
+
+    } catch (error) {
         next(error);
     }
 }
