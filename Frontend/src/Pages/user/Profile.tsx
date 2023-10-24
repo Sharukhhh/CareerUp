@@ -24,6 +24,7 @@ const Profile = () => {
   const [posts, setPosts] = useState<any>([]);
   const [jobs , setJobs] = useState<any>([]);
   const [updateUI , setUpdateUI] = useState<boolean>(false);
+  const [loading ,setIsLoading] = useState<boolean>(true);
 
   const [educationId , setEducationId] = useState<string>('');
   const [professionId , setProfessionId] = useState<string>('');
@@ -64,6 +65,7 @@ const Profile = () => {
   // console.log(id);
   
   useEffect(() => {
+    setIsLoading(true);
     if(id){
       axiosInstance.get(`/profile/${id}`).then((res) => {
         
@@ -80,25 +82,26 @@ const Profile = () => {
           setUserData(res.data.user);
         }
       }).catch((error) => console.log(error , 'axios')
-      )
+      ).finally(() => setIsLoading(false));
     }
   },[id ,  updateUI]);
 
   useEffect(() => {
+    setIsLoading(true);
     if(id){
       axiosInstance.get(`/userposts/${id}`).then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }
       }).catch((error) => console.log(error , 'user own posts fetch error')
-      )
+      ).finally(() => setIsLoading(false))
     } else {
       axiosInstance.get('/getposts').then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }
       }).catch((err) => console.log(err, 'axios posts err')
-      )
+      ).finally(() => setIsLoading(false));
     }
     
   },[id , updateUI]);
@@ -116,12 +119,14 @@ const Profile = () => {
   // }, [updateUI ]);
 
   useEffect(() => {
+    setIsLoading(true);
     axiosInstance.get(`/postedjobs`).then((res) => {
       if(res.data.message){
         setJobs(res.data.jobs);
       }
     }).catch((error) => console.log('jobs fetch error', error)
     )
+    .finally(() => setIsLoading(false))
   },[isCompany]);
 
   const navigateToInfo =(id : string) => {
@@ -139,143 +144,151 @@ const Profile = () => {
         <Toaster position="top-center" />
         <UserNav />
 
-        <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto">
-          {/* Left */}
-          <div className="w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto">
-            <ProfileCard updateUI={updateUI} userData = {userData} openEditModal={openEditModal} />
-            {/* <ConnectionCard userData={userData} /> */}
-          </div>
+        {loading ? (
+          <span className='flex items-center justify-center mx-auto my-16'>
+            <Spinner  className='h-24 w-24'/>
+          </span> 
+        ) : (
+        <>  
+          <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto">
+            {/* Left */}
+            <div className="w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto">
+              <ProfileCard updateUI={updateUI} userData = {userData} openEditModal={openEditModal} />
+              {/* <ConnectionCard userData={userData} /> */}
+            </div>
 
-          {/* center */}
-          <div className="w-full flex-1 bg-bgColor px-4 flex flex-col gap-6 overflow-y-auto">
-            <PostCards setUpdateUI={setUpdateUI} userData={userData} showAllposts={false} posts={posts} />
+            {/* center */}
+            <div className="w-full flex-1 bg-bgColor px-4 flex flex-col gap-6 overflow-y-auto">
+              <PostCards setUpdateUI={setUpdateUI} userData={userData} showAllposts={false} posts={posts} />
 
-          </div>
+            </div>
 
-          {/* right */}
-            {/* User Profession /  */}
-            {user?.role === 'Candidate' ? (
-              <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
-                <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
-                    <span>Experience / Profession</span>
-                  </div>
+            {/* right */}
+              {/* User Profession /  */}
+              {user?.role === 'Candidate' ? (
+                <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+                  <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                    <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
+                      <span>Experience / Profession</span>
+                    </div>
 
-                  {userData?.profession?.length > 0 ? (
-                  <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
-                    {userData?.profession?.map((item : any) => {
-                      return (
-                      <div className="flex items-center justify-between" key={item?._id}>
-                        <BsBriefcase size={25} className='w-14 h-14 me-5 text-blue' />
-                        <div className='flex-1'>
-                          <p className='font-bold text-lg text-gray-900'>{item?.role}</p>
-                          <span className='text-md'>{item?.companyName}</span> <br />
-                          <span className='text-ascent-2 text-sm'>{item?.location}</span>
-                        </div>
-
-                        {user?.userId === userData?._id && (
-                        <div className='flex me-1 flex-col gap-4'>
-                          <button onClick={() => navigateToInfo(item?._id)}
-                          className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                            <BiSolidEdit />
-                          </button>
-                          <button onClick={() => openBox(item?._id)}
-                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                            <MdDelete />
-                          </button>
-                        </div>
-                        )}
-                      </div>
-                      )
-                    })}
-                  </div>
-                  ) : (
-                    <p className='text-gray-600 text-center'>Not Added </p>
-                  )}
-                </div>
-            
-              <div className="lg:hidden mt-4"></div>
-
-                <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
-                    <span>Education</span>
-                  </div>
-
-                  {userData?.education?.length > 0 ? (
-                  <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
-                    {userData?.education?.map((item : any) => {
-                      return (
-                      <>
-                      <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item?._id}>
-                        <FaUserGraduate size={25} className='w-14 h-14 me-5 text-blue' />
-                        <div className='flex-1'>
-                          <p className='font-bold text-lg text-gray-900'>{item?.fieldOfStudy}</p>
-                          <span className='text-md'>{item?.institute}</span> <br />
-                          <span className='text-ascent-2 text-sm'>{item?.location}</span> <br />
-                        </div>
-
-                        {user.userId === userData._id && (
-                        <div className='flex me-1 flex-col gap-4'>
-                          <button onClick={() => navigateToInfo(item?._id)}
-                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                            <BiSolidEdit />
-                          </button>
-                          <button onClick={() => openEduBox(item?._id)}
-                          className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                            <MdDelete />
-                          </button>
-                        </div>
-                        )}
-                      </div>
-                      </>
-                      )
-                    })}
-                  </div>
-                  ):(
-                    <p className='text-gray-600 text-center'>Not Added </p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
-                <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                  <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
-                    <span>Jobs By {user?.username}</span>
-                    <button onClick={navigateJobs} className='bg-blue px-3 rounded-lg py-1 text-white text-xs'>View in Detail</button>
-                  </div>
-                  <div className="w-full flex flex-col gap-4 pt-4 rounded-md p-4 shadow-lg">
-                    {jobs?.length > 0 ? (
-                      jobs?.map((job : any) => {
-                        return(
-                        <div className="flex items-center justify-between" >
+                    {userData?.profession?.length > 0 ? (
+                    <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
+                      {userData?.profession?.map((item : any) => {
+                        return (
+                        <div className="flex items-center justify-between" key={item?._id}>
+                          <BsBriefcase size={25} className='w-14 h-14 me-5 text-blue' />
                           <div className='flex-1'>
-                            <p className='font-bold text-lg'>{job?.position}</p>
-                            <span className='text-md'>{job?.location}</span>
-                            <span className='text-ascent-2 text-sm'></span>
-                            <span className='text-ascent-1 text-xs'>
-
-                            </span>
+                            <p className='font-bold text-lg text-gray-900'>{item?.role}</p>
+                            <span className='text-md'>{item?.companyName}</span> <br />
+                            <span className='text-ascent-2 text-sm'>{item?.location}</span>
                           </div>
 
+                          {user?.userId === userData?._id && (
                           <div className='flex me-1 flex-col gap-4'>
-                            <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
-
+                            <button onClick={() => navigateToInfo(item?._id)}
+                            className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              <BiSolidEdit />
                             </button>
-                            <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                              
+                            <button onClick={() => openBox(item?._id)}
+                            className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              <MdDelete />
                             </button>
                           </div>
+                          )}
                         </div>
                         )
-                        })
-                    ) : ( 
+                      })}
+                    </div>
+                    ) : (
                       <p className='text-gray-600 text-center'>Not Added </p>
-                    )} 
+                    )}
+                  </div>
+              
+                <div className="lg:hidden mt-4"></div>
+
+                  <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                    <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b mb-2 border-[#66666645]">
+                      <span>Education</span>
+                    </div>
+
+                    {userData?.education?.length > 0 ? (
+                    <div className="w-full flex flex-col gap-4 pt-4 bg-light-blue-50 rounded-md p-4 shadow-lg">
+                      {userData?.education?.map((item : any) => {
+                        return (
+                        <>
+                        <div className="flex items-center justify-between border-b border-[#423e3e87] p-1" key={item?._id}>
+                          <FaUserGraduate size={25} className='w-14 h-14 me-5 text-blue' />
+                          <div className='flex-1'>
+                            <p className='font-bold text-lg text-gray-900'>{item?.fieldOfStudy}</p>
+                            <span className='text-md'>{item?.institute}</span> <br />
+                            <span className='text-ascent-2 text-sm'>{item?.location}</span> <br />
+                          </div>
+
+                          {user.userId === userData._id && (
+                          <div className='flex me-1 flex-col gap-4'>
+                            <button onClick={() => navigateToInfo(item?._id)}
+                            className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              <BiSolidEdit />
+                            </button>
+                            <button onClick={() => openEduBox(item?._id)}
+                            className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              <MdDelete />
+                            </button>
+                          </div>
+                          )}
+                        </div>
+                        </>
+                        )
+                      })}
+                    </div>
+                    ):(
+                      <p className='text-gray-600 text-center'>Not Added </p>
+                    )}
                   </div>
                 </div>
-              </div>  
-            )}
-        </div>
+              ) : (
+                <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+                  <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                    <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
+                      <span>Jobs By {user?.username}</span>
+                      <button onClick={navigateJobs} className='bg-blue px-3 rounded-lg py-1 text-white text-xs'>View in Detail</button>
+                    </div>
+                    <div className="w-full flex flex-col gap-4 pt-4 rounded-md p-4 shadow-lg">
+                      {jobs?.length > 0 ? (
+                        jobs?.map((job : any) => {
+                          return(
+                          <div className="flex items-center justify-between" >
+                            <div className='flex-1'>
+                              <p className='font-bold text-lg'>{job?.position}</p>
+                              <span className='text-md'>{job?.location}</span>
+                              <span className='text-ascent-2 text-sm'></span>
+                              <span className='text-ascent-1 text-xs'>
+
+                              </span>
+                            </div>
+
+                            <div className='flex me-1 flex-col gap-4'>
+                              <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+
+                              </button>
+                              <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                                
+                              </button>
+                            </div>
+                          </div>
+                          )
+                          })
+                      ) : ( 
+                        <p className='text-gray-600 text-center'>Not Added </p>
+                      )} 
+                    </div>
+                  </div>
+                </div>  
+              )}
+          </div>
+        </>
+        )}
       </div>
 
       <Suspense fallback={<Spinner/>}>

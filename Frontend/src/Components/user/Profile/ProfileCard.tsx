@@ -16,7 +16,7 @@ interface ProfileCardProps {
 
 const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , updateUI}) => {
 
-    const [userConnections, setUserConnections] = useState<any>([]);
+    // const [userConnections, setUserConnections] = useState<any>([]);
 
     const navigate = useNavigate();
 
@@ -27,15 +27,15 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
         navigate('/message');
     }
 
-    useEffect(() => {
-        axiosInstance.get('/getConnections')
-        .then((res) => {
-            if(res.data.message){
-                setUserConnections(res.data.users);
-            }
-        }).catch((error) => console.log(error , 'fetch err')
-        )
-    } , [updateUI]);
+    // useEffect(() => {
+    //     axiosInstance.get('/getConnections')
+    //     .then((res) => {
+    //         if(res.data.message){
+    //             setUserConnections(res.data.users);
+    //         }
+    //     }).catch((error) => console.log(error , 'fetch err')
+    //     )
+    // } , [updateUI]);
 
     
   return (
@@ -44,8 +44,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
         <div className='w-full bg-primary flex flex-col items-center shadow-sm rounded-xl px-6 py-4'>
             <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645]'>
                 <Link to='' className='flex gap-2'>
-                    <img src={userData?.profileImage} alt="profile img" className='w-14 h-14 object-cover rounded-full bg-gray-600' />
-
+                    {userData?.profileImage ? (
+                        <img src={userData?.profileImage} alt="profile img" className='w-14 h-14 object-cover rounded-full' />
+                    ) : (
+                        <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" className='w-14 h-14 object-cover rounded-full opacity-70' />
+                    )}
                     <div className='flex flex-col justify-center'>
                         <p className='text-lg font-medium text-ascent-1'>
                             {userData?.name}
@@ -89,13 +92,18 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
 
                 {isCandidate ?  (
                 <div className='w-full flex flex-col gap-4 pt-4'>
-                    {userConnections?.connections?.map((connection : any) => {
+                    {userData?.connections?.map((connection : any) => {
                         return(
                         <div className='flex items-center justify-between' key={connection._id}>
                             <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
-                                <img src={connection?.userId?.profileImage}
-                                className='w-10 h-10 object-cover rounded-full' alt="" 
-                                />
+                                {connection?.userId?.profileImage ? (
+                                    <img src={connection?.userId?.profileImage}
+                                    className='w-10 h-10 object-cover rounded-full' alt="" 
+                                    />
+                                ) : (
+                                    <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt=""
+                                    className='w-10 h-10 object-cover rounded-full opacity-70'/>
+                                )}
                                 <div className='flex-1'>
                                     <p className='text-base font-medium text-ascent-1'>
                                         {connection?.userId?.name}

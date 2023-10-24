@@ -129,8 +129,13 @@ const UserNav:React.FC<UserNavProps> = () => {
                 )}
             </NavLink>
 
+          
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
-            <img src={userData ? userData.profileImage : null} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+            {userData?.profileImage ? (
+              <img src={userData?.profileImage} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+            ) : (
+              <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+            )}
           </span>
 
             {

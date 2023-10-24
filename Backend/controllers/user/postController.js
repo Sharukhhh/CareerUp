@@ -162,7 +162,7 @@ export const likeandDislikePost = async (req, res, next) =>{
     const user = req.user;
     const postId = req.params.postId;
 
-    const post  = await postModel.findById(postId);
+    const post  = await postModel.findById(postId).populate('user');
 
     if(!post){
       return res.status(401).json({error : 'No post found'});
@@ -174,28 +174,38 @@ export const likeandDislikePost = async (req, res, next) =>{
       post.likes = post.likes.filter((userId) => userId.toString() !== user._id.toString() );
       await post.save();
 
-      await notifyModel.deleteOne({
-        message : `${user.name} Liked Your Post`,
-        receiverUser : post.user,
-        senderUser : user._id,
-        post : post._id,
-        type : 'posts'
-      })
+      if(post.user._id !== user._id ){
+        await notifyModel.deleteOne({
+          message : `${user.name} Liked Your Post`,
+          receiverUser : post.user,
+          senderUser : user._id,
+          post : post._id,
+          type : 'posts'
+        })
+      }
 
       return res.status(200).json({message: 'DisLiked Post'});
 
     } else {
 
-      post.likes.push(user._id);
-      await post.save();
+      if(post.user._id === user._id){
+        post.likes.push(user._id);
+        await post.save();
 
-      await notifyModel.create({
-        message : `${user.name} Liked Your Post`,
-        receiverUser : post.user,
-        senderUser : user._id,
-        post : post._id,
-        type : 'posts'
-      });
+      } else {
+
+        post.likes.push(user._id);
+        await post.save();
+  
+        await notifyModel.create({
+          message : `${user.name} Liked Your Post`,
+          receiverUser : post.user,
+          senderUser : user._id,
+          post : post._id,
+          type : 'posts'
+        });
+  
+      }
 
       return res.status(200).json({message : 'Post Likes Successfully'});
     }
@@ -267,7 +277,7 @@ export const addComment = async (req, res, next) => {
     const user = req.user;
     const {text} = req.body;
 
-    const findPost = await postModel.findById(postId);
+    const findPost = await postModel.findById(postId).populate('user');
     if(!findPost){
       return res.status(404).json({error : 'Post not found'});
     }
@@ -279,16 +289,23 @@ export const addComment = async (req, res, next) => {
   
       await newComment.save();
   
-      findPost.comments.push(newComment._id);
-      await findPost.save();
+      if(findPost.user._id === user._id){
+        findPost.comments.push(newComment._id);
+        await findPost.save();
 
-      await notifyModel.create({
-        senderUser : user._id,
-        receiverUser : findPost.user,
-        type : 'posts',
-        message: `${user.name} commented on your post`,
-        post : findPost._id
-      })
+      } else {
+
+        findPost.comments.push(newComment._id);
+        await findPost.save();
+  
+        await notifyModel.create({
+          senderUser : user._id,
+          receiverUser : findPost.user,
+          type : 'posts',
+          message: `${user.name} commented on your post`,
+          post : findPost._id
+        })
+      }
 
     } else {
 
@@ -297,17 +314,24 @@ export const addComment = async (req, res, next) => {
       });
   
       await newComment.save();
-  
-      findPost.comments.push(newComment._id);
-      await findPost.save();
 
-      await notifyModel.create({
-        senderUser : user._id,
-        receiverUser : findPost.user,
-        type : 'posts',
-        message: `${user.name} commented on your post`,
-        post : findPost._id
-      })
+      if(findPost.user._id === user._id){
+        findPost.comments.push(newComment._id);
+        await findPost.save();
+        
+      } else {
+
+        findPost.comments.push(newComment._id);
+        await findPost.save();
+  
+        await notifyModel.create({
+          senderUser : user._id,
+          receiverUser : findPost.user,
+          type : 'posts',
+          message: `${user.name} commented on your post`,
+          post : findPost._id
+        })
+      }
     }
 
     return res.json({message : 'Comment Added'});

@@ -109,11 +109,15 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
         <form onSubmit={postSubmit} className="bg-primary px-4 rounded-lg flex flex-col " encType='multipart/form-data'>
             <div className='flex flex-col p-2 border-b border-[#66666645]'>
                 <div className="w-full flex items-center gap-2 py-4">
-                    <img 
-                    src={userData.profileImage} 
-                    alt=""
-                    className="w-14 h-14 object-cover rounded-full bg-gray-700"
-                    />
+                    {userData?.profileImage ? (
+                        <img 
+                        src={userData.profileImage} 
+                        alt=""
+                        className="w-14 h-14 object-cover rounded-full bg-gray-700"
+                        />
+                    ) : (
+                        <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" className='w-14 h-14 object-cover rounded-full opacity-70'/>
+                    )}
                     <div className='w-full flex flex-col'>
                         <textarea rows={2} name="description"
                         value={content} onChange={(e) => setContent(e.target.value)}

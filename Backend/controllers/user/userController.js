@@ -19,7 +19,7 @@ export const getProfile = async (req, res , next) => {
         const user = await userModel.findById(id)
         .select('name headline profileImage connections') // Only select the necessary fields
         .populate({
-            path: 'connections',
+            path: 'connections.userId',
             select: 'name profileImage',
         }).exec();
         

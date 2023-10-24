@@ -69,19 +69,11 @@ export const addBasic = async (req, res, next) => {
             profileImagerUrl = result.secure_url;
         }
 
-        let resumePath = null;
+        let resumeUrl = null;
         if(data && data.resume){
-            const resumeFile = data.resume[0];
-            resumePath = `../Frontend/public/resumes/${resumeFile.filename}`;
 
-            fs.rename(resumeFile.path , resumePath , (err) => {
-                if(err){
-                    return res.status(400).json({error : 'error while changing pathname'});
-                }
-            });
-
-            // const result = await cloudinary.uploader.upload(data.resume[0].path);
-            // resumeUrl = result.secure_url;
+            const result = await cloudinary.uploader.upload(data.resume[0].path);
+            resumeUrl = result.secure_url;
         }
 
         if(user.role === 'Candidate'){
@@ -89,10 +81,12 @@ export const addBasic = async (req, res, next) => {
                 location : location, 
                 headline : headline, 
                 profileImage : profileImagerUrl,
-                resume: resumePath
+                resume: resumeUrl
             } , 
             {new : true});
-            console.log(updatedUser);
+
+            console.log(updatedUser , 'ith cloud url');
+            
 
             if(updatedUser){
                 return  res.status(200).json({message : 'Updated Successfully'});
@@ -106,7 +100,7 @@ export const addBasic = async (req, res, next) => {
                 headline : headline,
                 profileImage : profileImagerUrl
             } , {new : true});
-            console.log(updatedCompany);
+            
 
             if(updatedCompany){
                 return res.status(200).json({message : 'Updated Successfully'});
@@ -404,3 +398,15 @@ export const createJob = async (req, res, next) => {
         next(error);
     }
 }
+
+
+
+
+            // const resumeFile = data.resume[0];
+            // resumePath = `../Frontend/public/resumes/${resumeFile.filename}`;
+
+            // fs.rename(resumeFile.path , resumePath , (err) => {
+            //     if(err){
+            //         return res.status(400).json({error : 'error while changing pathname'});
+            //     }
+            // });

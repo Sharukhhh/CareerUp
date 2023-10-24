@@ -19,10 +19,10 @@ const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
     const [posts , setPosts] = useState<any[]>([])
     const [listUsers , setListUsers] = useState<any[]>([]);
-    // const [companies , setCompanies] = useState<any[]>([]);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
+  const [loading , setIsLoading] = useState<boolean>(true);
 
 
   const openEditModal = () => {
@@ -37,6 +37,7 @@ const UserFeed = () => {
     const isCandidate = user?.role === 'Candidate';
 
     useEffect(() => {
+      setIsLoading(true);
       axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
       
         if(res.data){
@@ -61,6 +62,7 @@ const UserFeed = () => {
           toast.error(res.data.error);
         }
       }).catch((err) => console.log(err, 'axios listing err'))
+      .finally(() => setIsLoading(false));
 
       // axiosInstance.get('/companies').then((res) => {
       //   if(res.data.message){
@@ -106,6 +108,11 @@ const UserFeed = () => {
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 
+            {loading ? (
+              <span className='flex items-center justify-center mx-auto my-16'>
+                <Spinner  className='h-24 w-24'/>
+              </span> 
+            ) : (
             <div className='w-full flex flex-col md:flex-row  gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto'>
 
                 {/* left-side */}
@@ -167,9 +174,14 @@ const UserFeed = () => {
                               return(
                               <div className='flex items-center justify-between' key={user?._id}>
                                 <Link to={`/account/${user?._id}`} className='w-full flex gap-4 items-center cursor-pointer' key={user?._id}>
-                                  <img src={user?.profileImage} alt=""
-                                  className='w-10 h-10 object-cover rounded-full'
-                                  />
+                                  {user?.profileImage ? (
+                                    <img src={user.profileImage} alt=""
+                                    className='w-10 h-10 object-cover rounded-full'
+                                    />
+                                  ) : (
+                                    <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
+                                    className='w-10 h-10 object-cover rounded-full' />
+                                  )}
                                   <div className='flex-1'>
                                     <p className='text-base font-medium text-ascent-1'>
                                       {user?.name}
@@ -211,6 +223,7 @@ const UserFeed = () => {
                     </div>
                 </div>
             </div>
+            )}
         </div>
 
         <Suspense fallback={<Spinner />}>

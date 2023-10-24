@@ -140,7 +140,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
               <Link to={`/account/${post?.user?._id}` || `/account/${post?.company?._id}`}>
-                <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full bg-gray-600' />
+                <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full' />
               </Link>
 
               <div className='w-full flex justify-between'>

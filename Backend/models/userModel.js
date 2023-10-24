@@ -49,7 +49,7 @@ const userSchema = mongoose.Schema({
 
     profileImage : {
         type : String,
-        default : 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
+        default : 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'  
     },
 
     education : [
@@ -97,7 +97,7 @@ const userSchema = mongoose.Schema({
         userId : {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'users'
-        }
+        } 
     }],
 
     connections : [{
