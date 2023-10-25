@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import {Server as SocketIoServer} from 'socket.io';
 import http from 'http';
+import path from 'path';
 
 
 const app = express(); 
@@ -23,9 +24,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use(express.static('Backend/public/resumes')); 
 app.use(express.json()); 
 app.use(express.urlencoded({extended : true})); 
-app.use(express.static('../Frontend/public')); 
+
 
 //user auth routes
 import authRoutes from './routes/auth/authRoutes.js'; 
@@ -57,10 +59,11 @@ connectDB();
 io.on('connection' , (socket) => {
     // console.log('connected');
 
-    //for notifications
-    socket.on('new notification' , ({userSocketId  , notificationData}) => {
-        io.to(userSocketId).emit('new notification' , notificationData);
-    })
+    // //for notifications
+    // socket.on('new notification' , ({userSocketId  , notificationData}) => {
+    //     io.to(userSocketId).emit('new notification' , notificationData);
+    // })
+
     //chat related events starting
     socket.on('start' , (userData) => {
         socket.join(userData);   //joining a chat room

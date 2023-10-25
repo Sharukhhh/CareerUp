@@ -71,7 +71,7 @@ export const dashboardValues = async(req, res, next) => {
 // ADMIN - User Managment
 export const getUsers = async (req, res) => {
     try {
-        const users = await userModel.find();
+        const users = await userModel.find().sort({_id : -1});
 
         if(users){
             res.status(200).json({users});
@@ -126,7 +126,7 @@ export const unBlockUser = async (req, res) => {
 // ADMIN - Company Management
 export const getCompanies = async(req, res) => {
     try {  
-        const companies = await companyModel.find();
+        const companies = await companyModel.find().sort({_id : -1});
         
         if(companies){
             res.status(200).json({companies});
@@ -231,7 +231,7 @@ export const addCategory = async (req, res, next) => {
 
 export const getIndustries = async (req, res, next) => {
     try {
-        const industries = await categoryModel.find();
+        const industries = await categoryModel.find().sort({addedAt : -1});
         if(!industries){
             return res.status(404).json({error : 'Industries Not found'});
         }

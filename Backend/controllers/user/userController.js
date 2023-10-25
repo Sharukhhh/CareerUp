@@ -20,7 +20,7 @@ export const getProfile = async (req, res , next) => {
         .select('name headline profileImage connections') // Only select the necessary fields
         .populate({
             path: 'connections.userId',
-            select: 'name profileImage',
+            select: 'name profileImage _id',
         }).exec();
         
         if(!user){

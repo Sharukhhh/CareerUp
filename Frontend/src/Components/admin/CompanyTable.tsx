@@ -1,9 +1,23 @@
 import {useEffect, useState} from 'react'
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
 import toast, { Toaster } from 'react-hot-toast';
+import Pagination from '../Pagination.tsx';
 
 const CompanyTable = () => {
     const [companies , setCompanies] = useState<any>([]);
+    const [currentPage , setCurrentPage] = useState<number>(0);
+    const [paginatedDisplayedData , setPaginatedDisplayedData] = useState<any>([]);
+
+    const itemsPerPage = 5;
+
+    const handlePageChange = (page : number) => {
+        setCurrentPage(page);
+    } 
+
+    const handleDisplayedDataChange = (newData : any) => {
+        setPaginatedDisplayedData(newData);
+    }
+
 
     useEffect(() => {
         adminAxiosInstance.get('/companies').then((res) => {
@@ -99,7 +113,7 @@ const CompanyTable = () => {
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t bg-[#efecec]">
-                {companies.map((company : any , index : number ) => {
+                {paginatedDisplayedData.map((company : any , index : number ) => {
                     return (
                     <tr key={index} className="hover:bg-gray-50">
                         <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
@@ -168,6 +182,14 @@ const CompanyTable = () => {
             </tbody>
         </table>
     </div>
+
+    <Pagination 
+    datas={companies} 
+    currentPage={currentPage} 
+    itemsPerPage={itemsPerPage} 
+    onDisplayedDataChange={handleDisplayedDataChange} 
+    handlePageChange={handlePageChange} 
+    />
 </>
   )
 }

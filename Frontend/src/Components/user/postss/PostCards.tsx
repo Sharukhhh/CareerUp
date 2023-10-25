@@ -139,17 +139,31 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
         return (
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
-              <Link to={`/account/${post?.user?._id}` || `/account/${post?.company?._id}`}>
-                <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full' />
-              </Link>
+              {user?.userId === post?.user?._id ? (
+                <Link to={`/account`}>
+                  <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full' />
+                </Link>
+              ) : (
+                <Link to={`/account/${post?.user?._id}` || `/account/${post?.company?._id}`}>
+                  <img src={post?.user?.profileImage || post?.company?.profileImage} alt="profile" className='w-14 h-14 object-cover rounded-full' />
+                </Link>
+              )}
 
               <div className='w-full flex justify-between'>
                 <div className=''>
-                  <Link to={`/account/${post?.user?._id}` || `/account/${post?.company?._id}`} >
-                    <p className='font-medium text-lg text-ascent-1'>
-                      {post?.user?.name || post?.company?.name}
-                    </p>
-                  </Link>
+                  {user?.userId === post?.user?._id ? (
+                    <Link to={`/account`} >
+                      <p className='font-medium text-lg text-ascent-1'>
+                        {post?.user?.name || post?.company?.name}
+                      </p>
+                    </Link>
+                  ) : (
+                    <Link to={`/account/${post?.user?._id}` || `/account/${post?.company?._id}`} >
+                      <p className='font-medium text-lg text-ascent-1'>
+                        {post?.user?.name || post?.company?.name}
+                      </p>
+                    </Link>
+                  )}
                   <span className='text-ascent-2'>{post?.user?.headline || post?.company?.headline}</span>
                 </div>
                 <span className='text-ascent-2'>{moment(post?.createdAt ?? '2023-09-24').fromNow()}</span>

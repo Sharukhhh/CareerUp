@@ -72,12 +72,21 @@ export const addBasic = async (req, res, next) => {
         let resumeUrl = null;
         if(data && data.resume){
 
-            const result = await cloudinary.uploader.upload(data.resume[0].path);
-            resumeUrl = result.secure_url;
+            const resumeFile = data.resume[0];
+            resumeUrl = `public/resumes/${resumeFile.filename}`;
+
+            fs.rename(resumeFile.path , resumeUrl , (err) => {
+                if(err){
+                    return res.status(400).json({error : 'error while changing pathname'});
+                }
+            }); 
+            // const result = await cloudinary.uploader.upload(data.resume[0].path);
+            // resumeUrl = result.secure_url;
         }
 
+        let updatedUser;
         if(user.role === 'Candidate'){
-            const updatedUser = await userModel.findByIdAndUpdate(user._id , {
+            updatedUser = await userModel.findByIdAndUpdate(user._id , {
                 location : location, 
                 headline : headline, 
                 profileImage : profileImagerUrl,
@@ -86,28 +95,21 @@ export const addBasic = async (req, res, next) => {
             {new : true});
 
             console.log(updatedUser , 'ith cloud url');
-            
-
-            if(updatedUser){
-                return  res.status(200).json({message : 'Updated Successfully'});
-            } else {
-                return res.status(404).json({error : 'user not found'});
-            }
 
         } else {
-            const updatedCompany = await companyModel.findByIdAndUpdate(user._id ,{
+            updatedUser = await companyModel.findByIdAndUpdate(user._id ,{
                 location : location , 
                 headline : headline,
                 profileImage : profileImagerUrl
             } , {new : true});
             
+        }
 
-            if(updatedCompany){
-                return res.status(200).json({message : 'Updated Successfully'});
-                
-            } else {
-                return res.status(404).json({error : 'user not found'});
-            }
+        if(updatedUser){
+            return res.status(200).json({message : 'Updated Successfully'});
+            
+        } else {
+            return res.status(404).json({error : 'user not found'});
         }
 
     } catch (error) {
@@ -402,11 +404,3 @@ export const createJob = async (req, res, next) => {
 
 
 
-            // const resumeFile = data.resume[0];
-            // resumePath = `../Frontend/public/resumes/${resumeFile.filename}`;
-
-            // fs.rename(resumeFile.path , resumePath , (err) => {
-            //     if(err){
-            //         return res.status(400).json({error : 'error while changing pathname'});
-            //     }
-            // });

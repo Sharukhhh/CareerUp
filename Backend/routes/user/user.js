@@ -16,11 +16,11 @@ import upload from '../../utils/multerSetup.js';
 router.get('/search' , verify , search);
 
 //profile-management
-router.get('/profile/:id' , verify,  getProfile);
+router.get('/profile/:id' , verify,  getProfile); 
 
 router.get('/getConnections' , verify , displayConnections);
 
-router.put('/addBasic' , verify, upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }]), addBasic);
+router.put('/addBasic' , verify, upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }]) , addBasic);
 
 router.get('/listusers' , verify,  listAllUsers);
 
@@ -76,3 +76,4 @@ router.get('/chatusers' , verify,  getChatUsers);
 export default router;
 
 
+// upload.fields([{ name: 'profileImage', maxCount: 1 }, { name: 'resume', maxCount: 1 }])

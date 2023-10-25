@@ -95,7 +95,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
                     {userData?.connections?.map((connection : any) => {
                         return(
                         <div className='flex items-center justify-between' key={connection._id}>
-                            <Link to={`/account/${connection?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
+                            <Link to={`/account/${connection?.userId?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
                                 {connection?.userId?.profileImage ? (
                                     <img src={connection?.userId?.profileImage}
                                     className='w-10 h-10 object-cover rounded-full' alt="" 

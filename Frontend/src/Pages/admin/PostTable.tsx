@@ -3,10 +3,22 @@ import TopBar from '../../Components/admin/TopBar'
 import { adminAxiosInstance } from '../../api/axiosInstance'
 import {AiFillDelete} from 'react-icons/ai';
 import toast, { Toaster } from 'react-hot-toast';
+import Pagination from '../../Components/Pagination';
 
 const PostTable = () => {
     const [posts , setPosts] = useState<any[]>([]);
     const [updateUI , setUpDateUI] = useState<boolean>(false);
+    const [currentPage , setCurrentPage] = useState<number>(0);
+    const [paginatedDisplayedData , setPaginatedDisplayedData] = useState<any>([]);
+
+    const itemsPerPage = 4;
+    const handlePageChange = (page : number) => {
+        setCurrentPage(page);
+    }
+
+    const handleDisplayedDataChange = (newData : any) => {
+        setPaginatedDisplayedData(newData);
+    }
 
     useEffect(() => {
         adminAxiosInstance.get('/posts')
@@ -46,7 +58,7 @@ const PostTable = () => {
                     </tr>
                 </thead>
                 <tbody className='text-center py-6 bg-gray-200'>
-                {posts.map((post : any , index : number) => {
+                {paginatedDisplayedData.map((post : any , index : number) => {
                     return(
                     <tr className='' key={post?._id}>
                         <td className="min-w-[150px] border-white/0 py-3 pr-4">
@@ -92,6 +104,14 @@ const PostTable = () => {
                 </tbody>
             </table>
         </div>
+
+        <Pagination 
+        datas={posts} 
+        currentPage={currentPage} 
+        itemsPerPage={itemsPerPage} 
+        handlePageChange={handlePageChange} 
+        onDisplayedDataChange={handleDisplayedDataChange}
+        />
     </>
   )
 }

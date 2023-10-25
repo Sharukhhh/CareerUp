@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
 import toast, { Toaster } from 'react-hot-toast';
-import ReactPaginate from 'react-paginate';
+import Pagination from '../Pagination.tsx';
 
 
 const UserTable = () => {
 
     const [users , setUsers] = useState<any>([]);
+    const [currentPage , setCurrentPage] = useState<number>(0);
+    const [paginatedDisplayedData , setPaginatedDisplayedData] = useState<any>([]);
+
 
     useEffect(() => {
         adminAxiosInstance.get('/users').then((res) => {
@@ -17,6 +20,10 @@ const UserTable = () => {
         }).catch((err) => console.log(err, 'users get error axios')
         )
     }, []);
+
+    const handleDisplayedDataChange = (newData : any[]) => {
+        setPaginatedDisplayedData(newData);
+    }
 
     //block-user
     const blockUser = (userId : string) => {
@@ -62,13 +69,10 @@ const UserTable = () => {
         )
     }
 
-    const [currentPage , setCurrentPage] = useState<number>(0);
     const itemsPerPage = 5;
-    const pageCount = Math.ceil(users.length / itemsPerPage);
-    const displayedUsers = users.slice(currentPage * itemsPerPage , (currentPage + 1) * itemsPerPage);
 
-    const handlePageChange = (selectedPage : any) => {
-        setCurrentPage(selectedPage.selected);
+    const handlePageChange = (selectedPage : number) => {
+        setCurrentPage(selectedPage);
     }
 
   return (
@@ -86,7 +90,7 @@ const UserTable = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 border-t bg-[#efecec]">
-                    {users.map((user : any , index : string ) => {
+                    {paginatedDisplayedData.map((user : any , index : string ) => {
                         return (
                         <tr key={index} className="hover:bg-gray-50">
                             <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
@@ -147,48 +151,12 @@ const UserTable = () => {
 
 
         {/* Pagination */}
-        <div className='flex justify-center my-10'>
-            <nav className='block'>
-                <ul className="flex pl-0 rounded list-none flex-wrap">
-                    <li>
-                        <a
-                        href="#"
-                        className="relative block py-2 px-3 leading-tight bg-white border
-                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900 rounded-l-lg"
-                        >
-                            Previous
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                        className="relative block py-2 px-3 leading-tight bg-white border 
-                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900"
-                        >
-                            1
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                        className="relative block py-2 px-3 leading-tight bg-white border 
-                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900"
-                        >
-                            2
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                        className="relative block py-2 px-3 leading-tight bg-white border 
-                        border-gray-300 text-blue-700 hover:bg-gray-200 hover:text-blue-900 rounded-r-lg"
-                        >
-                            Next
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        <Pagination 
+        datas={users} 
+        currentPage={currentPage} 
+        itemsPerPage={itemsPerPage} 
+        handlePageChange={handlePageChange} onDisplayedDataChange={handleDisplayedDataChange} 
+        />
     </>
   )
 }

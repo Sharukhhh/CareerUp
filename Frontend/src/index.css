@@ -118,4 +118,7 @@ z-index: 49;
   border-top: 1px solid gray;
 }
 
+.login {
+  background-image: url(../public/land.jpg);
+}
 

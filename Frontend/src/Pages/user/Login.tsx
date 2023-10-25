@@ -49,7 +49,7 @@ const Login = () => {
     <>
     <Toaster position='top-right'/>
     <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
-    <div className=" border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="mx-auto h-10 w-auto"

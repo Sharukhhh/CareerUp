@@ -102,7 +102,7 @@ const Applicants = () => {
                                     <div className=" font-medium text-gray-500">{item?.userId?.email}</div>
                                     <div
                                     className='text-blue my-2 cursor-pointer' title='view resume'>
-                                        <a href={item?.resumeUrl} target='_blank' rel='noopener noreferrer'>
+                                        <a href={`http://localhost:3000/Backend/${item?.resumeUrl}`} target='_blank' >
                                             View Resume
                                         </a>
                                     </div>
