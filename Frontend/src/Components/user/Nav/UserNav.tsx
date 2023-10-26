@@ -5,6 +5,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 // import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
 import {BsBriefcaseFill} from 'react-icons/bs';
+import {GiWireframeGlobe} from 'react-icons/gi';
 import {ImHome} from 'react-icons/im';
 // import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
@@ -16,7 +17,7 @@ import { axiosInstance } from '../../../api/axiosInstance';
 import notificationRootState from '../../../Redux/rootstate/NotifyRootState';
 
 interface UserNavProps {
- 
+
 }
 
 
@@ -31,7 +32,6 @@ const UserNav:React.FC<UserNavProps> = () => {
   const [userData , setUserData] = useState<any>([]);
 
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
-  const [searchQuery , setSearchQuery] = useState<string>('');
 
   const location = useLocation();
   const dispatch = useDispatch();
@@ -61,24 +61,6 @@ const UserNav:React.FC<UserNavProps> = () => {
   //   dispatch(setTheme({ theme: themeValue } as SetThemepayload));
   // };     
 
-  useEffect(() => {
-    const debounceTimeout = setTimeout(() => {
-      axiosInstance.get('/search', {params : {query : searchQuery}})
-      .then((res) => {
-        if(res.data.message){
-          // console.log(res.data.posts);
-
-        }
-
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((error) => console.log(error , 'search error')
-      )
-    }, 300)
-
-    return () => clearTimeout(debounceTimeout);
-  }, [searchQuery]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -96,26 +78,27 @@ const UserNav:React.FC<UserNavProps> = () => {
         </div>
       </NavLink>
 
-      <form className='hidden md:flex items-center justify-center'>
-        <input type="text" placeholder='Search....' value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className='border border-r-0 w-[12rem] lg:w-[24rem] rounded-l-full py-2 px-2 md:px-4' />
+      {/* <div className='flex gap-2 md:gap-14 items-center'> */}
+        <form className='hidden md:flex items-center justify-center'>
+          <input type="text" placeholder='Search....' 
+          className='border border-r-0 w-[12rem] lg:w-[24rem] rounded-l-full py-2 px-2 md:px-4' />
 
-        <button type='submit' className='bg-[#0444a4] text-white px-4 py-2 rounded-r-full'>
-          Search
-        </button>
-      </form>
+          <button type='submit' className='bg-[#0444a4] text-white px-4 py-2 rounded-r-full'>
+            Search
+          </button>
+        </form>
+      {/* </div> */}
 
       {/* Icons */}
       <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl'>
             <NavLink to='/feed'>
               <ImHome className='hover:scale-125'/>
             </NavLink>
-          
-          {/* <button onClick={() => handleTheme()} >
-            {theme === 'light' ? <BsMoon className='hover:scale-125'/> : <BsSunFill className='hover:scale-125' /> }
-          </button> */}
 
+            <NavLink to={`/explore`}>
+              <GiWireframeGlobe className='hover:scale-125'/>
+            </NavLink>
+          
             <NavLink to='/jobs'>
               <BsBriefcaseFill className='hover:scale-125'/>
             </NavLink>
@@ -141,7 +124,7 @@ const UserNav:React.FC<UserNavProps> = () => {
             {
               openDropProfile && (
               <Suspense fallback={<div><Spinner/></div>}>
-              <LazyProfileDropDown userData={userData} />
+                <LazyProfileDropDown userData={userData} />
               </Suspense>
               )
             }

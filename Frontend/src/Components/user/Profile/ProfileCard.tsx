@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 // import {BsThreeDotsVertical} from 'react-icons/bs'
 import {BiEdit} from 'react-icons/bi';
 import {BsPersonFillAdd , BsBriefcase , BsFillChatLeftTextFill} from 'react-icons/bs';
+import {HiOutlineSaveAs} from 'react-icons/hi';
 import {CiLocationOn} from 'react-icons/ci';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
@@ -79,6 +80,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
                         {userData?.location}
                     </span>
                 </div>
+                {user?.userId === userData._id && (
+                    <Link to={`/saved`}>
+                        <div className='flex gap-2 items-center text-ascent-2 cursor-pointer hover:underline underline-offset-2'>
+                            <HiOutlineSaveAs className='text-blue ' />
+                            <span >Saved items</span>
+                        </div>
+                    </Link>
+                )}
             </div>
 
             

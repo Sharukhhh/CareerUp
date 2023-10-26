@@ -337,6 +337,99 @@ export const rejectConnectionRequest = async (req, res, next) => {
 //     }
 // }
 
+export const followAndUnfollowCompany = async (req , res, next) => {
+    try {
+        const companyId = req.params.companyId;
+        const user = req.user;
+
+        if(!user){
+            return res.status(404).json({error : 'No user found'});
+        }
+
+        let targetUser = await userModel.findById(companyId);
+        
+        if(!targetUser){
+            const targetCompany = await companyModel.findById(companyId);
+
+            if(!targetCompany){
+                return res.status(404).json({error : 'Company not found'});
+            }
+
+            targetUser = targetCompany;
+        }
+
+        if(!targetUser._id || user._id){
+            return res.status(400).json({error : 'Invalid user'});
+        }
+
+        if(targetUser.role === 'Company'){
+            if (Array.isArray(targetUser.followers)) {
+                const isFollowing = targetUser.followers.some((conn) => {
+                    if (user.role === 'Candidate' && conn.user) {
+                        return conn.user.equals(user._id);
+                    } else if (user.role === 'Company' && conn.company) {
+                        return conn.company.equals(user._id);
+                    }
+                    return false;
+                });
+
+                if(isFollowing){
+                    targetUser.followers.filter((conn) => {
+                        return conn.user && !conn.user.equals(user._id);
+                    })
+
+                    user.followingCompanies.filter((conn) => {
+                        return conn.company && !conn.company.equals(targetUser._id);
+                    })
+
+                    await notifyModel.deleteOne({
+                        senderUser : user._id,
+                        recieverUser : targetUser._id,
+                        message : `${user.name} Followed You`,
+                        type : 'posts'
+                    });
+
+                    await notifyModel.create({
+                        senderUser : user._id,
+                        recieverUser : targetUser._id,
+                        message : `${user.name} Unfollowed You`,
+                        type : 'posts'
+                    })
+
+                    await user.save();
+                    await targetUser.save();
+
+                } else {
+
+                    if(user.role === 'Candidate'){
+                        targetUser.followers.push({user : user._id});
+
+                    } else {
+                        targetUser.followers.push({company : user._id});
+                    }
+
+                    user.followingCompanies.push({company : targetUser._id});
+
+                    await notifyModel.create({
+                        senderUser : user._id,
+                        recieverUser : targetUser._id,
+                        message : `${user.name} Followed You`,
+                        type : 'posts'
+                    });
+
+                    await user.save();
+                    await targetUser.save();
+                }
+            } else {
+                return res.status(400).json({error : 'Not acceptable'});
+            }
+        } 
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 
 
 export const search = async (req, res, next) => {

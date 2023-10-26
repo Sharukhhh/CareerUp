@@ -24,6 +24,7 @@ import Dashboard from './Pages/admin/Dashboard';
 import PostTable from './Pages/admin/PostTable';
 import Notifications from './Pages/user/Notifications';
 import NotFound from './Pages/intro/NotFound';
+import Explore from './Pages/user/Explore';
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path='/saved' element={<SavedPosts/>}/>
           <Route path='/message' element={<Chat />}/>
           <Route path='/notifications' element={<Notifications/>}/>
+          <Route path='/explore' element={<Explore/>}/>
           {isCandidate ? (
             <Route path='/jobs' element={<JobsPage />} />
           ) : (

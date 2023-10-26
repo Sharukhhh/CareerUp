@@ -142,16 +142,38 @@ export const getSavedPosts = async (req, res, next) => {
   try {
     const user = req.user;
 
-    const posts = user.savedPosts;
+    let currentUser = await userModel.findById(user._id)
+    .populate({
+      path: 'savedPosts.postId',
+      populate: {
+        path: 'user',
+        model: 'users', 
+      },
+    });
 
-    if(!posts){
-      return res.status(404).json({error : 'Saved posts not found'});
+    if(!currentUser){
+      currentUser = await companyModel.findById(user._id)
+      .populate({
+        path: 'savedPosts.postId',
+        populate: {
+          path: 'company',
+          model: 'companies',
+        },
+      });
+
+      if(!currentUser){
+        return res.status(404).json({error : 'Saved not found'});
+      }
     }
 
-    return res.status(200).json({message : 'Saved Posts' , posts});
+    // Iterate over saved posts
+    const savedPosts = currentUser.savedPosts.map((savedPost) => savedPost.postId);
+    console.log(savedPosts);
+
+    return res.status(200).json({message : 'Saved Posts' , posts :  savedPosts});
   } catch (error) {
     next(error);
-  }
+  } 
 }
 
 // *********************************************************************************

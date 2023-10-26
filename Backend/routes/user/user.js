@@ -2,9 +2,8 @@ import express from 'express';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies, 
-    // connectAndDisconnectUser,
     sendConnectionRequest, acceptConnectionRequest,  rejectConnectionRequest ,
-    displayNotifications,  getChatUsers, updateApplicationStatus, displayConnections} 
+    displayNotifications,  getChatUsers, updateApplicationStatus, displayConnections, followAndUnfollowCompany} 
 from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
@@ -30,7 +29,7 @@ router.get('/companies' , verify , listCompanies);
 //user posts-management
 router.post('/addPost' , verify, upload.array('image' , 'video'), createPost);
 
-router.patch('/deletepost/:postId' , verify, deletePost);
+router.patch('/deletepost/:postId' , verify, deletePost); 
 
 router.get('/getposts' , verify,  getPosts);
 
@@ -50,13 +49,15 @@ router.patch('/report/:postId' , verify , reportPost )
 
 
 //user-connections
-// router.get('/connect/:userId' , verify , connectAndDisconnectUser);
-
 router.get('/send/:userId' , verify , sendConnectionRequest);
 
 router.get('/accept/:userId' , verify , acceptConnectionRequest);
 
 router.get('/reject/:userId' , verify , rejectConnectionRequest);
+
+router.get('/follow-unfollow/:companyId' , verify , followAndUnfollowCompany);
+
+
 
 //user-notifications
 router.get('/notifies' , verify , displayNotifications);

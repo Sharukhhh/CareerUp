@@ -90,11 +90,16 @@ const Notifications = () => {
                             notifcations?.map((notifcation : any) => (
                             <div key={notifcation?._id} className='flex items-start p-4 mx-4  bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] border rounded shadow-md'>
                                 <div className='flex items-center justify-center w-12 h-12 bg-primary rounded-full'>
-                                    <img
-                                    src={notifcation?.senderUser?.profileImage}
-                                    alt='User'
-                                    className='w-12 h-12 rounded-full object-cover border-2 border-white shadow-md'
-                                    />
+                                    {notifcation?.senderUser?.profileImage ? (
+                                        <img
+                                        src={notifcation?.senderUser?.profileImage}
+                                        alt='User'
+                                        className='w-12 h-12 rounded-full object-cover border-2 border-white shadow-md'
+                                        />
+                                    ) : (
+                                        <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
+                                        className='w-12 h-12 rounded-full object-cover border-2 border-white shadow-md'/>
+                                    )}
                                 </div>
                                 <div className='ml-4'>
                                     {/* <p className='text-lg font-semibold'></p> */}

@@ -198,7 +198,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                     <BiLike size={20} className='text-blue' />
                   </span>
                 )}
-                {post?.likes?.length} likes
+                {post?.likes?.length} 
               </p>
 
               <p onClick={() => {
@@ -207,14 +207,13 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               }}
               className='flex gap-2 items-center text-base cursor-pointer'>
                 <BiComment size={20}/>
-                {post?.comments?.length} comments
+                {post?.comments?.length} 
               </p>
 
               {user?.userId === post?.user?._id && (
                 <div onClick={() => deletePost(post?._id)}
                 className='flex gap-1 items-center text-base text-ascent-1 cursor-pointer'>
                   <MdOutlineDeleteOutline size={20} />
-                  <span>Delete</span>
                 </div>
               )}
 

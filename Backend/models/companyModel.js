@@ -55,11 +55,25 @@ const companySchema = mongoose.Schema({
     },
 
     followers : [{
-        userId : {
+        user : {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'users'
+        },
+
+        company : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'companies'
         }
-    }]
+    }],
+
+    followingCompanies : [
+        {
+            company : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : 'companies'
+            }
+        }
+    ],
 });
 
 const companyModel = mongoose.model('companies' , companySchema);

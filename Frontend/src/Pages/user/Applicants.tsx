@@ -87,11 +87,16 @@ const Applicants = () => {
                                 <th className="flex gap-3 px-4 py-4 font-normal justify-center text-gray-900">
                                 <div className="relative h-10 w-10">
                                     <Link to={`/account/${item?.userId?._id}`}>
-                                        <img
-                                        className="h-full w-full rounded-full object-cover object-center"
-                                        src={item?.userId?.profileImage}
-                                        alt="pic"
-                                        />
+                                        {item.userId.profileImage ? (
+                                            <img
+                                            className="h-full w-full rounded-full object-cover object-center"
+                                            src={item?.userId?.profileImage}
+                                            alt="pic"
+                                            />
+                                        ) : (
+                                            <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
+                                            className='h-full w-full rounded-full object-cover object-center'/>
+                                        )}
                                     </Link>
                                     {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
                                 </div>

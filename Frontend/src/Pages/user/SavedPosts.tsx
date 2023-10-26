@@ -7,7 +7,7 @@ import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
 
 const SavedPosts = () => {
-  const [savedPosts , setSavedPosts] = useState<any>([]);
+  const [savedPosts , setSavedPosts] = useState<any[]>([]);
 
   useEffect(() => {
     axiosInstance.get('/savedposts')
@@ -20,7 +20,7 @@ const SavedPosts = () => {
         toast.error(res.data.error);
       }
     })
-  })
+  } ,[]);
   return (
     <>
         {/* <UserNav /> */}

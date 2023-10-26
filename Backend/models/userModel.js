@@ -100,12 +100,14 @@ const userSchema = mongoose.Schema({
         } 
     }],
 
-    connections : [{
-        userId : {
-            type : mongoose.Schema.Types.ObjectId,
-            ref : 'users'
+    followingCompanies : [
+        {
+            company : {
+                type : mongoose.Schema.Types.ObjectId,
+                ref : 'companies'
+            }
         }
-    }],
+    ],
 
     appliedJobs : [
         {
