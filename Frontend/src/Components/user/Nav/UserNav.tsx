@@ -90,7 +90,7 @@ const UserNav:React.FC<UserNavProps> = () => {
       {/* </div> */}
 
       {/* Icons */}
-      <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl'>
+      <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl cursor-pointer'>
             <NavLink to='/feed'>
               <ImHome className='hover:scale-125'/>
             </NavLink>

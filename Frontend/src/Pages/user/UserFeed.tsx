@@ -1,5 +1,5 @@
 import React , {useState , lazy , Suspense , useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
@@ -10,7 +10,7 @@ import PostCards from '../../Components/user/postss/PostCards'
 import { Spinner } from '@material-tailwind/react';
 import CreatePost from '../../Components/user/postss/CreatePost';
 import toast from 'react-hot-toast';
-import {BsPersonFillAdd , BsFillPersonCheckFill , BsSendCheck} from 'react-icons/bs';
+import { BsFillChatLeftTextFill} from 'react-icons/bs';
 import {ImInfo} from 'react-icons/im';
 const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 
@@ -18,11 +18,12 @@ const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/Edi
 const UserFeed = () => {
     const [userData , setUserData]  = useState<any>([]);
     const [posts , setPosts] = useState<any[]>([])
-    const [listUsers , setListUsers] = useState<any[]>([]);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
       //modals
   const [showModal , setShowModal] = useState<boolean>(false);
   const [loading , setIsLoading] = useState<boolean>(true);
+
+  const navigate = useNavigate();
 
 
   const openEditModal = () => {
@@ -44,52 +45,21 @@ const UserFeed = () => {
           setUserData(res.data.user);
         }
       }).catch((error) => console.log(error , 'axios')
-      )
+      ).finally(() => setIsLoading(false))
 
       axiosInstance.get('/getposts').then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }
       }).catch((err) => console.log(err, 'axios posts err')
-      )
+      ).finally(() => setIsLoading(false))
 
-      axiosInstance.get('/listusers').then((res) => {
-        if(res.data.message){
-          setListUsers(res.data.users);
-        }
-
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((err) => console.log(err, 'axios listing err'))
-      .finally(() => setIsLoading(false));
-
-      // axiosInstance.get('/companies').then((res) => {
-      //   if(res.data.message){
-      //     setCompanies(res.data.companies);
-      //   }
-      //   if(res.data.error){
-      //     toast.error(res.data.error);
-      //   }
-      // }).catch((err) => console.log(err, 'axios listing err'))
-      
     }, [ updateUI]);
 
+    const navigateChat = () => {
+      navigate('/message');
+  }
 
-    const sendConnectionRequest = (userId : string) => {
-      axiosInstance.get(`/send/${userId}`).then((res) => {
-        if(res.data.message){
-          toast.success(res.data.message);
-
-          setUpdateUI((prev) => !prev);
-        }
-
-        if(res.data.error){
-          toast.error(res.data.error , {duration : 2000 , icon : <ImInfo/> });
-        }
-      }).catch((error) => console.log('error while connection', error)
-      )
-    }
 
   // Function to add a new post to the 'posts' state
   const addNewPost = (newPost : any) => {
@@ -164,62 +134,110 @@ const UserFeed = () => {
 
                     <div className="lg:hidden mt-4"></div>
 
-                    <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
-                        <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
-                            <span>Expand your connections</span>
-                        </div>
-                        {isCandidate ? (
-                        <div className='w-full flex flex-col gap-4 pt-4'>
-                            {listUsers?.map((user : any) => {
-                              return(
-                              <div className='flex items-center justify-between' key={user?._id}>
-                                <Link to={`/account/${user?._id}`} className='w-full flex gap-4 items-center cursor-pointer' key={user?._id}>
-                                  {user?.profileImage ? (
-                                    <img src={user.profileImage} alt=""
-                                    className='w-10 h-10 object-cover rounded-full'
-                                    />
-                                  ) : (
-                                    <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
-                                    className='w-10 h-10 object-cover rounded-full' />
-                                  )}
-                                  <div className='flex-1'>
-                                    <p className='text-base font-medium text-ascent-1'>
-                                      {user?.name}
-                                    </p>
-                                    <span className='text-sm text-ascent-2'>
-                                      {user?.headline}
-                                    </span>
-                                  </div>
-                                </Link>
-
-                                {userData?.connections?.some((conn : any) => conn.userId.toString() === user?._id) ? (
-                                // Render this when the user is connected
-                                  <div className='flex gap-1'>
-                                    <button 
-                                      className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
-                                      <BsFillPersonCheckFill size={18} /> 
-                                    </button>
-                                  </div>
-                                ) : (
-                                // Render this when the user is not connected
-                                  <div className='flex gap-1'>
-                                    <button onClick={() => sendConnectionRequest(user?._id) }
-                                      className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
-                                      <BsPersonFillAdd size={18} /> 
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                              )
-                            })}
-                        </div>
-                        ) : (
-                          <div className='w-full flex flex-col gap-4 pt-4'>
-                            <p className="text-ascent-2 text-center py-4">
-                              Loading...........
-                            </p>
+                    {isCandidate && (
+                      <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                          <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
+                              <span>Your Connections</span>
                           </div>
-                        )}
+                          <div className='w-full flex flex-col gap-4 pt-4'>
+                              {userData?.connections?.map((connection : any) => {
+                                return(
+                                <div className='flex items-center justify-between' key={connection?._id}>
+                                  <Link to={`/account/${connection?.userId?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
+                                    {connection?.userId?.profileImage ? (
+                                      <img src={connection?.userId?.profileImage} alt=""
+                                      className='w-10 h-10 object-cover rounded-full'
+                                      />
+                                    ) : (
+                                      <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
+                                      className='w-10 h-10 object-cover rounded-full' />
+                                    )}
+                                    <div className='flex-1'>
+                                      <p className='text-base font-medium text-ascent-1'>
+                                        {connection?.userId?.name}
+                                      </p>
+                                      <span className='text-sm text-ascent-2'>
+                                        {connection?.userId?.headline}
+                                      </span>
+                                    </div>
+                                  </Link>
+                                  {user?.userId === userData?._id && (
+                                  <div className='flex gap-1'>
+                                      <button 
+                                      className='text-sm p-1 rounded text-blue'
+                                      >
+                                          <BsFillChatLeftTextFill onClick={navigateChat} size={20} />
+                                      </button>
+                                  </div>
+                                  )}
+
+                                  {/* {userData?.connections?.some((conn : any) => conn.userId.toString() === user?._id) ? (
+                                  // Render this when the user is connected
+                                    <div className='flex gap-1'>
+                                      <button 
+                                        className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
+                                        <BsFillPersonCheckFill size={18} /> 
+                                      </button>
+                                    </div>
+                                  ) : (
+                                  // Render this when the user is not connected
+                                    <div className='flex gap-1'>
+                                      <button onClick={() => sendConnectionRequest(user?._id) }
+                                        className='bg-[#0444a430] text-sm p-1 rounded text-blue'>
+                                        <BsPersonFillAdd size={18} /> 
+                                      </button>
+                                    </div>
+                                  )} */}
+                                </div>
+                                )
+                              })}
+                          </div>
+                      </div>
+                    )}
+
+                    <div className="w-full bg-primary shadow-sm rounded-lg px-6 py-5">
+                      <div className="flex items-center justify-between text-lg text-ascent-1 pb-2 border-b border-[#66666645]">
+                        <span>Following</span>
+                      </div>
+                      {userData?.followingCompanies?.length > 0 ? (
+                      <div className='w-full flex flex-col gap-4 pt-4'>
+                              {userData?.followingCompanies?.map((company : any) => {
+                                return(
+                                <div className='flex items-center justify-between' key={company?._id}>
+                                  <Link to='' className='w-full flex gap-4 items-center cursor-pointer'>
+                                    {company?.company?.profileImage ? (
+                                      <img src={company?.company?.profileImage} alt=""
+                                      className='w-10 h-10 object-cover rounded-full'
+                                      />
+                                    ) : (
+                                      <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" 
+                                      className='w-10 h-10 object-cover rounded-full' />
+                                    )}
+                                    <div className='flex-1'>
+                                      <p className='text-base font-medium text-ascent-1'>
+                                        {company?.company?.name}
+                                      </p>
+                                      <span className='text-sm text-ascent-2'>
+                                        {company?.company?.headline}
+                                      </span>
+                                    </div>
+                                  </Link>
+                                  {/* <div className='flex gap-1'>
+                                      <button title='Unfollow'
+                                      className='text-sm p-1 rounded text-blue'
+                                      >
+                                        
+                                      </button>
+                                  </div> */}
+                                </div>
+                                )
+                              })}
+                      </div>
+                      ) : (
+                        <div className='w-full flex flex-col gap-4 pt-4'>
+                          <p className='text-gray-600 text-center'>None</p>
+                        </div>
+                      )}
                     </div>
                 </div>
             </div>
@@ -227,7 +245,12 @@ const UserFeed = () => {
         </div>
 
         <Suspense fallback={<Spinner />}>
-            <EditProfile setUpdateUI={setUpdateUI} userData={userData} visible={showModal} closeEditModal={closeEditModal} />
+            <EditProfile 
+            setUpdateUI={setUpdateUI} 
+            userData={userData} 
+            visible={showModal} 
+            closeEditModal={closeEditModal} 
+            />
         </Suspense>
     </>
   )

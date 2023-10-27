@@ -43,7 +43,11 @@ export const displayConnections = async (req, res, next) => {
     try {
         const user = req.user;
 
-        const findUser = await userModel.findById(user._id).populate('connections.userId').exec();
+        const findUser = await userModel.findById(user._id)
+        .populate('connections.userId')
+        .populate('followingCompanies.company')
+        .exec();
+        
         if(!findUser){
             return res.status(404).json({error : 'Not found'});
         }
@@ -63,11 +67,13 @@ export const listAllUsers = async (req, res , next) => {
 
         const loggedUser = req.user;
 
-        const users = await userModel.find({_id :{$ne : loggedUser._id}});
+        const users = await userModel.find({_id :{$ne : loggedUser._id}}).populate('connections');
 
         if(!users || users.length === 0){
             return res.status(400).json({error : 'No users found'})
         }
+
+        console.log(users , 'here');
 
         res.json({message : 'Success' , users});
         
@@ -81,7 +87,7 @@ export const listCompanies = async (req , res, next) => {
     try {
         const user = req.user;
 
-        const companies = await companyModel.find();
+        const companies = await companyModel.find({_id :{$ne : user?._id}});
 
         if(!companies || companies.length === 0){
             return res.status(400).json({error : 'No users found'})
@@ -356,9 +362,10 @@ export const followAndUnfollowCompany = async (req , res, next) => {
             }
 
             targetUser = targetCompany;
+            console.log(targetUser._id , 'ullil');
         }
 
-        if(!targetUser._id || user._id){
+        if(!targetUser._id || !user._id){
             return res.status(400).json({error : 'Invalid user'});
         }
 
@@ -374,11 +381,12 @@ export const followAndUnfollowCompany = async (req , res, next) => {
                 });
 
                 if(isFollowing){
-                    targetUser.followers.filter((conn) => {
-                        return conn.user && !conn.user.equals(user._id);
-                    })
+                    targetUser.followers = targetUser.followers.filter((conn) => {
+                        return conn.user && !conn.user.equals(user._id) ||
+                        conn.company && !conn.company.equals(user._id);
+                    }) 
 
-                    user.followingCompanies.filter((conn) => {
+                    user.followingCompanies = user.followingCompanies.filter((conn) => {
                         return conn.company && !conn.company.equals(targetUser._id);
                     })
 
@@ -398,6 +406,8 @@ export const followAndUnfollowCompany = async (req , res, next) => {
 
                     await user.save();
                     await targetUser.save();
+
+                    return res.json({message : `UnFollowed ${targetUser.name}`})
 
                 } else {
 
@@ -419,6 +429,8 @@ export const followAndUnfollowCompany = async (req , res, next) => {
 
                     await user.save();
                     await targetUser.save();
+
+                    return res.json({message : `Followed ${targetUser.name}`})
                 }
             } else {
                 return res.status(400).json({error : 'Not acceptable'});

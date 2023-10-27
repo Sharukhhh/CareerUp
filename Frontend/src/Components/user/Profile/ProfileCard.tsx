@@ -22,21 +22,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
     const navigate = useNavigate();
 
     const user = useSelector((state : RootState) => state.user.userCred);
-    const isCandidate = user?.userId;
 
     const navigateChat = () => {
         navigate('/message');
     }
-
-    // useEffect(() => {
-    //     axiosInstance.get('/getConnections')
-    //     .then((res) => {
-    //         if(res.data.message){
-    //             setUserConnections(res.data.users);
-    //         }
-    //     }).catch((error) => console.log(error , 'fetch err')
-    //     )
-    // } , [updateUI]);
 
     
   return (
@@ -90,76 +79,64 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , upda
                 )}
             </div>
 
-            
-            <div className='w-full flex flex-col gap-2 py-4 '>
-                <div className='flex items-center justify-between text-ascent-1 pb-2 border-b border-[#66666645]'>
-                    <span>CONNECTIONS</ span>
-                    <span>
-                        {userData?.connections?.length}
-                    </span>
-                </div>
-
-                {isCandidate ?  (
-                <div className='w-full flex flex-col gap-4 pt-4'>
-                    {userData?.connections?.map((connection : any) => {
-                        return(
-                        <div className='flex items-center justify-between' key={connection._id}>
-                            <Link to={`/account/${connection?.userId?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
-                                {connection?.userId?.profileImage ? (
-                                    <img src={connection?.userId?.profileImage}
-                                    className='w-10 h-10 object-cover rounded-full' alt="" 
-                                    />
-                                ) : (
-                                    <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt=""
-                                    className='w-10 h-10 object-cover rounded-full opacity-70'/>
-                                )}
-                                <div className='flex-1'>
-                                    <p className='text-base font-medium text-ascent-1'>
-                                        {connection?.userId?.name}
-                                    </p>
-                                    <span className='text-sm text-ascent-2'>
-                                        {connection?.userId?.headline}
-                                    </span>
-                                </div>
-                            </Link>
-
-                            {user.userId === userData._id && (
-                            <div className='flex gap-1'>
-                                <button 
-                                className='text-sm p-1 rounded text-blue'
-                                >
-                                    <BsFillChatLeftTextFill onClick={navigateChat} size={20} />
-                                </button>
-                            </div>
-                            )}
-                        </div>       
-                        )
-                    })}
-                </div>
-                ) : (
-                    <div className='w-full flex flex-col gap-4 pt-4'>
-                        <p className="text-ascent-2 text-center py-4">
-                            Loading....................
-                        </p>
+            {user?.role === 'Candidate' && (
+                <div className='w-full flex flex-col gap-2 py-4 '>
+                    <div className='flex items-center justify-between text-ascent-1 '>
+                        <span>Connections</ span>
+                        <span>
+                            {userData?.connections?.length}
+                        </span>
                     </div>
-                )}
-                {/* <p className='text-ascent-1'>{userData?.connections?.length} Connections</p> */}
+                    {/* <div className='w-full flex flex-col gap-4 pt-4'>
+                        {userData?.connections?.map((connection : any) => {
+                            return(
+                            <div className='flex items-center justify-between' key={connection?._id}>
+                                <Link to={`/account/${connection?.userId?._id}`} className='w-full flex gap-4 items-center cursor-pointer'>
+                                    {connection?.userId?.profileImage ? (
+                                        <img src={connection?.userId?.profileImage}
+                                        className='w-10 h-10 object-cover rounded-full' alt="" 
+                                        />
+                                    ) : (
+                                        <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt=""
+                                        className='w-10 h-10 object-cover rounded-full opacity-70'/>
+                                    )}
+                                    <div className='flex-1'>
+                                        <p className='text-base font-medium text-ascent-1'>
+                                            {connection?.userId?.name}
+                                        </p>
+                                        <span className='text-sm text-ascent-2'>
+                                            {connection?.userId?.headline}
+                                        </span>
+                                    </div>
+                                </Link>
 
-                {/* <div className='flex items-center justify-between'>
-                    {/* <span className='text-ascent-1'>Who viewed your profile</span> */}
-                    {/* <span></span>
-                </div> */} 
+                                {user?.userId === userData?._id && (
+                                <div className='flex gap-1'>
+                                    <button 
+                                    className='text-sm p-1 rounded text-blue'
+                                    >
+                                        <BsFillChatLeftTextFill onClick={navigateChat} size={20} />
+                                    </button>
+                                </div>
+                                )}
+                            </div>       
+                            )
+                        })}
+                    </div> */}
 
-                {/* <div className='flex items-center justify-between'>
-                    <span className='text-ascent-2'></span>
-                    <span></span>
-                </div> */}
-            </div>
- 
+                    {/* <p className='text-ascent-1'>{userData?.connections?.length} Connections</p> */}
 
-            {/* <div className='w-full flex flex-col gap-4 py-4 pb-6'>
-                <p></p>
-            </div> */}
+                    {/* <div className='flex items-center justify-between'>
+                        {/* <span className='text-ascent-1'>Who viewed your profile</span> */}
+                        {/* <span></span>
+                    </div> */} 
+
+                    {/* <div className='flex items-center justify-between'>
+                        <span className='text-ascent-2'></span>
+                        <span></span>
+                    </div> */}
+                </div>
+            )} 
         </div>
     </div>    
     </>
