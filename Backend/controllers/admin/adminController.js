@@ -35,6 +35,86 @@ export const dashboardValues = async(req, res, next) => {
     try {
         const adminUser = req.user;
 
+        
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+
+        //array to store monthly data
+        const userMonthlyCounts = new Array(12).fill(0);
+        const companyMonthlyCounts = new Array(12).fill(0);
+
+        const users = await userModel.find();
+        const companies = await companyModel.find();
+
+        //counting both users joined per month
+        users.forEach((user) => {
+            const userDate = new Date(user.createdOn);
+            const userYear = userDate.getFullYear();
+            const userMonth = userDate.getMonth();
+
+            if(userYear === currentYear){
+                userMonthlyCounts[userMonth]++;
+            }
+        });
+
+        companies.forEach((company) => {
+            const companyDate = new Date(company.createdOn);
+            const companyYear = companyDate.getFullYear();
+            const companyMonth = companyDate.getMonth();
+
+            if(currentYear === companyYear){
+                companyMonthlyCounts[companyMonth]++;
+            }
+        });
+
+        // .................................................................
+        // .................................................................
+
+        const jobPostingMonthlyCounts = new Array(12).fill(0);
+        const jobApplicationMonthlyCounts = new Array(12).fill(0);
+
+        const jobPostings = await jobModel.find();
+        jobPostings.forEach((job) => {
+            const jobDate = new Date(job.createdAt);
+            const jobYear = jobDate.getFullYear();
+            const jobMonth = jobDate.getMonth();
+
+            if(jobYear === currentYear){
+                jobPostingMonthlyCounts[jobMonth]++;
+            }
+        });
+
+        //count and storing job applications per month
+        const jobApplications = await jobModel.aggregate([
+            {
+                $unwind : '$applicants',
+            },
+            {
+                $project : {
+                    year : {$year : '$applicants.appliedAt'},
+                    month : {$month : '$applicants.appliedAt'}
+                }
+            },
+            {
+                $group : {
+                    _id : {year : '$year' , month : '$month'},
+                    count : {$sum : 1}
+                }
+            }
+        ]);
+
+        jobApplications.forEach((application) => {
+            const applyYear = application._id.year;
+            const applyMonth = application._id.month;
+
+            if(applyYear === currentYear){
+                jobApplicationMonthlyCounts[applyMonth - 1] = application.count;
+            }
+        })
+        // .....................................................................
+        // ......................................................................
+
         //total users
         const totalUsers = await userModel.countDocuments();
 
@@ -55,7 +135,11 @@ export const dashboardValues = async(req, res, next) => {
         totalUsers ,
         totalCompanies,
         totalJobs,
-        totalPosts
+        totalPosts,
+        userMonthlyCounts,
+        companyMonthlyCounts,
+        jobApplicationMonthlyCounts,
+        jobPostingMonthlyCounts
     });
 
     } catch (error) {

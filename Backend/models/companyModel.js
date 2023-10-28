@@ -74,6 +74,11 @@ const companySchema = mongoose.Schema({
             }
         }
     ],
+
+    createdOn : {
+        type : Date,
+        default : Date.now
+    },
 });
 
 const companyModel = mongoose.model('companies' , companySchema);

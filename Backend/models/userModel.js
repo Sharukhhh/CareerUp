@@ -134,7 +134,12 @@ const userSchema = mongoose.Schema({
                 default : Date.now
             }
         }
-    ]
+    ],
+
+    createdOn : {
+        type : Date,
+        default : Date.now
+    }
 
     
 })

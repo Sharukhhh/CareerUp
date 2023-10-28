@@ -29,32 +29,40 @@ export const options = {
         },
         title : {
             display : true,
-            text: 'Chart.js Line Chart',
+            text: 'Users Joined Traffic Per Month',
         },
     },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July' , 'August' , 'September' , 'October' , 'November' , 'December'];
 
-export const data = {
-    labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            // data: labels.map(() => ),
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        },
-        {
-            label: 'Dataset 2',
-            // data: labels.map(() =>),
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-        },
-    ],
+interface LineChartProps {
+    userMonthlyData : number[],
+    companyMonthlyData : number[],
 }
 
-const LineChart = () => {
+const LineChart : React.FC<LineChartProps> = ({userMonthlyData , companyMonthlyData}) => {
+
+    const labels = ['Jan', 'Feb', 'Mar', 'April', 'May', 'June', 'July' , 'Aug' , 'Sept' , 'Oct' , 'Nov' , 'Dec'];
+    const actualLables = labels.slice(0 , userMonthlyData.length);
+
+    const data = {
+        labels : actualLables,
+        datasets: [
+            {
+                label: 'Candidates',
+                data: userMonthlyData,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+    
+            {
+                label: 'Companies',
+                data: companyMonthlyData,
+                borderColor: 'rgb(53, 162, 235)',
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+            },
+        ],
+    }
   return (
     <>
         <Line

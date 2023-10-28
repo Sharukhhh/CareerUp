@@ -5,7 +5,7 @@ import companyModel from '../models/companyModel.js';
 
 export const verify = async (req, res , next) => {     
     try {
-        // console.log(req.header('authorization'), '#######');
+
         let token = req.header('authorization').split(' ')[1];
         // console.log(token , '@@@@@@'); 
         
@@ -20,7 +20,6 @@ export const verify = async (req, res , next) => {
         // console.log(decoded.role ,decoded.userId , 'OKKKKKKKKKKKKKKKKKKKKKKK');
 
         const userId = decoded.userId;
-        // const role = decoded.role;
 
         let user;
         user = await userModel.findById(userId);
@@ -43,7 +42,6 @@ export const verify = async (req, res , next) => {
         }
 
         req.user = user;
-        // console.log(req.user);
         next();
 
     } catch (error) {
