@@ -63,7 +63,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
         e.preventDefault();
 
         if(!content && !image && !video){
-            return toast.error('Add Your Post!' , {duration : 2000 , icon : <BiSolidError/> ,  style : {color : '#fff' , background : '#59788E' , fontWeight : 'bold'}})
+            return ;
         }
 
         const formData = new FormData();

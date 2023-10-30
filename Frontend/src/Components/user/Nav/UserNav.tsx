@@ -38,20 +38,18 @@ const UserNav:React.FC<UserNavProps> = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+    axiosInstance.get(`/ownProfile`).then((res) => {
       
       if(res.data){
         setUserData(res.data.user);
       }
     }).catch((error) => console.log(error , 'axios')
     )
-  })
+  },[]);
 
   useEffect(() => {
     const token = localStorage.getItem('userToken');
-    if(token){
-      console.log('token here' ,token);
-    } else {
+    if(!token){
       navigate('/login');
     }
   }, []);

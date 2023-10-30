@@ -39,9 +39,9 @@ const UserFeed = () => {
 
     useEffect(() => {
       setIsLoading(true);
-      axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
+      axiosInstance.get(`/ownProfile`).then((res) => {
       
-        if(res.data){
+        if(res.data.message){
           setUserData(res.data.user);
         }
       }).catch((error) => console.log(error , 'axios')

@@ -3,7 +3,7 @@ const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listCompanies, 
     sendConnectionRequest, acceptConnectionRequest,  rejectConnectionRequest ,
-    displayNotifications,  getChatUsers, updateApplicationStatus, displayConnections, followAndUnfollowCompany} 
+    displayNotifications,  getChatUsers, updateApplicationStatus, displayConnections, followAndUnfollowCompany, ownProfile} 
 from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
@@ -15,6 +15,8 @@ import upload from '../../utils/multerSetup.js';
 router.get('/search' , verify , search);
 
 //profile-management
+router.get('/ownProfile' , verify , ownProfile);
+
 router.get('/profile/:id' , verify,  getProfile); 
 
 router.get('/getConnections' , verify , displayConnections);

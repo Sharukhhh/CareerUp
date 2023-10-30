@@ -136,6 +136,11 @@ const userSchema = mongoose.Schema({
         }
     ],
 
+    chatId : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'chats'
+    },
+
     createdOn : {
         type : Date,
         default : Date.now

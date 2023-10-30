@@ -176,19 +176,19 @@ const Register = () => {
     <>
     <Toaster position='top-right'/>
     <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="login backdrop-blur-md flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            className="mx-auto h-10 w-auto"
+            className="mx-auto h-10 w-auto bg-[#fafafa] bg-opacity-75 px-9 rounded"
             src="/Cropped1-Logo.png"
             alt="Logo"
           />
-          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-white">
             Create your account
           </h2>
         </div>
 
-        <div className="border-2 border-black border-dotted rounded-md bg-[#fafafa] p-5 shadow-md mt-10 sm:mx-auto sm:w-full sm:max-w-lg">
+        <div className="border-2 bg-[#fafafa] bg-opacity-80 p-5 shadow-lg shadow-black rounded-md mt-10 sm:mx-auto sm:w-full sm:max-w-lg">
           <form className="space-y-6" onSubmit={handleSubmit} >
             <div className='flex space-x-4'>
               <div className='w-1/2'>
@@ -206,7 +206,7 @@ const Register = () => {
                     required
                     placeholder='Enter your name'
                     aria-placeholder='Type your full name, e.g., John Doe'
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -222,7 +222,7 @@ const Register = () => {
                   name="role"
                   required
                   onChange={(e) => setRole(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
                 <option >Select a Role</option>
                 <option >Candidate</option>
@@ -246,7 +246,7 @@ const Register = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder='Enter your email'
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -265,7 +265,7 @@ const Register = () => {
                   onChange={(e) => setMobNumber(e.target.value)}
                   required
                   placeholder='Enter your mobile number'
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -291,7 +291,7 @@ const Register = () => {
                   onChange={handlePasswordChange}
                   required
                   placeholder='Enter a strong Password'
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full px-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                   {passwordStrength && (
                     <div

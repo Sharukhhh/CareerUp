@@ -61,64 +61,50 @@ const Profile = () => {
 
   const isCompany = user?.role === 'Company'; 
 
-  const{ id } = useParams();
-  // console.log(id);
-  
-  useEffect(() => {
+  const{ id } = useParams() ;
+
+  const getOwnProfileData = () => {
     setIsLoading(true);
-    if(id){
-      axiosInstance.get(`/profile/${id}`).then((res) => {
-        
-        if(res.data.message){          
-          setUserData(res.data.user);
-        }
-      }).catch((error) => console.log(error , 'axios another user')
-      )
-    } else {
-      axiosInstance.get(`/profile/${user?.userId}`).then((res) => {
-        if(res.data){
-          console.log('okda');
-          
-          setUserData(res.data.user);
-        }
-      }).catch((error) => console.log(error , 'axios')
-      ).finally(() => setIsLoading(false));
-    }
-  },[id ,  updateUI]);
+    axiosInstance.get('/ownProfile')
+    .then((res) => {
+      if(res.data.message){
+        setUserData(res.data.user);
+      }
+    }).catch((error) => console.log(error , 'axios')
+    ).finally(() => setIsLoading(false));
+  }
 
-  useEffect(() => {
+  const fetchProfileData = (profileId : string) => {
     setIsLoading(true);
-    if(id){
-      axiosInstance.get(`/userposts/${id}`).then((res) => {
-        if(res.data.message){
-          setPosts(res.data.posts);
-        }
-      }).catch((error) => console.log(error , 'user own posts fetch error')
-      ).finally(() => setIsLoading(false))
-    } else {
-      axiosInstance.get('/getposts').then((res) => {
-        if(res.data.message){
-          setPosts(res.data.posts);
-        }
-      }).catch((err) => console.log(err, 'axios posts err')
-      ).finally(() => setIsLoading(false));
-    }
-    
-  },[id , updateUI]);
+    axiosInstance.get(`/profile/${profileId}`).then((res) => {
+      if(res.data.message){
+        setUserData(res.data.user);
+      }
+    }).catch((error) => console.log(error , 'axios')
+    ).finally(() => setIsLoading(false));
+  }
 
+  const fetchUserPosts = () => {
+    setIsLoading(true);
+    axiosInstance.get('/getposts').then((res) => {
+      if(res.data.message){
+        setPosts(res.data.posts);
+      }
+    }).catch((err) => console.log(err, 'axios posts err')
+    ).finally(() => setIsLoading(false));
+  }
 
-  // useEffect(() => {
-  //   if(!id){
-  //     axiosInstance.get('/getposts').then((res) => {
-  //       if(res.data.message){
-  //         setPosts(res.data.posts);
-  //       }
-  //     }).catch((err) => console.log(err, 'axios posts err')
-  //     )
-  //   }
-  // }, [updateUI ]);
+  const otherUserPostsFetch = (userId : string) => {
+    setIsLoading(true);
+    axiosInstance.get(`/userposts/${userId}`).then((res) => {
+      if(res.data.message){
+        setPosts(res.data.posts);
+      }
+    }).catch((error) => console.log(error , 'user own posts fetch error')
+    ).finally(() => setIsLoading(false))
+  }
 
-  useEffect(() => {
+  const fetchPostedJobs = () => {
     setIsLoading(true);
     axiosInstance.get(`/postedjobs`).then((res) => {
       if(res.data.message){
@@ -127,7 +113,32 @@ const Profile = () => {
     }).catch((error) => console.log('jobs fetch error', error)
     )
     .finally(() => setIsLoading(false))
-  },[isCompany]);
+  }
+
+  useEffect(() => {
+    if(id){
+      console.log(id, 'faa');
+      
+      fetchProfileData(id);
+      otherUserPostsFetch(id);
+    }
+  } , [id  ]);
+
+  useEffect(() => {
+    if(!id){
+      console.log(id , 'here');
+      
+      getOwnProfileData();
+      fetchUserPosts();
+    }
+  }, [updateUI ])
+
+  useEffect(() => {
+    if(isCompany){
+      fetchPostedJobs();
+    }
+  }, [isCompany , updateUI])
+  
 
   const navigateToInfo =(id : string) => {
     navigate(`/details/${id}`);
@@ -181,7 +192,7 @@ const Profile = () => {
                           <div className='flex-1'>
                             <p className='font-bold text-lg text-gray-900'>{item?.role}</p>
                             <span className='text-md'>{item?.companyName}</span> <br />
-                            <span className='text-ascent-2 text-sm'>{item?.location}</span>
+                            <span className='text-ascent-2 text-sm'>{item?.jobLocation}</span>
                           </div>
 
                           {user?.userId === userData?._id && (
@@ -222,7 +233,7 @@ const Profile = () => {
                           <div className='flex-1'>
                             <p className='font-bold text-lg text-gray-900'>{item?.fieldOfStudy}</p>
                             <span className='text-md'>{item?.institute}</span> <br />
-                            <span className='text-ascent-2 text-sm'>{item?.location}</span> <br />
+                            <span className='text-ascent-2 text-sm'>{item?.instituteLocation}</span> <br />
                           </div>
 
                           {user.userId === userData._id && (
@@ -258,7 +269,7 @@ const Profile = () => {
                       {jobs?.length > 0 ? (
                         jobs?.map((job : any) => {
                           return(
-                          <div className="flex items-center justify-between" >
+                          <div className="flex items-center justify-between mb-3 border-b" >
                             <div className='flex-1'>
                               <p className='font-bold text-lg'>{job?.position}</p>
                               <span className='text-md'>{job?.location}</span>
@@ -269,11 +280,12 @@ const Profile = () => {
                             </div>
 
                             <div className='flex me-1 flex-col gap-4'>
-                              <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
-
+                              <button onClick={() => navigateToInfo(job?._id)}
+                              className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                                <BiSolidEdit/>
                               </button>
                               <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
-                                
+                                <MdDelete/>
                               </button>
                             </div>
                           </div>

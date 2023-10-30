@@ -2,45 +2,70 @@ import userModel from "../../models/userModel.js";
 import companyModel from "../../models/companyModel.js";
 import notifyModel from "../../models/notificationModel.js";
 import chatModel from "../../models/chatsModel.js";
+import messsageModel from "../../models/chatMessage.js";
 
+
+export const createGroupChat = async (req, res, next) => {
+    try {
+        const {participants} = req.body;
+
+        const chat = await chatModel.findOne({
+            participants : {$all: participants},
+            isGroupChat : true
+        });
+
+        if(chat){
+            return res.status(200).json({chatId : chat._id})
+        }
+
+        const newChat = new chatModel.create({
+            participants,
+            isGroupChat : true
+        });
+
+        if(!newChat){
+            console.log('error');
+            return;
+        }
+
+        await newChat.save();
+        return res.status(200).json({chatId : newChat._id});
+
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const submitMessage = async (req, res, next) => {
     try {
         const user = req.user;
-        const {inputMessage , recieverId} = req.body;
+        const {content , chatId} = req.body;
 
-        console.log(inputMessage , recieverId );
+        console.log(content , chatId , 'Labhichu' );
 
-        if(!inputMessage || !recieverId){
+        if(!content || !chatId){
             return res.status(400).json({error : 'Invalid'});
         }
 
-        const chat = await chatModel.findOneAndUpdate(
-            {
-                $or : [
-                    {participants : [ user._id , recieverId ]},
-                    {participants : [ recieverId , user._id ]}
-                ]
-            },
-
-            {$setOnInsert : {participants : [user._id , recieverId] , messages : []}},
-
-            {upsert : true , new : true},
-        )
-
-        if(!chat){
-            return res.status(404).json({error : 'Not found'});
-        }
-
-        const message = {
+        let newMessage = {
             sender : user._id,
-            message : inputMessage,
+            chat : chatId,
+            content  : content
         }
 
-        chat.messages.push(message);
-        await chat.save();
+        let message = await messsageModel.create(newMessage);
+        message = await message.populate('sender' , 'name profileImage');
+        message = await message.populate('chat');
+        message = await userModel.populate(message , {
+            path : 'chat.participants',
+            select : 'name profileImage'
+        });
 
-        return res.status(200).json({message : 'Messsage sent' , chat});
+        await chatModel.findByIdAndUpdate(chatId , {
+            lastMessage : message
+        } , {new : true});
+
+        return res.status(200).json({msg : 'Messsage sent' , message});
 
     } catch (error) {
         next(error);
@@ -51,27 +76,17 @@ export const submitMessage = async (req, res, next) => {
 export const showAllMessages = async (req, res, next) => {
     try {
         const user = req.user;
-        const id = req.params.recieverId;
+        const chatId =req.params.chatId;
 
-        //finding chats of loggined user and reciever
-        const chat = await chatModel.findOne({
-            participants : {$all : [user._id , id]},
-        }).populate('messages.sender' , 'name profileImage').exec();
+        const message = await messsageModel.find({chat : chatId})
+        .populate('sender' , 'name profileImage')
+        .populate('chat');
 
-        if(!chat){
-            return res.status(404).json({message : 'chat not found'});
+        if(!message){
+            return;
         }
 
-        const messagesWithSenders = chat.messages.map(message => ({
-            message: message.message,
-            sender: {
-                name: message.sender.name,
-                profileImage: message.sender.profileImage
-            },
-            created: message.created
-        }));
-
-        return res.status(200).json({message : 'success', messages : messagesWithSenders});
+        res.status(200).json({ message})
 
     } catch (error) {
         next(error);

@@ -8,23 +8,19 @@ import jobModel from '../../models/jobs.js';
 import notifyModel from '../../models/notificationModel.js';
 import mongoose from 'mongoose';
 
-
-
-export const getProfile = async (req, res , next) => {
+export const ownProfile = async (req, res, next) => {
     try {
-        const id = req.params.id;
-
-        const loggedUser = req.user;
         
-        const user = await userModel.findById(id)
+        const loggedUser = req.user;
+        const user = await userModel.findById(loggedUser._id)
         .select('name headline profileImage connections') // Only select the necessary fields
         .populate({
             path: 'connections.userId',
             select: 'name profileImage _id',
         }).exec();
-        
+
         if(!user){
-            const company = await companyModel.findById(id).populate('followers'); 
+            const company = await companyModel.findById(loggedUser._id).populate('followers');
 
             if(!company){
                 return res.status(400).json({error : 'No user'})
@@ -33,6 +29,44 @@ export const getProfile = async (req, res , next) => {
         }
 
         res.status(200).json({message : 'success' , user})
+        
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const getProfile = async (req, res , next) => {
+    try {
+
+        const id = req.params.id;
+
+        const loggedUser = req.user;
+        
+        if(id){   
+            console.log('ivadeeeeeeeee');
+            const user = await userModel.findById(id)
+            .select('name headline profileImage connections') 
+            .populate({
+                path: 'connections.userId',
+                select: 'name profileImage _id',
+            }).exec();
+    
+            // console.log(user , 'ith saadha user');
+            
+            if(!user){
+                const company = await companyModel.findById(id).populate('followers'); 
+    
+                if(!company){
+                    return res.status(400).json({error : 'No user'})
+                }
+    
+                // console.log(company , 'ith matte company');
+                return res.status(200).json({message: 'success' , user : company});
+            }
+    
+            res.status(200).json({message : 'success' , user})
+        }
         
     } catch (error) {
         next(error);
@@ -72,8 +106,6 @@ export const listAllUsers = async (req, res , next) => {
         if(!users || users.length === 0){
             return res.status(400).json({error : 'No users found'})
         }
-
-        console.log(users , 'here');
 
         res.json({message : 'Success' , users});
         
@@ -629,6 +661,8 @@ export const getChatUsers = async (req, res, next) => {
         const connectionUsers = findUser.connections.map((connection) => connection.userId);
 
         const chatUsers = await userModel.find({_id : {$in : connectionUsers}});
+
+        console.log(chatUsers);
 
         return res.status(200).json({message : 'fetched' , chatUsers});
 

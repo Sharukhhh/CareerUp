@@ -1,11 +1,13 @@
 import express from 'express';
 import { verify } from '../../middlewares/userAuth.js';
-import { showAllMessages, submitMessage } from '../../controllers/user/chatController.js';
+import { createGroupChat, showAllMessages, submitMessage } from '../../controllers/user/chatController.js';
 const router = express.Router();
+
+router.get('/createOrRetrieveChat' , verify , createGroupChat);
 
 router.post('/chatSend' , verify , submitMessage);
 
-router.get('/viewMessages/:recieverId' , verify , showAllMessages);
+router.get('/viewMessages/:chatId' , verify , showAllMessages);
 
 
 export default router;

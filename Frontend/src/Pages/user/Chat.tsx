@@ -50,12 +50,14 @@ const Chat = () => {
 
   const handleSelectedChat = (recieverId: string) => {
 
-    if(selectedContact.includes(recieverId)){
-      return
-    } else {
-      setSelectedContact([...selectedContact , recieverId]);
-      setSelectedChat(recieverId);
-    }
+    if(!selectedContact.includes(recieverId)){
+      setSelectedContact([...selectedContact , recieverId])
+    } 
+    setSelectedChat(recieverId);
+    setChatId(recieverId);
+    setChatMessages([]);
+    getChatMessages(recieverId);
+
     setChatId(recieverId);
     setChatMessages([]);
     
@@ -90,7 +92,7 @@ const Chat = () => {
     )
   }
 
-  const getChatMessages = () => {
+  const getChatMessages = (recieverId : string) => {
     
     axiosInstance.get(`/viewMessages/${recieverId}`)
     .then((res) => {
@@ -105,7 +107,7 @@ const Chat = () => {
   useEffect(() => {
     if(recieverId){
       setChatMessages([]);
-      getChatMessages();
+      getChatMessages(recieverId);
     }
   }, [recieverId]);
 
@@ -192,29 +194,19 @@ const Chat = () => {
             </div>  
               {/* Users Listing over */}
 
-              <div className='lg:col-span-2  shadow-lg lg:block'>
+              <div className='chat section lg:col-span-2  shadow-lg lg:block'>
                 <div className='w-full'>
                   <div className='p-3 bg-white border-b border-gray-200'>
-                    {/* <div className='relative flex items-center'>
-                      {selectedChat ? (
-                        selectedContact?.length > 0 ? (
-                          selectedContact.map((contact) => {
-                            const selectedUser = chatUsers.find((user) => user._id === contact);
-                            if(selectedUser){
-                              return(
-                              <div key={contact?._id}>
-                                <img src={contact?.profileImage} alt="" className='w-10 h-10 rounded-full' />
-                                <span className='block ml-2 text-gray-800'>{contact?.name}</span>
+                    {selectedChat && selectedContact.length > 0 && (
+                    <div className='relative flex items-center'>
+                              <div >
+                                <img src='' alt="" className='w-10 h-10 rounded-full' />
+                                <span className='block ml-2 text-gray-800'></span>
                               </div>
-                            )} 
-                          })
-                        ) : (
-                          null
-                        )    
-                      ) : (
-                          <span className="text-center opacity-60 text-gray-800">Select a chat</span>
-                      )}
-                    </div> */}
+                        
+                          <span className="text-center opacity-60 text-gray-800"></span>
+                    </div>
+                    )}
                   </div>
 
                   <div className='w-full p-6 bg-blue-gray-50 overflow-y-auto h-[25rem] border-b border-gray-200'>

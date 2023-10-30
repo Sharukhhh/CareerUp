@@ -119,6 +119,19 @@ z-index: 49;
 }
 
 .login {
+  position: relative;
+}
+
+.login ::before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url(../public/land.jpg);
+  background-size: cover;
+  filter: blur(3px); /* Apply blur to the background image */
+  z-index: -1; /* Place the pseudo-element behind the content */
 }
 

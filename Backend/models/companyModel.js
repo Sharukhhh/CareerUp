@@ -52,7 +52,7 @@ const companySchema = mongoose.Schema({
     profileImage : {
         type : String,
         default : 'https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png'
-    },
+    },                 
 
     followers : [{
         user : {

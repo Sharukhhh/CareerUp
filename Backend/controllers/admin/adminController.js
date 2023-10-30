@@ -122,7 +122,7 @@ export const dashboardValues = async(req, res, next) => {
         const totalCompanies = await companyModel.countDocuments();
 
         //total posts
-        const totalPosts = await postModel.countDocuments();
+        const totalPosts = await postModel.countDocuments(); 
 
         //total jobs openings posted
         const totalJobs = await jobModel.countDocuments();

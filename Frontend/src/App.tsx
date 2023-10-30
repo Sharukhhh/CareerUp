@@ -25,6 +25,7 @@ import PostTable from './Pages/admin/PostTable';
 import Notifications from './Pages/user/Notifications';
 import NotFound from './Pages/intro/NotFound';
 import Explore from './Pages/user/Explore';
+import ChatPage from './Pages/user/ChatPage';
 
 
 function App() {
@@ -46,7 +47,8 @@ function App() {
           <Route path='/details' element={<AddInfoPage />}/>
           <Route path='/details/:id' element={<AddInfoPage/>}/>
           <Route path='/saved' element={<SavedPosts/>}/>
-          <Route path='/message' element={<Chat />}/>
+          {/* <Route path='/message' element={<Chat />}/> */}
+          <Route path='/message' element={<ChatPage/>}/>
           <Route path='/notifications' element={<Notifications/>}/>
           <Route path='/explore' element={<Explore/>}/>
           {isCandidate ? (

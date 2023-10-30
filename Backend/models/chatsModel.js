@@ -2,6 +2,16 @@ import mongoose from 'mongoose';
 
 
 const chatSchema = mongoose.Schema({
+
+    chatName : {
+        type: String,
+    },
+
+    isGroupChat : {
+        type : Boolean,
+        // default : false
+    },
+
     participants : [
         {
             type : mongoose.Schema.Types.ObjectId,
@@ -9,23 +19,15 @@ const chatSchema = mongoose.Schema({
         }
     ],
 
-    messages : [
-        {
-            sender : {
-                type : mongoose.Schema.Types.ObjectId,
-                ref : 'users',
-            },
+    chatAdmin : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'users'
+    },
 
-            message : {
-                type : String
-            },
-
-            created : {
-                type : Date,
-                default : Date.now
-            },
-        },
-    ]
+    lastMessage : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'messages'
+    }
     
 } , {timestamps : true});
 

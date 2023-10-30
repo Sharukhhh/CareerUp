@@ -53,6 +53,12 @@ const AddInfoPage = () => {
           setCompanyName(res.data?.info?.companyName);
           setCompanyLocation(res.data?.info?.jobLocation);
           setRole(res?.data?.info?.role);
+
+          // setPosition(res.data?.info?.position);
+          // setJobLocation(res?.data?.info?.location);
+          // setSalaryPackage(res?.data?.info?.salaryPackage);
+          setRequirements(res?.data?.info?.requirements);
+          // setIndustry(res?.data?.info?.industry);
         }
       }).catch((error) => console.log(error , 'axios bringerror')
       )

@@ -59,18 +59,29 @@ connectDB();
 io.on('connection' , (socket) => {
     // console.log('connected');
 
-    // //for notifications
-    // socket.on('new notification' , ({userSocketId  , notificationData}) => {
-    //     io.to(userSocketId).emit('new notification' , notificationData);
-    // })
-
     //chat related events starting
-    socket.on('start' , (userData) => {
-        socket.join(userData);   //joining a chat room
+    socket.on('start' , (userData) => { 
+        socket.join(userData);   //starting a chat
     });
 
-    socket.on('new chat message' , (room , message) => {
-        io.to(room).emit('new chat message' , message);    //broadcasting the message
+    socket.on('join chat' , (chatRoom) => {
+        socket.join(chatRoom);
+
+    })
+
+    socket.on('new chat message' , (message) => {
+        const chat = message.chat;
+
+        if(!chat.participants){
+            console.log('no participants');
+        }
+        chat.participants.forEach((user) => {
+            if(user._id === message.sender._id){
+
+            }
+
+            return socket.in(user._id).emit('message recieved' , message);
+        })
     });
 
     socket.on('disconnect' , () => {
