@@ -56,7 +56,7 @@ const Applicants = () => {
 
   return (
     <>
-        <Toaster position='top-center' />
+        <Toaster position='top-right' />
         <div className='max-w-6xl mt-3 mx-auto p-6 bg-[#c3e3f7] border: rounded-lg shadow-xl'>
             <div className='flex justify-between'>
                 <h1 className='text-3xl font-bold mb-3'>Applicants List</h1>

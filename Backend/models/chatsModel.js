@@ -7,22 +7,12 @@ const chatSchema = mongoose.Schema({
         type: String,
     },
 
-    isGroupChat : {
-        type : Boolean,
-        // default : false
-    },
-
     participants : [
         {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'users'
         }
     ],
-
-    chatAdmin : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'users'
-    },
 
     lastMessage : {
         type : mongoose.Schema.Types.ObjectId,

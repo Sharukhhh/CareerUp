@@ -5,43 +5,142 @@ import chatModel from "../../models/chatsModel.js";
 import messsageModel from "../../models/chatMessage.js";
 
 
-export const createGroupChat = async (req, res, next) => {
+
+export const findUserToChat = async (req, res, next) => {
     try {
-        const {participants} = req.body;
+        const {searchInput} = req.body;
+        const user = req.user;
 
-        const chat = await chatModel.findOne({
-            participants : {$all: participants},
-            isGroupChat : true
-        });
-
-        if(chat){
-            return res.status(200).json({chatId : chat._id})
-        }
-
-        const newChat = new chatModel.create({
-            participants,
-            isGroupChat : true
-        });
-
-        if(!newChat){
-            console.log('error');
+        if(!searchInput){
             return;
         }
 
-        await newChat.save();
-        return res.status(200).json({chatId : newChat._id});
+        const searchResults = await userModel.find({
+            name : {$regex : searchInput  , $options : 'i'},
+            _id : {$ne : user._id},
+        }).populate('name profileImage headline');
+        
+        if(!searchResults){
+            return;
+        }
+
+        return res.status(200).json({message : 'success' , searchResults});
 
     } catch (error) {
         next(error);
     }
 }
 
+
+export const setupingChatWithSelectedUser = async (req, res ,next) => {
+    try {
+        const  {userId} = req.body;
+        const user = req.user;
+
+        if(!userId){
+            return;
+        }
+
+        let chatExists = await chatModel.find({
+            $and : [
+                {participants : {$elemMatch : {$eq : userId}}},
+                {participants : {$elemMatch : {$eq : user._id}}}
+            ]
+        })
+        .populate('participants' , '-password')
+        .populate('lastMessage')
+
+        chatExists = await userModel.populate(chatExists , {
+            path : 'lastMessage.sender',
+            select : 'name profileImage'
+        })
+
+        if(!chatExists){
+            return;
+        }
+
+        if(chatExists.length > 0){
+            return res.status(201).json({chat : chatExists[0]});
+        }
+
+        let chatData = {
+            chatName : 'sender',
+            participants : [userId , user._id]
+        };
+
+        const newChat = await chatModel.create(chatData);
+
+        if(!newChat){
+            return;
+        }
+
+        const fullChat = await chatModel.findOne({_id: newChat._id}).populate('participants' , '-password');
+
+        return res.status(201).json({chat : fullChat})
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const getCreatedChat = async (req, res, next) => {
+    try {
+        const user = req.user;
+        chatModel.find({participants : {$elemMatch : {$eq : user._id}}})
+        .populate('participants' , '-password')
+        .populate('lastMessage')
+        .sort({updatedAt : -1})
+        .then(async(results) =>{
+            results = await userModel.populate(results , {
+                path : 'lastMessage.sender',
+                select : 'name profileImage'
+            })
+
+            res.status(200).json({results})
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+// export const createGroupChat = async (req, res, next) => {
+//     try {
+//         const {participants} = req.body;
+
+//         const chat = await chatModel.findOne({
+//             participants : {$all: participants},
+//             isGroupChat : true
+//         });
+
+//         if(chat){
+//             return res.status(200).json({chatId : chat._id})
+//         }
+
+//         const newChat = new chatModel.create({
+//             participants,
+//             isGroupChat : true
+//         });
+
+//         if(!newChat){
+//             console.log('error');
+//             return;
+//         }
+
+//         await newChat.save();
+//         return res.status(200).json({chatId : newChat._id});
+
+//     } catch (error) {
+//         next(error);
+//     }
+// }
+
 export const submitMessage = async (req, res, next) => {
     try {
         const user = req.user;
         const {content , chatId} = req.body;
 
-        console.log(content , chatId , 'Labhichu' );
+        // console.log(content , chatId , 'Labhichu' );
 
         if(!content || !chatId){
             return res.status(400).json({error : 'Invalid'});

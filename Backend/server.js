@@ -57,20 +57,24 @@ connectDB();
 
 
 io.on('connection' , (socket) => {
-    // console.log('connected');
+    console.log('connected');
 
     //chat related events starting
     socket.on('start' , (userData) => { 
         socket.join(userData);   //starting a chat
+        console.log(userData , 'ith login userinte id');
     });
 
     socket.on('join chat' , (chatRoom) => {
         socket.join(chatRoom);
+        console.log('joined the room' , chatRoom);
 
     })
 
     socket.on('new chat message' , (message) => {
         const chat = message.chat;
+
+        console.log(chat , 'ith chat');
 
         if(!chat.participants){
             console.log('no participants');

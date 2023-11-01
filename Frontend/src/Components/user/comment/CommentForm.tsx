@@ -20,10 +20,8 @@ const CommentForm: React.FC<CommentFormProps> = ({id ,  userData , setUpdateUI})
     .then((res)=> {
       if(res.data.message){
         toast.success(res.data.message);
-
         setComment('');
-
-        // setUpdateUI((prev : any) => !prev);
+        setUpdateUI((prev : any) => !prev);
       }
 
       if(res.data.error){
@@ -39,8 +37,8 @@ const CommentForm: React.FC<CommentFormProps> = ({id ,  userData , setUpdateUI})
           <img src={userData.profileImage} alt="pro" className='w-10 h-10 rounded-full object-cover' />
 
           <input value={comment} onChange={(e) => setComment(e.target.value)}
-          className='w-full border border-black bg-blue-gray-50 rounded-full py-3' 
-          type="text" placeholder='comment....'
+          className='w-full border border-black bg-blue-gray-50 rounded-full py-3 px-2' 
+          type="text" placeholder='Comment here....'
           name="comment" id="" />
         </div>
 

@@ -11,7 +11,7 @@ export const verify = async (req, res , next) => {
         
         if(token === null){         
             return res.status(401).json({message : 'Unauthorized!, not token found'});
-        }
+        } 
 
         token = token.replaceAll('"', '');
 

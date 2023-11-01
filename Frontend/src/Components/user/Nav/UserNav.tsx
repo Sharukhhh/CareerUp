@@ -71,20 +71,20 @@ const UserNav:React.FC<UserNavProps> = () => {
   return (
     <div className='w-full flex flex-col md:flex-row items-center justify-between py-3 md:py-6 px-4 md:px-8 bg-primary ]'>
       <NavLink to='/feed' className='flex gap-2 items-center'>
-        <div className='p-1 md:p-2 text-[#065ad8] rounded font-extrabold  text-xl'>
+        <div className='p-1 md:p-2 text-[#065ad8] rounded font-extrabold  text-3xl'>
           <span className='dark:text-white'>CareerUp</span>
         </div>
       </NavLink>
 
       {/* <div className='flex gap-2 md:gap-14 items-center'> */}
-        <form className='hidden md:flex items-center justify-center'>
+        {/* <form className='hidden md:flex items-center justify-center'>
           <input type="text" placeholder='Search....' 
           className='border border-r-0 w-[12rem] lg:w-[24rem] rounded-l-full py-2 px-2 md:px-4' />
 
           <button type='submit' className='bg-[#0444a4] text-white px-4 py-2 rounded-r-full'>
             Search
           </button>
-        </form>
+        </form> */}
       {/* </div> */}
 
       {/* Icons */}

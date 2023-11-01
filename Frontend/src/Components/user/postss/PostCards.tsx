@@ -1,7 +1,7 @@
 import React , {useState , lazy , Suspense ,useEffect} from 'react'
 import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
 import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
-import {MdOutlineDeleteOutline, MdOutlineReportProblem} from 'react-icons/md';
+import {MdOutlineDeleteOutline, MdOutlineReportProblem , MdDeleteSweep} from 'react-icons/md';
 import {Link} from 'react-router-dom';
 import { Spinner } from '@material-tailwind/react';
 import { axiosInstance } from '../../../api/axiosInstance';
@@ -84,7 +84,6 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
       .then((res) => {
         if(res.data.message){
           toast.success(res.data.message);
-
           setUpdateUI((prev : boolean) => !prev);
         }
 
@@ -96,38 +95,15 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
     }
 
     const deleteComment = (commentId : string) => {
-
+      axiosInstance.delete(`/delete-comment/${commentId}`)
+      .then((res) => {
+        if(res.data.message){
+          toast.success(res.data.message);
+          setUpdateUI((prev : boolean) => !prev);
+        }
+      }).catch((error) => console.log(error)
+      )
     }
-
-    // const getComments = async (postId : string) => {
-    //   axiosInstance.get(`/comments/${postId}`)
-    //   .then((res) =>{
-    //     if(res.data.message){
-    //       setShowComments(res.data.comments);
-    //     }
-
-    //     if(res.data.error){
-    //       toast.error(res.data.error);
-    //     }
-    //   }).catch((error) => console.log('axios comment get err' , error)
-    //   )
-    // }
-
-    // useEffect(() => {
-    //   const getComments = async (postId : string) => {
-    //     axiosInstance.get(`/comments/${postId}`)
-    //     .then((res) =>{
-    //       if(res.data.message){
-    //         setShowComments(res.data.comments);
-    //       }
-
-    //       if(res.data.error){
-    //         toast.error(res.data.error);
-    //       }
-    //     }).catch((error) => console.log('axios comment get err' , error)
-    //     )
-    //   }
-    // }, []);
 
   return (
     <> 
@@ -235,7 +211,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
             </div>
 
             {comments === post?._id && (
-              <div className='w-full mt-4 border-t border-[#66666645] pt-4'>
+              <div className='w-full mt-4 border-t  border-[#66666645] pt-4'>
                 <CommentForm setUpdateUI={setUpdateUI} userData={userData} id={post?._id}
                 />
 
@@ -243,7 +219,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                   post?.comments?.length > 0 ? (
                     post?.comments?.map((comment : any) =>{
                     return (
-                    <div className='w-full py-2' key={comment._id}>
+                    <div className='w-full py-2 px-2 border border-gray-400 bg-gray-100 rounded mb-2 mt-2' key={comment._id}>
                       <div className='flex gap-3 items-center mb-1'>
                         <Link to=''>
                           <img src={comment?.userId?.profileImage || comment?.companyId?.profileImage} alt="" 
@@ -256,7 +232,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                             </p>
                           </Link>
                           <span className='text-ascent-2 text-sm'>
-                          {moment(comment?.createdAt ?? '2023-10-02').fromNow()}
+                          {moment(comment?.createdAt).fromNow()}
                           </span>
                         </div>
                       </div>
@@ -265,8 +241,8 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                         <p className='text-ascent-2'>{comment?.text}</p>
 
                         <div className='mt-2 flex gap-6'>
-                          <span onClick={() => deleteComment(comment._id)} className='text-blue hover:bg-[#3b509c2b] cursor-pointer'>
-                            Delete
+                          <span title='Delete this Comment' onClick={() => deleteComment(comment?._id)} className='text-blue hover:bg-[#3b509c2b] px-2 cursor-pointer'>
+                            <MdDeleteSweep size={22}/>
                           </span>
                         </div>
                       </div>

@@ -13,14 +13,31 @@ export const ownProfile = async (req, res, next) => {
         
         const loggedUser = req.user;
         const user = await userModel.findById(loggedUser._id)
-        .select('name headline profileImage connections') // Only select the necessary fields
+        .select('name headline profileImage connections education profession') // Only select the necessary fields
         .populate({
             path: 'connections.userId',
             select: 'name profileImage _id',
-        }).exec();
+        })
+        .populate({
+            path: 'followingCompanies.company',
+            select: 'name headline profileImage', 
+        })
+        .exec();
 
         if(!user){
-            const company = await companyModel.findById(loggedUser._id).populate('followers');
+            const company = await companyModel.findById(loggedUser._id)
+            .populate({
+                path: 'followingCompanies.company',
+                select: 'name headline profileImage', 
+            })
+            .populate({
+                path : 'followers.user',
+                select : 'name headline profileImage'
+            })
+            .populate({
+                path : 'followers.company',
+                select : 'name headline profileImage'
+            });
 
             if(!company){
                 return res.status(400).json({error : 'No user'})
@@ -44,9 +61,8 @@ export const getProfile = async (req, res , next) => {
         const loggedUser = req.user;
         
         if(id){   
-            console.log('ivadeeeeeeeee');
             const user = await userModel.findById(id)
-            .select('name headline profileImage connections') 
+            .select('name headline profileImage connections education profession') 
             .populate({
                 path: 'connections.userId',
                 select: 'name profileImage _id',
@@ -55,7 +71,8 @@ export const getProfile = async (req, res , next) => {
             // console.log(user , 'ith saadha user');
             
             if(!user){
-                const company = await companyModel.findById(id).populate('followers'); 
+                const company = await companyModel.findById(id).populate('followers')
+                .populate('followingCompanies'); 
     
                 if(!company){
                     return res.status(400).json({error : 'No user'})
@@ -516,6 +533,28 @@ export const displayNotifications = async (req, res, next) => {
 
         return res.status(200).json({message : 'notifications exist' , notifications});
 
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+export const clearNotifications = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const notifications = await notifyModel.deleteMany({
+            receiverUser : user._id,
+            type : {$ne : 'connection'}
+        });
+
+        if(!notifications){
+            return;
+        }
+
+        return res.status(200).json({message : 'Cleared All Notifications'});
+
+        
     } catch (error) {
         next(error);
     }

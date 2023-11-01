@@ -92,8 +92,9 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
                 setContent('');
                 setImage(null);
                 setVideo(null);
-
                 addNewPost(res.data.newPost)
+                console.log(res.data.newPost , 'ingu vannedi');
+                
             }
 
             if(res.data.error){

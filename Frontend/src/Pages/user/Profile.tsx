@@ -68,6 +68,8 @@ const Profile = () => {
     axiosInstance.get('/ownProfile')
     .then((res) => {
       if(res.data.message){
+        console.log(res.data.user , 'soyyave');
+        
         setUserData(res.data.user);
       }
     }).catch((error) => console.log(error , 'axios')
@@ -152,7 +154,7 @@ const Profile = () => {
   return (
     <>
       <div className="home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden">
-        <Toaster position="top-center" />
+        
         <UserNav />
 
         {loading ? (

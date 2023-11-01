@@ -13,6 +13,7 @@ const Notifications = () => {
 
 
     const [notifcations , setNotifications] = useState<any[]>([]);
+    const [clearanceMessage , setClearanceMessage] = useState<string>('');
     const [updateUI , setUpdateUI] = useState<boolean>(false);
     const [loading , setIsLoading] = useState<boolean>(true);
     
@@ -65,30 +66,55 @@ const Notifications = () => {
         })
     }
 
+    const clearNotifications = () => {
+        axiosInstance.delete('/clear')
+        .then((res) => {
+            if(res.data.message){
+                setClearanceMessage(res.data.message);
+                // setUpdateUI(prev => !prev);
+
+                setNotifications((prevItems  :any) => 
+                    prevItems.map((item : any) => ({...item , isRemoving : true}))
+                )
+
+                setTimeout(() => {
+                    setNotifications([]);
+                } ,300);
+
+                setTimeout(() => {
+                    setClearanceMessage('');
+                } , 120000);
+            }
+        }).catch((error) => {
+            console.log(error);
+        })
+    }
+
   return (
     <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
-
-            <Toaster/>
             {loading ? (
                 <span className='flex items-center justify-center mx-auto my-16'>
                     <Spinner  className='h-24 w-24'/>
                 </span> 
             ) : (
                 <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full'>
-                    <div className='flex-1 max-w-4xl mx-auto bg-white pt-5 pb-10 flex flex-col rounded gap-6 overflow-y-auto'>
-                        <h1 className='font-bold text-2xl ml-4'>Notifcations</h1>
+                    <div className='flex-1  max-w-4xl mx-auto bg-white pt-5 pb-10 flex flex-col rounded gap-6 overflow-y-auto'>
+                        <div className='flex justify-between'>
+                            <h1 className='font-bold text-2xl ml-4'>Notifcations</h1>
+                            {notifcations.length > 0 && (
+                                <button  onClick={clearNotifications} title='Clear All' className='mx-6 text-blue hover:scale-125'>
+                                    <MdMarkEmailRead size={22} />
+                                </button>
+                            )}
+                        </div>
 
                         <hr className='border-2 mx-4' />
-
-                        {/* <span title='mark as read' className='mx-6 text-blue flex justify-end mb-0'>
-                            <MdMarkEmailRead size={25} />
-                        </span> */}
                         
                         {notifcations.length > 0 ? (
                             notifcations?.map((notifcation : any) => (
-                            <div key={notifcation?._id} className='flex items-start p-4 mx-4  bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] border rounded shadow-md'>
+                            <div key={notifcation?._id} className={`flex items-start p-4 mx-4 bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] border rounded shadow-md ${notifcation.isRemoving ? 'notification-removing' : ''}`}>
                                 <div className='flex items-center justify-center w-12 h-12 bg-primary rounded-full'>
                                     {notifcation?.senderUser?.profileImage ? (
                                         <img
@@ -131,7 +157,11 @@ const Notifications = () => {
                             ))
                         ) : (
                             <div className='flex justify-center p-40 bg-blue-gray-50 mx-4'>
-                                <p className='text-xl font-medium'>No New Notifications</p>
+                                {clearanceMessage ? (
+                                    <p className='text-xl font-medium'>{clearanceMessage}</p>
+                                ) : (
+                                    <p className='text-xl font-medium'>No New Notifications</p>
+                                )}
                             </div>
                         )}
 

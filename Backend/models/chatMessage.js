@@ -6,7 +6,7 @@ const chatMessageSchema = mongoose.Schema({
         ref : 'users'
     },
 
-    chat: {
+    chat: { // to the refrence of the chat which the message belongs too
         type : mongoose.Schema.Types.ObjectId,
         ref : 'chats'
     },

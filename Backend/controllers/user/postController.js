@@ -38,6 +38,8 @@ export const createPost = async (req, res, next) => {
   
       const newPost = new postModel(newPostData);
       await newPost.save();
+
+      await newPost.populate('user');
   
       res.json({ message: 'New Post Added', newPost });
 
@@ -56,6 +58,8 @@ export const createPost = async (req, res, next) => {
   
       const newPost = new postModel(newPostData);
       await newPost.save();
+
+      await newPost.populate('company');
   
       res.json({ message: 'New Post Added', newPost });
     }
@@ -96,7 +100,13 @@ export const getPosts = async (req, res, next) => {
     const posts = await postModel.find()
     .populate('user')
     .populate('company')
-    .populate('comments').exec();
+    .populate({
+      path : 'comments',
+      populate : {
+        path : 'userId companyId',
+        select : 'name profileImage headline'
+      }
+    });
 
     if(!posts){
       return res.status(404).json({error : 'No posts found'});
@@ -276,7 +286,7 @@ export const showComment = async (req, res, next) => {
     const postId = req.params.postId;
 
     const postWithComments = await postModel.findById(postId).populate({
-      path : 'comments.userId ',
+      path : 'comments.userId ', 
       select : 'name profileImage'
     }).exec();
 
@@ -369,7 +379,14 @@ export const deleteComment = async(req, res, next) => {
     const commentId = req.params.commentId;
     const user = req.user;
 
+    const comment = await commentModel.findByIdAndDelete(commentId);
 
+    if(!comment){
+      return res.status(400).json({error : 'no comment'});
+    }
+
+    return res.status(200).json({message : 'Comment deleted '});
+    
   } catch (error) {
     next(error);
   }

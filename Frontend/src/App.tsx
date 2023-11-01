@@ -8,12 +8,9 @@ import UserFeed from './Pages/user/UserFeed';
 import AddInfoPage from './Pages/user/AddInfoPage';
 import SavedPosts from './Pages/user/SavedPosts';  
 import RecruiterJobsPage from './Pages/user/RecruiterJobsPage';
-import Chat from './Pages/user/Chat';
-
 import Adminlogin from './Pages/admin/Adminlogin';
 import UsersList from './Pages/admin/UsersList';
 import CompanyList from './Pages/admin/CompanyList';
-
 import PrivatePages from './Components/PrivatePages';
 import { useSelector } from 'react-redux';
 import RootState from './Redux/rootstate/rootState';
@@ -26,6 +23,7 @@ import Notifications from './Pages/user/Notifications';
 import NotFound from './Pages/intro/NotFound';
 import Explore from './Pages/user/Explore';
 import ChatPage from './Pages/user/ChatPage';
+import { Toaster } from 'react-hot-toast';
 
 
 function App() {
@@ -47,7 +45,6 @@ function App() {
           <Route path='/details' element={<AddInfoPage />}/>
           <Route path='/details/:id' element={<AddInfoPage/>}/>
           <Route path='/saved' element={<SavedPosts/>}/>
-          {/* <Route path='/message' element={<Chat />}/> */}
           <Route path='/message' element={<ChatPage/>}/>
           <Route path='/notifications' element={<Notifications/>}/>
           <Route path='/explore' element={<Explore/>}/>
@@ -70,6 +67,7 @@ function App() {
 
         <Route path='*' element={<NotFound/>}/>
       </Routes>
+      <Toaster position='top-right'/>
     </>
   )
 }

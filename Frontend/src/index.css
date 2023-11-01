@@ -135,3 +135,18 @@ z-index: 49;
   z-index: -1; /* Place the pseudo-element behind the content */
 }
 
+
+.notification-removing {
+  animation: slideOut 1s forwards ease-in-out;
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}

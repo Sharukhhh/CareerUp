@@ -1,9 +1,15 @@
 import express from 'express';
 import { verify } from '../../middlewares/userAuth.js';
-import { createGroupChat, showAllMessages, submitMessage } from '../../controllers/user/chatController.js';
+import { findUserToChat, getCreatedChat, setupingChatWithSelectedUser, showAllMessages, submitMessage } from '../../controllers/user/chatController.js';
 const router = express.Router();
 
-router.get('/createOrRetrieveChat' , verify , createGroupChat);
+router.post('/searchUser' , verify , findUserToChat);
+
+router.post('/chat-setup' , verify , setupingChatWithSelectedUser);
+
+router.get('/chatusers' , verify , getCreatedChat);
+
+// router.get('/createOrRetrieveChat' , verify , createGroupChat);
 
 router.post('/chatSend' , verify , submitMessage);
 
