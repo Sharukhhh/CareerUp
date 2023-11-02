@@ -1,11 +1,10 @@
-import React , {useState , lazy , Suspense , useEffect} from 'react';
+import {useState , lazy , Suspense , useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
 import UserNav from '../../Components/user/Nav/UserNav'
 import ProfileCard from '../../Components/user/Profile/ProfileCard'
-import ConnectionCard from '../../Components/user/cards/ConnectionCard'
 import PostCards from '../../Components/user/postss/PostCards'
 import { Spinner } from '@material-tailwind/react';
 import CreatePost from '../../Components/user/postss/CreatePost';
@@ -92,7 +91,7 @@ const UserFeed = () => {
                 {/* left-side */}
                 
                 <div className='w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto'>
-                    <ProfileCard updateUI={updateUI} userData={userData} openEditModal={openEditModal} />
+                    <ProfileCard userData={userData} openEditModal={openEditModal} />
                 </div>
 
                 {/* center */}   

@@ -1,12 +1,11 @@
-import React , {useEffect , useState} from 'react';
-import { BiComment, BiLike , BiSolidLike} from 'react-icons/bi';
+import  {useEffect , useState} from 'react';
+import {  BiLike , BiSolidLike} from 'react-icons/bi';
 import {FaRegBookmark} from 'react-icons/fa';
 import {MdOutlineReportProblem} from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import {Link} from 'react-router-dom';
 import RootState from '../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../api/axiosInstance';
-import toast from 'react-hot-toast';
 import moment from 'moment';
 
 const SingleUserPostCard = () => {

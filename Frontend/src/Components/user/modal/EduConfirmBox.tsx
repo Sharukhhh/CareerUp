@@ -2,18 +2,17 @@ import React, { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+
 
 interface EducationPermissionBoxProps {
     visible : boolean;
     closeEduBox : () => void;
     educationId : string;
-    setUserData : (userData: any) => void;
     setUpdateUI :(data: any) => void;
 }
 
 
-const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({setUserData , setUpdateUI, visible , closeEduBox , educationId}) => {
+const EduConfirmBox: React.FC<EducationPermissionBoxProps> = ({ setUpdateUI, visible , closeEduBox , educationId}) => {
     const [open, setOpen] = useState(true);
 
     const cancelButtonRef = useRef(null);

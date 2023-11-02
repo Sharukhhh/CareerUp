@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {IoArrowBackCircle} from 'react-icons/io5';
 import Saved from '../../Components/user/postss/Saved';
-import UserNav from '../../Components/user/Nav/UserNav';
 import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
 

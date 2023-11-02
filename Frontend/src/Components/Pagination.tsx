@@ -13,6 +13,9 @@ const Pagination : React.FC<PaginationProps> = ({datas , currentPage , itemsPerP
     const [pageCount , setPageCount] = useState<number>(0);
     const [displayedDatas , setDisplayedDatas] = useState<any[]>([]);
 
+    console.log(displayedDatas);
+    
+
     useEffect(() => {
         setPageCount(Math.ceil(datas?.length / itemsPerPage));
 

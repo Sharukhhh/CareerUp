@@ -1,21 +1,18 @@
-import React , {useEffect  ,useState} from 'react';
+import React  from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-// import {BsThreeDotsVertical} from 'react-icons/bs'
 import {BiEdit} from 'react-icons/bi';
-import {BsPersonFillAdd , BsBriefcase , BsFillChatLeftTextFill} from 'react-icons/bs';
+import { BsFillChatLeftTextFill} from 'react-icons/bs';
 import {HiOutlineSaveAs} from 'react-icons/hi';
 import {CiLocationOn} from 'react-icons/ci';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
-import { axiosInstance } from '../../../api/axiosInstance';
 
 interface ProfileCardProps {
-    updateUI : boolean
     userData : any;
     openEditModal : () => void; 
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal , updateUI}) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal }) => {
 
     // const [userConnections, setUserConnections] = useState<any>([]);
 

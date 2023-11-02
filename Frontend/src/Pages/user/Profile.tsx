@@ -2,9 +2,7 @@ import {useState , useEffect , lazy , Suspense  } from 'react';
 import { useParams } from 'react-router-dom';
 import { Spinner } from '@material-tailwind/react';
 import { useSelector } from 'react-redux';
-import { Toaster } from "react-hot-toast";
 import {FaUserGraduate} from 'react-icons/fa6';
-import ConnectionCard from "../../Components/user/cards/ConnectionCard";
 import PostCards from '../../Components/user/postss/PostCards';
 import UserNav from "../../Components/user/Nav/UserNav";
 import ProfileCard from "../../Components/user/Profile/ProfileCard";
@@ -166,7 +164,7 @@ const Profile = () => {
           <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full md:overflow-y-auto">
             {/* Left */}
             <div className="w-full md:w-1/4 lg:w-1/4 h-auto flex flex-col gap-6 overflow-y-auto">
-              <ProfileCard updateUI={updateUI} userData = {userData} openEditModal={openEditModal} />
+              <ProfileCard  userData = {userData} openEditModal={openEditModal} />
               {/* <ConnectionCard userData={userData} /> */}
             </div>
 
@@ -306,7 +304,7 @@ const Profile = () => {
       </div>
 
       <Suspense fallback={<Spinner/>}>
-        <DeleteBox setUpdateUI={setUpdateUI} setUserData={setUserData} visible={showBox} closeBox={closeBox} professionId={professionId} />
+        <DeleteBox setUpdateUI={setUpdateUI} visible={showBox} closeBox={closeBox} professionId={professionId} />
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
@@ -314,7 +312,7 @@ const Profile = () => {
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
-        <EduConfirmBox setUpdateUI={setUpdateUI} setUserData={setUserData} visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
+        <EduConfirmBox setUpdateUI={setUpdateUI}  visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
       </Suspense>
     </>  
   )

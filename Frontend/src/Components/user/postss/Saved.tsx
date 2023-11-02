@@ -1,9 +1,9 @@
-import React , {useState , useEffect} from 'react';
+import React , {useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
-import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
+import { BiComment, BiLike } from 'react-icons/bi';
+import {FaRegBookmark } from 'react-icons/fa';
 import {MdOutlineReportProblem} from 'react-icons/md';
-import moment from 'moment';
+// import moment from 'moment';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 

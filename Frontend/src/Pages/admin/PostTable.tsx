@@ -1,4 +1,4 @@
-import React  , {useEffect , useState} from 'react'
+import  {useEffect , useState} from 'react'
 import TopBar from '../../Components/admin/TopBar'
 import { adminAxiosInstance } from '../../api/axiosInstance'
 import {AiFillDelete} from 'react-icons/ai';
@@ -58,7 +58,7 @@ const PostTable = () => {
                     </tr>
                 </thead>
                 <tbody className='text-center py-6 bg-gray-200'>
-                {paginatedDisplayedData.map((post : any , index : number) => {
+                {paginatedDisplayedData.map((post : any ) => {
                     return(
                     <tr className='' key={post?._id}>
                         <td className="min-w-[150px] border-white/0 py-3 pr-4">

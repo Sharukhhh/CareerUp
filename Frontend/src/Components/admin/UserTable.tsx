@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
 import toast, { Toaster } from 'react-hot-toast';
 import Pagination from '../Pagination.tsx';

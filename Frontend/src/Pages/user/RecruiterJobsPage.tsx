@@ -1,14 +1,13 @@
-import React , {useEffect , useState} from 'react'
+import  {useEffect , useState} from 'react'
 import UserNav from '../../Components/user/Nav/UserNav'
-import { useSelector } from 'react-redux'
-import RootState from '../../Redux/rootstate/rootState'
 import { axiosInstance } from '../../api/axiosInstance'
 import ProfileCard from '../../Components/user/Profile/ProfileCard'
 import RecruiterJobTile from '../../Components/user/cards/RecruiterJobTile'
+import EditProfile from '../../Components/user/modal/edit-user/EditProfile'
 
 const RecruiterJobsPage = () => {
-  const user = useSelector((state : RootState) => state.user.userCred);
   const [userData , setUserData] = useState<any>([]);
+  const [updateUI , setUpDateUI] = useState<boolean>(false);
 
   const [showModal , setShowModal] = useState<boolean>(false);
 
@@ -21,14 +20,14 @@ const RecruiterJobsPage = () => {
   }
 
   useEffect(() => {
-    axiosInstance.get(`/profile/${user?.userId}`)
+    axiosInstance.get(`/ownProfile`)
     .then((res)=>{
       if(res.data.message){
         setUserData(res.data.user);
       }
     }).catch((error) => console.log(error , 'axios')
     )
-  })
+  } , [updateUI])
   return (
     <>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
@@ -48,6 +47,12 @@ const RecruiterJobsPage = () => {
               </div>
             </div>
         </div>
+
+        <EditProfile 
+        setUpdateUI={setUpDateUI}
+        visible={showModal}
+        userData={userData}
+        closeEditModal={closeEditModal}/>
     </>
   )
 }

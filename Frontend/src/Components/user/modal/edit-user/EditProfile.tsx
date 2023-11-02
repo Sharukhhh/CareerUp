@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import RootState from '../../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../../api/axiosInstance';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { Document , Page } from 'react-pdf';
+
+
 
 interface EditProfileProps {
     userData : any;
@@ -18,7 +18,7 @@ interface EditProfileProps {
 const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , userData , setUpdateUI}) => {
 
     const user = useSelector((state : RootState) => state.user.userCred);
-    const navigate = useNavigate();
+    
 
     const [headline , setHeadline] = useState<string>(userData?.headline);
     const [location , setLocation] = useState<string>(userData?.location);

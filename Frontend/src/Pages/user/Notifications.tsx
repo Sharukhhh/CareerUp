@@ -1,15 +1,14 @@
-import React , {useEffect , useState} from 'react'
+import  {useEffect , useState} from 'react'
+import {Link} from 'react-router-dom';
 import UserNav from '../../Components/user/Nav/UserNav'
 import { axiosInstance } from '../../api/axiosInstance';
-import { useDispatch, useSelector } from 'react-redux';
-import RootState from '../../Redux/rootstate/rootState';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import {MdMarkEmailRead} from 'react-icons/md';
 import { Spinner } from '@material-tailwind/react';
 import moment from 'moment';
 
 const Notifications = () => {
-    const user = useSelector((state : RootState) => state.user.userCred);
+    
 
 
     const [notifcations , setNotifications] = useState<any[]>([]);
@@ -131,11 +130,13 @@ const Notifications = () => {
                                     {/* <p className='text-lg font-semibold'></p> */}
                                     <p className='text-gray-900'>{notifcation?.message}</p>
                                     {notifcation?.type === 'posts' && (
-                                        <img
-                                        src={notifcation?.post?.media}
-                                        alt='Post'
-                                        className='w-24 h-24 mt-2 rounded-lg border-2 border-white shadow-md'
-                                        />
+                                        <Link to='/feed'>
+                                            <img
+                                            src={notifcation?.post?.media}
+                                            alt='Post'
+                                            className='w-24 h-24 mt-2 rounded-lg border-2 border-white shadow-md'
+                                            />
+                                        </Link>
                                     )} 
                                     {notifcation?.type === 'connection' && (
                                         <div className='mt-4'>

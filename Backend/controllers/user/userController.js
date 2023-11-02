@@ -13,7 +13,7 @@ export const ownProfile = async (req, res, next) => {
         
         const loggedUser = req.user;
         const user = await userModel.findById(loggedUser._id)
-        .select('name headline profileImage connections education profession') // Only select the necessary fields
+        .select('name headline profileImage connections education profession location') // Only select the necessary fields
         .populate({
             path: 'connections.userId',
             select: 'name profileImage _id',
@@ -62,7 +62,7 @@ export const getProfile = async (req, res , next) => {
         
         if(id){   
             const user = await userModel.findById(id)
-            .select('name headline profileImage connections education profession') 
+            .select('name headline profileImage connections education profession location') 
             .populate({
                 path: 'connections.userId',
                 select: 'name profileImage _id',

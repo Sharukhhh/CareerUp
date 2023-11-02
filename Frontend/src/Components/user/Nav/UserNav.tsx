@@ -1,6 +1,6 @@
 import React , {useEffect , useState , lazy , Suspense} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 // import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
 // import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
@@ -12,7 +12,6 @@ import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
 const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDown'));
 import { Spinner } from '@material-tailwind/react';
-import RootState from '../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../api/axiosInstance';
 import notificationRootState from '../../../Redux/rootstate/NotifyRootState';
 
@@ -23,7 +22,7 @@ interface UserNavProps {
 
 const UserNav:React.FC<UserNavProps> = () => {
   // const {theme} = useSelector((state : ThemeRootState) => state.theme);
-  const user = useSelector((state : RootState) => state.user.userCred);
+  
 
   const notifcation = useSelector((state : notificationRootState) => state.notification.notificationCount);
 
@@ -33,7 +32,6 @@ const UserNav:React.FC<UserNavProps> = () => {
 
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
 
-  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

@@ -1,4 +1,4 @@
-import {useState , useEffect} from 'react';
+import {useState } from 'react';
 import toast from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
 

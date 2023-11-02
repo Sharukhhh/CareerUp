@@ -1,17 +1,13 @@
 import React , {useState} from 'react';
-import {BiImages, BiSend, BiSolidVideo , BiSolidError} from 'react-icons/bi';
+import {BiImages, BiSend, BiSolidVideo } from 'react-icons/bi';
 import { axiosInstance } from '../../../api/axiosInstance';
-import toast, {  Toaster } from 'react-hot-toast';
-import { useSelector } from 'react-redux';
-import RootState from '../../../Redux/rootstate/rootState';
+import toast from 'react-hot-toast';
 interface CreatePostProps{
     userData : any;
     addNewPost: (newPost: any) => void;
 }
 
 const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
-
-    const user = useSelector((state : RootState) => state.user.userCred);
 
     const allowedImageExtensions = ['jpg', 'jpeg', 'png', 'gif' ];
     const allowedVideoExtensions = ['mp4', 'mov', 'avi'];
@@ -106,7 +102,6 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
 
   return (
     <>
-    <Toaster position='top-center' />
         <form onSubmit={postSubmit} className="bg-primary px-4 rounded-lg flex flex-col " encType='multipart/form-data'>
             <div className='flex flex-col p-2 border-b border-[#66666645]'>
                 <div className="w-full flex items-center gap-2 py-4">

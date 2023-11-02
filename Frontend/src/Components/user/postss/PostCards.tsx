@@ -1,4 +1,4 @@
-import React , {useState , lazy , Suspense ,useEffect} from 'react'
+import React , {useState , lazy , Suspense } from 'react'
 import { BiComment, BiLike, BiSolidLike } from 'react-icons/bi';
 import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
 import {MdOutlineDeleteOutline, MdOutlineReportProblem , MdDeleteSweep} from 'react-icons/md';

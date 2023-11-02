@@ -194,7 +194,7 @@ export const likeandDislikePost = async (req, res, next) =>{
     const user = req.user;
     const postId = req.params.postId;
 
-    const post  = await postModel.findById(postId).populate('user');
+    const post  = await postModel.findById(postId).populate('user').populate('company');
 
     if(!post){
       return res.status(401).json({error : 'No post found'});
@@ -206,7 +206,8 @@ export const likeandDislikePost = async (req, res, next) =>{
       post.likes = post.likes.filter((userId) => userId.toString() !== user._id.toString() );
       await post.save();
 
-      if(post.user._id !== user._id ){
+
+      if(post.user._id.toString() !== user._id.toString() ){
         await notifyModel.deleteOne({
           message : `${user.name} Liked Your Post`,
           receiverUser : post.user,
@@ -220,7 +221,7 @@ export const likeandDislikePost = async (req, res, next) =>{
 
     } else {
 
-      if(post.user._id === user._id){
+      if(post.user._id.toString() === user._id.toString()){
         post.likes.push(user._id);
         await post.save();
 
@@ -309,7 +310,7 @@ export const addComment = async (req, res, next) => {
     const user = req.user;
     const {text} = req.body;
 
-    const findPost = await postModel.findById(postId).populate('user');
+    const findPost = await postModel.findById(postId).populate('user').populate('company');
     if(!findPost){
       return res.status(404).json({error : 'Post not found'});
     }
@@ -321,7 +322,7 @@ export const addComment = async (req, res, next) => {
   
       await newComment.save();
   
-      if(findPost.user._id === user._id){
+      if(findPost.user._id.toString() === user._id.toString()){
         findPost.comments.push(newComment._id);
         await findPost.save();
 
@@ -347,7 +348,7 @@ export const addComment = async (req, res, next) => {
   
       await newComment.save();
 
-      if(findPost.user._id === user._id){
+      if(findPost.user._id.toString() === user._id.toString()){
         findPost.comments.push(newComment._id);
         await findPost.save();
         

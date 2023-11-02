@@ -4,7 +4,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 import {Server as SocketIoServer} from 'socket.io';
 import http from 'http';
-import path from 'path';
+import path ,{ dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
 const app = express(); 
@@ -18,11 +23,20 @@ const io = new SocketIoServer(server , {
 });
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: [
+        "http://localhost:5173",
+        "http://careerup.website",
+        "https://careerup.website",
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 
 app.use(cors(corsOptions));
+app.use(express.static(path.join(__dirname,"../Frontend/dist")));
+
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname,"../Frontend/dist/index.html"));
+});
 
 app.use(express.static('Backend/public/resumes')); 
 app.use(express.json()); 

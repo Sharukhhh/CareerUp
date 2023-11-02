@@ -1,15 +1,12 @@
-import React , {useEffect , useState} from 'react'
+import  {useEffect , useState} from 'react'
 import UserNav from '../../Components/user/Nav/UserNav';
 import JobCard from '../../Components/user/cards/JobCard';
 import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
-import RootState from '../../Redux/rootstate/rootState';
 import ProfileCard from '../../Components/user/Profile/ProfileCard';
+import EditProfile from '../../Components/user/modal/edit-user/EditProfile';
 
 const JobsPage = () => {
-
-  const user = useSelector((state : RootState) => state.user.userCred);
 
 
   const [userData, setUserData] = useState<any>([]);
@@ -19,6 +16,7 @@ const JobsPage = () => {
 
   const [showModal , setShowModal] = useState<boolean>(false);
   const [updateUI , setUpdateUI] = useState<boolean>(false);
+  
 
   const openEditModal = () => {
     setShowModal(true);
@@ -36,7 +34,7 @@ const JobsPage = () => {
       }
     }).catch((error) => console.log(error , 'axios')
     )
-  })
+  }, [updateUI])
 
   useEffect(() => {
     axiosInstance.get('/getIndustries')
@@ -71,7 +69,7 @@ const JobsPage = () => {
         <div className="w-full flex flex-col md:flex-row gap-2 lg:gap-4 pt-5 pb-10 h-full">
           {/* Left */}
           <div className='w-full md:w-1/4 md:flex flex-col gap-6 overflow-y-auto'>
-            <ProfileCard updateUI={updateUI} userData={userData} openEditModal={openEditModal} />
+            <ProfileCard userData={userData} openEditModal={openEditModal} />
           </div>
 
           {/* Remaining */}
@@ -94,6 +92,13 @@ const JobsPage = () => {
           </div>
         </div>
       </div>
+
+      <EditProfile
+      visible={showModal}
+      setUpdateUI={setUpdateUI}
+      userData={userData}
+      closeEditModal={closeEditModal}
+      />
 
     </>
   )

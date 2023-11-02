@@ -1,4 +1,4 @@
-import React , {useState , useEffect} from 'react';
+import React , {useState } from 'react';
 import {BiDownArrowCircle} from 'react-icons/bi';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';

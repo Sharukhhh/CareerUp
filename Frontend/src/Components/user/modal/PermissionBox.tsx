@@ -1,6 +1,5 @@
 import React, { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react';
-import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
 
@@ -8,11 +7,10 @@ interface PermissionBoxProps {
     visible : boolean;
     closeBox : () => void;
     professionId : string;
-    setUserData : (userData: any) => void;
     setUpdateUI :(data: any) => void;
 }
 
-const PermissionBox: React.FC<PermissionBoxProps> = ({setUserData ,visible , setUpdateUI, closeBox, professionId}) => {
+const PermissionBox: React.FC<PermissionBoxProps> = ({ visible , setUpdateUI, closeBox, professionId}) => {
     const [open, setOpen] = useState(true);
 
     const cancelButtonRef = useRef(null);

@@ -1,4 +1,4 @@
-import React , {useState , useEffect} from 'react'
+import  {useState , useEffect} from 'react'
 import {Link , useParams} from 'react-router-dom';
 import {IoArrowBackCircle} from 'react-icons/io5';
 import toast, { Toaster } from 'react-hot-toast'
@@ -7,7 +7,6 @@ import { axiosInstance } from '../../api/axiosInstance';
 const Applicants = () => {
     const {jobId} = useParams();
 
-    const [updateUI , setUpdateUI] = useState<boolean>(false);
     const [job , setJob] = useState<any>([]);
     const [applicationStatus , setApplicationStatus] = useState<{ [key: string]: string }>({});
 

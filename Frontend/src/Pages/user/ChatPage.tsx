@@ -21,9 +21,12 @@ const ChatPage = () => {
     const [updateUI , setUpdateUI] = useState<boolean>(false);
     const [socketConnection ,setSocketConnection] = useState<boolean>(false);
 
+    console.log(socketConnection);
+    
+
     let socket : Socket | null = null;
     useEffect(() => {
-        socket = io('http://localhost:3000' ,{withCredentials: true});
+        socket = io('http://careerup.website' ,{withCredentials: true});
         socket?.emit('start' , user?.userId);
         socket?.on('connection' , () => {
             setSocketConnection(true);

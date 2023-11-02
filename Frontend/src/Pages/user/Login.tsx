@@ -2,7 +2,7 @@ import {Link , useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import { axiosInstance } from '../../api/axiosInstance';
 import { toast , Toaster} from 'react-hot-toast';
-import { useDispatch , useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../../Redux/slices/slice';
 import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
 
