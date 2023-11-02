@@ -97,17 +97,17 @@ const UserTable = () => {
                                 <div className="relative h-10 w-10">
                                     <img
                                     className="h-full w-full rounded-full object-cover object-center"
-                                    src={user.profileImage}
+                                    src={user?.profileImage}
                                     alt="pic"
                                     />
                                     {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
                                 </div>
                                 <div className="text-sm">
-                                    <div className="font-semibold text-gray-700">{user.name}</div>
-                                    <div className=" font-medium text-gray-500">{user.email}</div>
+                                    <div className="font-semibold text-gray-700">{user?.name}</div>
+                                    <div className=" font-medium text-gray-500">{user?.email}</div>
                                 </div>
                             </th>
-                                <td className="px-6 py-4">{user.role}</td>
+                                <td className="px-6 py-4">{user?.role}</td>
                                 {/* <td className="px-6 py-4">
                                     <div className="flex gap-2">
                                         <span
@@ -129,13 +129,13 @@ const UserTable = () => {
                                 </td> */}
                                 <td className="px-6 py-4">
                                     <div className="flex justify-start gap-4">
-                                        {!user.isBlocked ? (
-                                            <button onClick={() => blockUser(user._id)}
+                                        {!user?.isBlocked ? (
+                                            <button onClick={() => blockUser(user?._id)}
                                             className='inline-flex items-center gap-1 rounded-full bg-[#dc7979] px-4 py-2 text-xs font-semibold text-white'>
                                                 Block 
                                             </button>
                                         ) : (
-                                            <button onClick={() => unBlockUser(user._id)} 
+                                            <button onClick={() => unBlockUser(user?._id)} 
                                             className='inline-flex items-center gap-1 rounded-full bg-[#6966ba] px-4 py-2 text-xs font-semibold text-white'>
                                                 UnBlock 
                                             </button>

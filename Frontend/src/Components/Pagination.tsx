@@ -19,7 +19,7 @@ const Pagination : React.FC<PaginationProps> = ({datas , currentPage , itemsPerP
     useEffect(() => {
         setPageCount(Math.ceil(datas?.length / itemsPerPage));
 
-        const newDisplayedData = datas.slice(currentPage * itemsPerPage , (currentPage + 1) * itemsPerPage)
+        const newDisplayedData = datas?.slice(currentPage * itemsPerPage , (currentPage + 1) * itemsPerPage)
         
         setDisplayedDatas(newDisplayedData);
         onDisplayedDataChange(newDisplayedData);
