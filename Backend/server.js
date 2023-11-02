@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);  
 const io = new SocketIoServer(server , {
     cors : {
-        origin: "http://localhost:5173",
+        origin: "https://careerup.website",
         methods: ["GET", "POST"],
         credentials : true
     }
@@ -88,10 +88,10 @@ io.on('connection' , (socket) => {
     socket.on('new chat message' , (message) => {
         const chat = message.chat;
 
-        console.log(chat , 'ith chat');
+        // console.log(chat , 'ith chat');
 
         if(!chat.participants){
-            console.log('no participants');
+            // console.log('no participants');
         }
         chat.participants.forEach((user) => {
             if(user._id === message.sender._id){
