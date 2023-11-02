@@ -43,7 +43,7 @@ const IndustryTable: React.FC<IndustryTableProps> = ({items , setUpdateUI}) => {
                     </tr>
                 </thead>
                     <tbody className='border-t divide-y bg-[#efecec]'>
-                    {items.map((item : any, index : number) => {
+                    {items?.map((item : any, index : number) => {
                         return (
                             <tr key={item?._id} >
                             <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">

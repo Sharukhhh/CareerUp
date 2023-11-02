@@ -102,7 +102,7 @@ const Notifications = () => {
                     <div className='flex-1  max-w-4xl mx-auto bg-white pt-5 pb-10 flex flex-col rounded gap-6 overflow-y-auto'>
                         <div className='flex justify-between'>
                             <h1 className='font-bold text-2xl ml-4'>Notifcations</h1>
-                            {notifcations.length > 0 && (
+                            {notifcations?.length > 0 && (
                                 <button  onClick={clearNotifications} title='Clear All' className='mx-6 text-blue hover:scale-125'>
                                     <MdMarkEmailRead size={22} />
                                 </button>
@@ -111,7 +111,7 @@ const Notifications = () => {
 
                         <hr className='border-2 mx-4' />
                         
-                        {notifcations.length > 0 ? (
+                        {notifcations?.length > 0 ? (
                             notifcations?.map((notifcation : any) => (
                             <div key={notifcation?._id} className={`flex items-start p-4 mx-4 bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] border rounded shadow-md ${notifcation.isRemoving ? 'notification-removing' : ''}`}>
                                 <div className='flex items-center justify-center w-12 h-12 bg-primary rounded-full'>

@@ -26,8 +26,8 @@ const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
 
   return (
     <>
-    {savedPosts.map((post : any) => {
-      const isShowAll = showAll[post._id];
+    {savedPosts?.map((post : any) => {
+      const isShowAll = showAll[post?._id];
       return(
         <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
           <div className='flex gap-3 items-center mb-2 '>
@@ -60,8 +60,8 @@ const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
 
                 <div>
                   <p className='text-ascent-2'>
-                  {isShowAll ? post?.description : post?.description.slice(0, 300)}
-                      {post?.description.length > 301 && (
+                  {isShowAll ? post?.description : post?.description?.slice(0, 300)}
+                      {post?.description?.length > 301 && (
                         <span
                           onClick={() => toggleShowAll(post?._id)}
                           className='text-blue ml-2 font-medium cursor-pointer'>

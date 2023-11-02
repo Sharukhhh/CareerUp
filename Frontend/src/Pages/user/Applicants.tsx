@@ -18,7 +18,7 @@ const Applicants = () => {
 
                 const initialStatus: { [key: string]: string } = {};
                 res.data?.job?.applicants?.forEach((applicant : any) => {
-                    initialStatus[applicant._id] = applicant?.status;
+                    initialStatus[applicant?._id] = applicant?.status;
                 });
                 setApplicationStatus(initialStatus);
             }
@@ -86,7 +86,7 @@ const Applicants = () => {
                                 <th className="flex gap-3 px-4 py-4 font-normal justify-center text-gray-900">
                                 <div className="relative h-10 w-10">
                                     <Link to={`/account/${item?.userId?._id}`}>
-                                        {item.userId.profileImage ? (
+                                        {item?.userId?.profileImage ? (
                                             <img
                                             className="h-full w-full rounded-full object-cover object-center"
                                             src={item?.userId?.profileImage}
@@ -117,7 +117,7 @@ const Applicants = () => {
                             </th>
                                 <td className='px-3'>
                                     <select className='ring-1 rounded-sm px-2 py-2'
-                                    value={applicationStatus[item._id] || item?.status}
+                                    value={applicationStatus[item?._id] || item?.status}
                                     onChange={(e) => {
                                         const newStatus = e.target.value;
                                         handleStatusChange(item?._id , newStatus)

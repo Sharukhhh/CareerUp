@@ -40,7 +40,7 @@ import {
 const JobChart : React.FC<JobChartProps> = ({monthlyJobPostedData , monthlyJobAppliedData}) => {
 
     const labels = ['Jan', 'Feb', 'Mar', 'April', 'May', 'June', 'July' , 'Aug' , 'Sept' , 'Oct' , 'Nov' , 'Dec'];
-    const actualLabels = labels.slice(0 , monthlyJobPostedData.length);
+    const actualLabels = labels.slice(0 , monthlyJobPostedData?.length);
 
     const data = {
         labels :actualLabels,

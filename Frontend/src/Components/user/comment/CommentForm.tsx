@@ -34,7 +34,7 @@ const CommentForm: React.FC<CommentFormProps> = ({id ,  userData , setUpdateUI})
     <>
       <form onSubmit={(e) => submitCommentForm(e ,id)} className='w-full border-b border-[#66666645]'>
         <div className='w-full flex items-center gap-2 py-4'>
-          <img src={userData.profileImage} alt="pro" className='w-10 h-10 rounded-full object-cover' />
+          <img src={userData?.profileImage} alt="pro" className='w-10 h-10 rounded-full object-cover' />
 
           <input value={comment} onChange={(e) => setComment(e.target.value)}
           className='w-full border border-black bg-blue-gray-50 rounded-full py-3 px-2' 

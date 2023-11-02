@@ -58,7 +58,7 @@ const PostTable = () => {
                     </tr>
                 </thead>
                 <tbody className='text-center py-6 bg-gray-200'>
-                {paginatedDisplayedData.map((post : any ) => {
+                {paginatedDisplayedData?.map((post : any ) => {
                     return(
                     <tr className='' key={post?._id}>
                         <td className="min-w-[150px] border-white/0 py-3 pr-4">
@@ -74,10 +74,10 @@ const PostTable = () => {
                             </div>
                         </td>
                         <td className='min-w-[150px] border-white/0 py-3 pr-4'>
-                        {new Date(post?.createdAt).toLocaleDateString()}
+                        {new Date(post?.createdAt)?.toLocaleDateString()}
                         </td>
                         <td className='min-w-[150px] border-white/0 py-3 pr-4'>
-                        {post.media ? (
+                        {post?.media ? (
                             <div className='flex flex-col items-center '>
                                 <img src={post?.media} alt="" className='w-10 h-10 rounded-lg mb-2' />
                                 <p className='text-center text-ascent-1'>{post?.description}</p>

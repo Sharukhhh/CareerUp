@@ -35,8 +35,8 @@ const CompanyTable = () => {
                 if(res.data.message){
                     toast.success(res.data.message ,{duration : 3000 , style : {color : '#fff' , background : 'black'}});
 
-                    setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
-                        if(company._id === companyId ){
+                    setCompanies((prevCompanies : any) => prevCompanies?.map((company : any) => {
+                        if(company?._id === companyId ){
                             return {...company , verify : true}
                         }
                         return company;
@@ -58,9 +58,9 @@ const CompanyTable = () => {
             if(res.data.message){
                 toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
-                setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
+                setCompanies((prevCompanies : any) => prevCompanies?.map((company : any) => {
 
-                    if(company._id === companyId){
+                    if(company?._id === companyId){
                         return {...company , isBlocked : true}
                     }
                     return company;
@@ -82,9 +82,9 @@ const CompanyTable = () => {
             if(res.data.message){
                 toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
-                setCompanies((prevCompanies : any) => prevCompanies.map((company : any) => {
+                setCompanies((prevCompanies : any) => prevCompanies?.map((company : any) => {
 
-                    if(company._id === companyId){
+                    if(company?._id === companyId){
                         return {...company , isBlocked : false}
                     }
                     return company;
@@ -113,23 +113,23 @@ const CompanyTable = () => {
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 border-t bg-[#efecec]">
-                {paginatedDisplayedData.map((company : any , index : number ) => {
+                {paginatedDisplayedData?.map((company : any , index : number ) => {
                     return (
                     <tr key={index} className="hover:bg-gray-50">
                         <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                             <div className="relative h-10 w-10">
                                 <img
                                 className="h-full w-full rounded-full object-cover object-center"
-                                src={company.profileImage} alt='pic'
+                                src={company?.profileImage} alt='pic'
                                 />
                                 {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
                             </div>
                             <div className="text-sm">
-                                <div className="font-semibold text-gray-700">{company.name}</div>
-                                <div className="font-medium text-gray-500">{company.email}</div>
+                                <div className="font-semibold text-gray-700">{company?.name}</div>
+                                <div className="font-medium text-gray-500">{company?.email}</div>
                             </div>
                         </th>
-                        <td className="px-6 py-4">{company.role}</td>
+                        <td className="px-6 py-4">{company?.role}</td>
                         {/* <td className="px-6 py-4">
                             <div className="flex gap-2">
                                 <span
@@ -151,8 +151,8 @@ const CompanyTable = () => {
                         </td> */}
                         <td className="px-6 py-4">
                             <div className="flex justify-start gap-4">
-                                {!company.verify ? (
-                                    <button onClick={() => verify(company._id)}
+                                {!company?.verify ? (
+                                    <button onClick={() => verify(company?._id)}
                                         className="inline-flex items-center gap-1 rounded-full bg-[#dc7979] px-4 py-2 text-xs font-semibold text-white"
                                     >
                                         Verify
@@ -163,13 +163,13 @@ const CompanyTable = () => {
                                     </button>
                                 )}
 
-                                {!company.isBlocked ? (
-                                    <button onClick={() => block(company._id)}
+                                {!company?.isBlocked ? (
+                                    <button onClick={() => block(company?._id)}
                                     className='inline-flex items-center gap-1 rounded-full bg-[#dc7979] px-4 py-2 text-xs font-semibold text-white'>
                                         Block 
                                     </button>
                                 ) : (
-                                    <button onClick={() => unblock(company._id)}
+                                    <button onClick={() => unblock(company?._id)}
                                     className='inline-flex items-center gap-1 rounded-full bg-[#6966ba] px-4 py-2 text-xs font-semibold text-white'>
                                         UnBlock 
                                     </button>

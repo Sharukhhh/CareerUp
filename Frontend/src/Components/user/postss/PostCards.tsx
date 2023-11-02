@@ -38,7 +38,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
   const filteredPosts = showAllposts
   ? posts
-  : posts.filter((post: any) => post.user?._id === user?.userId);
+  : posts.filter((post: any) => post?.user?._id === user?.userId);
 
     // Function to toggle showAll state for a specific post
     const toggleShowAll = (postId: string) => {
@@ -107,10 +107,10 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
   return (
     <> 
-    {filteredPosts.length > 0 ? (
+    {filteredPosts?.length > 0 ? (
       filteredPosts
       .filter((post :any) => !post.isDeleted)
-      .slice().reverse().map((post : any) => {
+      ?.slice()?.reverse()?.map((post : any) => {
         const isShowAll = showAll[post._id];
         return (
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
@@ -142,7 +142,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                   )}
                   <span className='text-ascent-2'>{post?.user?.headline || post?.company?.headline}</span>
                 </div>
-                <span className='text-ascent-2'>{moment(post?.createdAt ?? '2023-09-24').fromNow()}</span>
+                <span className='text-ascent-2'>{moment(post?.createdAt).fromNow()}</span>
               </div>
             </div>
 
@@ -178,7 +178,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               </p>
 
               <p onClick={() => {
-                setShowComments(comments === post._id ? null : post._id);
+                setShowComments(comments === post._id ? null : post?._id);
                 // getComments(post?._id)
               }}
               className='flex gap-2 items-center text-base cursor-pointer'>
@@ -194,12 +194,12 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               )}
 
               <p className='flex gap-2 items-center text-base cursor-pointer'>
-                  {userData?.savedPosts?.some((saved : any )=> saved.postId === post?._id) ? (
-                    <span onClick={() => saveAndUnsave(post._id)} >
+                  {userData?.savedPosts?.some((saved : any )=> saved?.postId === post?._id) ? (
+                    <span onClick={() => saveAndUnsave(post?._id)} >
                       <FaBookmark size={20} />
                     </span>
                   ) : (
-                    <span onClick={() => saveAndUnsave(post._id)} >
+                    <span onClick={() => saveAndUnsave(post?._id)} >
                       <FaRegBookmark size={20}/>
                     </span>
                   )}

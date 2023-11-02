@@ -81,9 +81,9 @@ const JobsPage = () => {
               className='bg-blue-gray-100 rounded border border-[#66666690] 
               outline-none text-sm   text-ascent-1 px-4 py-2 mt-3 placeholder:text-[#fff] shadow-md'>
                 <option className='mb-2' value="">Select Industry</option>
-                {industries.map((industry : any) => {
+                {industries?.map((industry : any) => {
                   return(
-                    <option className='p-2' value={industry._id} key={industry._id}>{industry}</option>
+                    <option className='p-2' value={industry?._id} key={industry?._id}>{industry}</option>
                   )
                 })}
               </select>

@@ -269,7 +269,7 @@ const Profile = () => {
                       {jobs?.length > 0 ? (
                         jobs?.map((job : any) => {
                           return(
-                          <div className="flex items-center justify-between mb-3 border-b" >
+                          <div key={job?._id} className="flex items-center justify-between mb-3 border-b" >
                             <div className='flex-1'>
                               <p className='font-bold text-lg'>{job?.position}</p>
                               <span className='text-md'>{job?.location}</span>

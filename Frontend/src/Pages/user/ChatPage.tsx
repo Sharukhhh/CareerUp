@@ -93,7 +93,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         socket?.on('message recieved' , (newMessage) => {
-            if(!chatId || chatId !== newMessage.chat._id){
+            if(!chatId || chatId !== newMessage?.chat?._id){
                 return;
             } else {
                 setUpdateUI(prev => !prev);
@@ -142,11 +142,11 @@ const ChatPage = () => {
                                 </div>
                                 <div className='flex flex-col max-h-[580px] space-y-1 mt-4 -mx-2  overflow-y-auto'>
                                     {chatUsers?.length > 0 ? (
-                                        chatUsers.map((chatUsers : any) => (
+                                        chatUsers?.map((chatUsers : any) => (
                                             <button onClick={() => setChatId(chatUsers?._id)}
                                             key={chatUsers?._id} 
                                             className={`flex items-start ${chatUsers?._id === chatId ? 'bg-gray-200' : 'hover : bg-gray-200'} rounded-xl px-2 py-4 mb-3`}>
-                                                {chatUsers?.participants?.filter((users :any) => users?._id.toString() !== user?.userId).map((userr : any) => {
+                                                {chatUsers?.participants?.filter((users :any) => users?._id?.toString() !== user?.userId).map((userr : any) => {
                                                     return(
                                                         <>
                                                         <span key={userr?._id}>
@@ -158,7 +158,7 @@ const ChatPage = () => {
                                                                 </div>
                                                                 <div className='text-[10px] ml-2 text-gray-500'>
                                                                     {chatUsers?.lastMessage ? (
-                                                                        ` ${chatUsers.lastMessage?.sender?.name === user?.username ? "You" : chatUsers.lastMessage?.sender?.name} : ${chatUsers.lastMessage?.content}`
+                                                                        ` ${chatUsers?.lastMessage?.sender?.name === user?.username ? "You" : chatUsers?.lastMessage?.sender?.name} : ${chatUsers?.lastMessage?.content}`
                                                                     ) : (
                                                                         null
                                                                     )}

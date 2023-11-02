@@ -66,7 +66,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userData, openEditModal }) => 
                         {userData?.location}
                     </span>
                 </div>
-                {user?.userId === userData._id && (
+                {user?.userId === userData?._id && (
                     <Link to={`/saved`}>
                         <div className='flex gap-2 items-center text-ascent-2 cursor-pointer hover:underline underline-offset-2'>
                             <HiOutlineSaveAs className='text-blue ' />

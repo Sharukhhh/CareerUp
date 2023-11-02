@@ -32,8 +32,8 @@ const UserTable = () => {
             if(res.data.message){
                 toast.success(res.data.message ,{duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
-                setUsers((users : any) => users.map((user : any) => {
-                    if(user._id === userId ){
+                setUsers((users : any) => users?.map((user : any) => {
+                    if(user?._id === userId ){
                         return {...user , isBlocked : true}
                     }
                     return user;
@@ -54,8 +54,8 @@ const UserTable = () => {
             if(res.data.message){
                 toast.success(res.data.message ,{duration : 2000 , style : {color : '#fff' , background : 'black'}});
 
-                setUsers((users : any) => users.map((user : any) => {
-                    if(user._id === userId ){
+                setUsers((users : any) => users?.map((user : any) => {
+                    if(user?._id === userId ){
                         return {...user , isBlocked : false}
                     }
                     return user;
@@ -90,7 +90,7 @@ const UserTable = () => {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 border-t bg-[#efecec]">
-                    {paginatedDisplayedData.map((user : any , index : string ) => {
+                    {paginatedDisplayedData?.map((user : any , index : string ) => {
                         return (
                         <tr key={index} className="hover:bg-gray-50">
                             <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">

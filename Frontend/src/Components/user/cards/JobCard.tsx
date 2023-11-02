@@ -50,9 +50,9 @@ const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry , setUpdateUI
     <Toaster position='top-center'/>
         {filteredJobs?.length > 0 ? (
           filteredJobs?.map((job : any , index : number) => {
-            const hasApplied = job.applicants.some((applicant : any) => applicant.userId.toString() === user?.userId.toString());
+            const hasApplied = job?.applicants?.some((applicant : any) => applicant?.userId?.toString() === user?.userId?.toString());
           return(
-          <div className='border rounded-lg my-2 mx-4 shadow-md' key={job._id}>
+          <div className='border rounded-lg my-2 mx-4 shadow-md' key={job?._id}>
             <div className="border-b-2 px-4 py-5 cursor-pointer bg-gradient-to-tl from-[#9facfc] to-[#e9eaec]" title='Click Here'
             onClick={() => toggleAccordion(index)}>
               <div className='flex justify-between items-center'>

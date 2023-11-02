@@ -38,7 +38,7 @@ function App() {
         <Route path='/register' element={<Register/>} />
         <Route path='/login' element={<Login/>} />
 
-        <Route element={<PrivatePages/>}>
+        <Route element={<PrivatePages isUser={true}/>}>
           <Route path='/account' element={<Profile/>} />
           <Route path='/account/:id' element={<Profile/>} />
           <Route path='/feed' element={<UserFeed />} />
@@ -59,11 +59,14 @@ function App() {
         </Route>
 
         <Route path='/admin' element={<Adminlogin/>}/>
-        <Route path='/admin/users' element={<UsersList/>} />
-        <Route path='/admin/companies' element={<CompanyList/>} />
-        <Route path='/admin/categories' element={<CategoryAdd />}/>
-        <Route path='/admin/dashboard' element={<Dashboard />}/>
-        <Route path='/admin/posts' element={<PostTable/>}/>
+        
+        <Route element={<PrivatePages isUser={false}/>}>
+          <Route path='/admin/users' element={<UsersList/>} />
+          <Route path='/admin/companies' element={<CompanyList/>} />
+          <Route path='/admin/categories' element={<CategoryAdd />}/>
+          <Route path='/admin/dashboard' element={<Dashboard />}/>
+          <Route path='/admin/posts' element={<PostTable/>}/>
+        </Route>
 
         <Route path='*' element={<NotFound/>}/>
       </Routes>

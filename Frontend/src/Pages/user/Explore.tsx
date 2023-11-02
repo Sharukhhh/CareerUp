@@ -74,19 +74,19 @@ const Explore = () => {
 
     
 
-    const filteredCompanies = companies.filter((company) => {
+    const filteredCompanies = companies?.filter((company) => {
         return (
-            company?.name?.toLowerCase().includes(searchInputCompanies.toLocaleLowerCase()) ||
-            company?.location?.toLowerCase().includes(searchInputCompanies.toLocaleLowerCase()) ||
-            company?.headline?.toLowerCase().includes(searchInputCompanies.toLocaleLowerCase())
+            company?.name?.toLowerCase().includes(searchInputCompanies?.toLocaleLowerCase()) ||
+            company?.location?.toLowerCase().includes(searchInputCompanies?.toLocaleLowerCase()) ||
+            company?.headline?.toLowerCase().includes(searchInputCompanies?.toLocaleLowerCase())
         );
     });
     
-    const filteredUsers = listUsers.filter((user) => {
+    const filteredUsers = listUsers?.filter((user) => {
         return (
             user?.name?.toLowerCase().includes(searchInputUsers.toLocaleLowerCase()) ||
             user?.headline?.toLowerCase().includes(searchInputUsers.toLocaleLowerCase()) ||
-            user?.location?.toLowerCase().includes(searchInputUsers.toLocaleLowerCase())
+            user?.location?.toLowerCase().includes(searchInputUsers?.toLocaleLowerCase())
         );
     });
 
@@ -98,10 +98,10 @@ const Explore = () => {
             return false;
         }
 
-        const isUserFollowing = company.followers.some((follower: any) => {
+        const isUserFollowing = company?.followers?.some((follower: any) => {
             return (
-                (follower.user && follower.user.toString() === user?.userId) ||
-                (follower.company && follower.company.toString() === user?.userId)
+                (follower?.user && follower?.user?.toString() === user?.userId) ||
+                (follower?.company && follower?.company?.toString() === user?.userId)
             );
         });
 
@@ -163,11 +163,11 @@ const Explore = () => {
                         <div className="max-h-[calc(100vh-200px)] mb-8 overflow-y-auto">
 
                             {activeSection === 'companies' ? (
-                                filteredCompanies.length > 0 ? (
+                                filteredCompanies?.length > 0 ? (
                                     <>
                                         <h1 className='font-bold text-xl ml-4 ms-6'>Companies</h1>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-8 mt-3">
-                                            {filteredCompanies.map((company: any) => (
+                                            {filteredCompanies?.map((company: any) => (
                                                 <div title='' className="bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] hover:scale-110 rounded-lg shadow-lg p-3 mb-4" key={company?._id}>
                                                     <Link to="" className="cursor-pointer">
                                                         <div className="text-center">
@@ -225,9 +225,9 @@ const Explore = () => {
 
                                 <h1 className='font-bold text-xl ml-4 ms-6'>Candidates</h1>
                                 
-                                    {filteredUsers.length > 0 ? (
+                                    {filteredUsers?.length > 0 ? (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-8 mt-3">
-                                            {filteredUsers.map((userr: any) => (
+                                            {filteredUsers?.map((userr: any) => (
                                                 <div title='Click to view Profile' className="bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] hover:scale-110 rounded-lg shadow-lg p-3 mb-4" key={userr?._id}>
                                                     <Link to={`/account/${userr?._id}`} className="cursor-pointer">
                                                         <div className="text-center">
@@ -253,7 +253,7 @@ const Explore = () => {
                                                     </Link>
                                                     {user?.role === 'Candidate' && (
                                                     <div className="text-center mt-4">
-                                                        {userr?.connections?.some((conn : any) => conn.userId.toString() === user?.userId) ? (
+                                                        {userr?.connections?.some((conn : any) => conn?.userId?.toString() === user?.userId) ? (
                                                             
                                                             <button title='Remove Connection'
                                                                 

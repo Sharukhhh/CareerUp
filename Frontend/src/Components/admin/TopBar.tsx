@@ -1,11 +1,14 @@
 import {useState } from 'react';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { adminSignOut } from '../../Redux/slices/adminSlice';
 
 const TopBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -13,6 +16,7 @@ const TopBar = () => {
 
 
     const handleLogout = () => {
+        dispatch(adminSignOut());
         navigate('/admin');
 
         toast.success('Logout successfully', {duration : 4000 , style : {color : '#fff' , background : 'black'}});

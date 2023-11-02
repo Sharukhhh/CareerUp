@@ -43,7 +43,7 @@ interface LineChartProps {
 const LineChart : React.FC<LineChartProps> = ({userMonthlyData , companyMonthlyData}) => {
 
     const labels = ['Jan', 'Feb', 'Mar', 'April', 'May', 'June', 'July' , 'Aug' , 'Sept' , 'Oct' , 'Nov' , 'Dec'];
-    const actualLables = labels.slice(0 , userMonthlyData.length);
+    const actualLables = labels.slice(0 , userMonthlyData?.length);
 
     const data = {
         labels : actualLables,

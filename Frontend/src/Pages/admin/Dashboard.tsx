@@ -27,14 +27,14 @@ const Dashboard = () => {
         adminAxiosInstance.get('/dashboard')
         .then((res) => {
             if (res.data.message) {
-                setUsersCount(res.data.totalUsers);
-                setCompaniesCount(res.data.totalCompanies);
-                setPostsCount(res.data.totalPosts);
-                setJobsCount(res.data.totalJobs);
-                setUserMonthlyData(res.data.userMonthlyCounts);
-                setCompanyMonthlyData(res.data.companyMonthlyCounts);
-                setMonthlyJobPostedData(res.data.jobPostingMonthlyCounts)
-                setMonthlyApplicationData(res.data.jobApplicationMonthlyCounts);
+                setUsersCount(res.data?.totalUsers);
+                setCompaniesCount(res.data?.totalCompanies);
+                setPostsCount(res.data?.totalPosts);
+                setJobsCount(res.data?.totalJobs);
+                setUserMonthlyData(res.data?.userMonthlyCounts);
+                setCompanyMonthlyData(res.data?.companyMonthlyCounts);
+                setMonthlyJobPostedData(res.data?.jobPostingMonthlyCounts)
+                setMonthlyApplicationData(res.data?.jobApplicationMonthlyCounts);
             }
 
             if(res.data.error){
@@ -68,7 +68,7 @@ const Dashboard = () => {
             </div>
 
             <div className='w-full sm:w-1/2  p-4'>
-                <div className='bg-gradient-to-tr from-[#2980B9] to-[#6DD5FA] to-[#FFFFFF] mx-auto border mr-6 mb-6 border-double
+                <div className='bg-gradient-to-tr from-[#2980B9] to-[#6DD5FA] to-[#FFFFFF] mx-auto border mr-6 mb-6 
                 border-double rounded-lg flex items-center justify-center h-40 shadow-md shadow-black'>
                     <span className='text-[#3a3584] mr-2'><IoDocumentsSharp size={50}/></span>
                     <div className='text-8xl font-bold mr-4'>{postsCount}</div>
@@ -77,7 +77,7 @@ const Dashboard = () => {
             </div>
 
             <div className='w-full sm:w-1/2  p-4'>
-                <div className='bg-gradient-to-tl from-[#2980B9] to-[#6DD5FA] to-[#FFFFFF] mx-auto border mr-6 mb-6 border-double
+                <div className='bg-gradient-to-tl from-[#2980B9] to-[#6DD5FA] to-[#FFFFFF] mx-auto border mr-6 mb-6 
                 border-double rounded-lg flex items-center justify-center h-40 shadow-md shadow-black'>
                     <span className='text-[#3a3584] mr-2'><BsBriefcaseFill size={50}/></span>
                     <div className='text-8xl font-bold mr-4'>{jobsCount}</div>

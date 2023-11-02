@@ -2,12 +2,15 @@ import {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminAxiosInstance } from '../../api/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { setAdminData } from '../../Redux/slices/adminSlice';
 
 const Adminlogin = () => {
     const [adminEmail , setAdminEmail] = useState<string>('');
     const [adminPassword , setAdminPassword] = useState<string>('');
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -15,6 +18,7 @@ const Adminlogin = () => {
         adminAxiosInstance.post('/' , {email:adminEmail , password:adminPassword}).then((res) =>{
           
           if(res.data.message){
+            dispatch(setAdminData(res.data.adminData))
             localStorage.setItem('adminToken' , JSON.stringify(res.data.token));
             toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
             setTimeout(() => {

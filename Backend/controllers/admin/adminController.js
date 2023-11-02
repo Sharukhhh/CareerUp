@@ -19,7 +19,12 @@ export const adminLogin = async (req, res) => {
 
             if(password === admin.password){      
                 const token =jwt.sign({adminId : admin.id , adminmail : admin.email} , process.env.JWT_SECRET ,{expiresIn : '1hr'});
-                return res.status(200).json({message : 'Login Successfull' , token});
+                return res.status(200).json({message : 'Login Successfull' , token , 
+                adminData : {
+                    email : admin.email,
+                    adminId : admin._id
+                }
+            });
             } else {
                 return res.status(400).json({error : 'Admin not found'});
             }

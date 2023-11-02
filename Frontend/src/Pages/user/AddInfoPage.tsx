@@ -44,7 +44,6 @@ const AddInfoPage = () => {
       axiosInstance.get(`/editdata/${id}`)
       .then((res) => {
         if(res.data.message){
-          console.log(res.data?.info);
 
           setInstitute(res.data?.info?.institute);
           setField(res.data?.info?.fieldOfStudy);
@@ -54,9 +53,9 @@ const AddInfoPage = () => {
           setCompanyLocation(res.data?.info?.jobLocation);
           setRole(res?.data?.info?.role);
 
-          // setPosition(res.data?.info?.position);
-          // setJobLocation(res?.data?.info?.location);
-          // setSalaryPackage(res?.data?.info?.salaryPackage);
+          setPosition(res.data?.info?.position);
+          setJobLocation(res?.data?.info?.location);
+          setSalaryPackage(res?.data?.info?.salaryPackage);
           setRequirements(res?.data?.info?.requirements);
           // setIndustry(res?.data?.info?.industry);
         }
