@@ -25,7 +25,6 @@ const io = new SocketIoServer(server , {
 const corsOptions = {
     origin: [
         "http://localhost:5173",
-        "http://careerup.website",
         "https://careerup.website",
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
