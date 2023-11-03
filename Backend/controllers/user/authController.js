@@ -1,14 +1,15 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js';
-import validator from 'validator';
 import twilio from 'twilio';
 
-const twilioSid = "AC031996d9ac58e11fa2157da8e9cf3934";
-const twilioToken = "b155a6882fa0d2c808d09e70deb475ab";
-const serviceSid = "VAc6d7f1fc4b4c8b056bfc94df5c91cb88";
-const client = twilio(twilioSid , twilioToken);
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const serviceSid = process.env.TWILIO_SERVICE_SID;
+const client = twilio(accountSid , authToken);
 
 
 const hashPassword = async (password) => {
@@ -39,17 +40,14 @@ export const register = async (req, res , next) => {
         }
 
         if(existingUser || existingCompany || existingMobile){
-            console.log('ho');
+            
             return res.status(401).json({error : 'Account already exists'});
         }
 
         const phoneNumberPattern = /^[0-9]{10}$/;
         if (!phoneNumberPattern.test(phone)) {
-            console.log('ha');
             return res.status(401).json({ error: 'Invalid phone number' });
         }
-
-        console.log('ngee')
         client.verify.v2       
         .services(serviceSid)
         .verifications.create({ to: `+91${phone}`  , channel: "sms" })

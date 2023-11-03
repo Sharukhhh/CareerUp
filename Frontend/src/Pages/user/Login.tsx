@@ -49,11 +49,11 @@ const Login = () => {
     <>
     <Toaster position='top-right'/>
     <GoogleOAuthProvider clientId='8989279973-hri4q1okjco23pch7n0mu8q0mp6ros97.apps.googleusercontent.com'>
-      <div className='login'>
+      <div className='bg-gradient-to-bl from-[#005AA7] to-[#FFFDE4]'>
         <div className="backdrop-blur-md border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
               <img
-                className="mx-auto h-10 w-auto bg-[#fafafa] bg-opacity-75 px-9 rounded"
+                className="mx-auto h-10 w-auto bg-[#fafafa] bg-opacity-30 px-9 rounded"
                 src="/Cropped1-Logo.png"
                 alt="Logo"
               />
@@ -62,7 +62,7 @@ const Login = () => {
               </h2>
             </div>
 
-            <div className="border-2 rounded-md bg-[#fafafa] bg-opacity-80 p-5 shadow-lg shadow-black mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+            <div className="border-2 rounded-md bg-[#fafafa] bg-opacity-60 p-5 shadow-lg shadow-black mt-10 sm:mx-auto sm:w-full sm:max-w-md">
               <form className="space-y-6" onSubmit={handleSubmit} >
 
                 <div>

@@ -1,6 +1,6 @@
 import React , {useState , useEffect} from 'react'
 import TopBar from '../../Components/admin/TopBar'
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { adminAxiosInstance } from '../../api/axiosInstance';
 import IndustryTable from '../../Components/admin/IndustryTable';
 
@@ -45,7 +45,6 @@ const CategoryAdd = () => {
   return (
     <>
         <TopBar/>
-        <Toaster position='top-center' />
         <div className="form border-solid flex min-h-full flex-1 flex-col justify-center mb-5 px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

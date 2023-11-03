@@ -1,6 +1,6 @@
 import  { useEffect, useState } from 'react';
 import { adminAxiosInstance } from '../../api/axiosInstance.tsx';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Pagination from '../Pagination.tsx';
 
 
@@ -77,7 +77,7 @@ const UserTable = () => {
 
   return (
     <>
-    <Toaster position='top-center' />
+    
         <div className="overflow-hidden rounded-lg border mt-12 border-gray-200 shadow-md m-5">
             
             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
