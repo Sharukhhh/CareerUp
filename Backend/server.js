@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);  
 const io = new SocketIoServer(server , {
     cors : {
-        origin: "http://localhost:5173",
+        origin: "https://careerup.website",
         methods: ["GET", "POST"],
         credentials : true
     }
