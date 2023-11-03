@@ -97,7 +97,7 @@ export const deletePost = async (req, res , next) => {
 
 export const getPosts = async (req, res, next) => {
   try {
-    const posts = await postModel.find()
+    const posts = await postModel.find({ isDeleted: false })
     .populate('user')
     .populate('company')
     .populate({
@@ -124,12 +124,12 @@ export const getIndividualPosts = async (req, res, next) => {
 
     const userObjectId = new mongoose.Types.ObjectId(userId); 
     
-    let posts = await postModel.find({user : userObjectId})
+    let posts = await postModel.find({user : userObjectId , isDeleted : false})
     .populate('user');
 
     if(!posts){
 
-      posts = await postModel.find({company : userObjectId});
+      posts = await postModel.find({company : userObjectId , isDeleted : false});
 
       if(!posts){
         return res.status(404).json({error : 'Users post not found'});

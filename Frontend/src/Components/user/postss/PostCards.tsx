@@ -108,10 +108,8 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
   return (
     <> 
     {filteredPosts?.length > 0 ? (
-      filteredPosts
-      .filter((post :any) => !post.isDeleted)
-      ?.slice()?.reverse()?.map((post : any) => {
-        const isShowAll = showAll[post._id];
+      filteredPosts?.slice()?.reverse()?.map((post : any) => {
+        const isShowAll = showAll[post?._id];
         return (
           <div className='mb-2 mt-2 bg-primary p-4 rounded-xl' key={post?._id}>
             <div className='flex gap-3 items-center mb-2 '>
