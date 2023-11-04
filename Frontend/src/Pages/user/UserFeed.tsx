@@ -40,6 +40,8 @@ const UserFeed = () => {
       axiosInstance.get(`/ownProfile`).then((res) => {
       
         if(res.data.message){
+          console.log(res.data, 'the data');
+          
           setUserData(res.data.user);
         }
       }).catch((error) => console.log(error , 'axios')

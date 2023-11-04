@@ -26,6 +26,7 @@ const corsOptions = {
     origin: [
         "http://localhost:5173",
         "https://careerup.website",
+        "http://localhost:3000"
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };

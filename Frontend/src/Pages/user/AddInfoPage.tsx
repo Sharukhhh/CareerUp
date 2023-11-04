@@ -4,7 +4,7 @@ import {IoArrowBackCircle} from 'react-icons/io5';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import {BsFillSave2Fill} from 'react-icons/bs';
 import {BiSolidError} from 'react-icons/bi';
 
@@ -57,7 +57,7 @@ const AddInfoPage = () => {
           setJobLocation(res?.data?.info?.location);
           setSalaryPackage(res?.data?.info?.salaryPackage);
           setRequirements(res?.data?.info?.requirements);
-          // setIndustry(res?.data?.info?.industry);
+          setIndustry(res?.data?.info?.industry?.industry);
         }
       }).catch((error) => console.log(error , 'axios bringerror')
       )
@@ -174,6 +174,26 @@ const AddInfoPage = () => {
       return toast.error('Fill all the fields!' , {duration : 2000 , icon : <BiSolidError/> });
     }
 
+    if(isEdit){
+      axiosInstance.put(`/editjob/${id}` , {position , location , salaryPackage , industry : industry , requirements})
+      .then((res) => {
+        if(res.data.message){
+          toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
+
+          setPosition('');
+          setJobLocation('');
+          setSalaryPackage('');
+          setRequirements('');
+          setIndustry('');
+        }
+
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((error) => console.log(error , 'axios job edit err')
+      )
+    }
+
     axiosInstance.post(`/postjob` , {position, location , salaryPackage , industry : industry, requirements})
     .then((res) => {
       if(res.data.message){
@@ -195,7 +215,6 @@ const AddInfoPage = () => {
 
   return (
     <>
-    <Toaster position='top-right' />
         <div className='max-w-3xl mx-auto mt-8 p-6 bg-[#c3e3f7]  border: rounded-lg shadow-xl'>
             <div className='flex justify-between'>
               {user?.role === 'Candidate' ? (

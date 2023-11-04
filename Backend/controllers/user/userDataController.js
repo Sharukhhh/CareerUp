@@ -4,6 +4,7 @@ import jobModel from "../../models/jobs.js";
 import cloudinary from "../../utils/cloudinary.js";
 import categoryModel from "../../models/category.js";
 import fs from 'fs';
+import notifyModel from "../../models/notificationModel.js";
 
 export const getEditData = async (req, res, next) => {
     try {
@@ -11,17 +12,25 @@ export const getEditData = async (req, res, next) => {
         const user = req.user;
 
         let userData;
-        let companyData;
+        let companyJobData;
 
         if(user){
             if(user.role === 'Candidate'){
                 userData = await userModel.findById(user._id);
             } else if(user.role === 'Company'){
-                companyData = await companyModel.findById(user._id);
+                companyJobData = await jobModel.findById(itemId).populate('postedBy')
+                .populate('industry');
+
+                if(companyJobData){
+                    if(companyJobData.postedBy.toString() === user._id.toString()){
+                        return res.status(200).json({message : 'job info success' , info : companyJobData});
+                    }
+                }
+
             }
         }
 
-        if (!userData && !companyData) {
+        if (!userData && !companyJobData) {
             return res.status(404).json({ message: 'User or Company not found' });
         }
 
@@ -395,6 +404,67 @@ export const createJob = async (req, res, next) => {
         await jobPost.save();
 
         return res.status(200).json({message : 'Job Post Added' , jobPost});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const editJob = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const {position , location , salaryPackage, industry, requirements} = req.body;
+        
+        const jobId = req.params.jobId;
+
+        const industryObject = await categoryModel.findOne({ industry: industry }); 
+        if (!industryObject) {
+            return res.status(400).json({ error: 'Invalid industry' });
+        }
+
+        await jobModel.findByIdAndUpdate(jobId , {
+            postedBy : user._id,
+            position ,
+            salaryPackage,
+            location,
+            requirements,
+            industry  : industryObject._id
+        } , {new : true});
+
+        return res.status(200).json({message : 'Updated Successfully'});
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const deleteJob = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const jobId = req.params.jobId;
+
+        const job = await jobModel.findOne({_id : jobId , postedBy : user._id});
+
+        if(!job){
+            return res.status(404).json({error : 'Job not found'});
+        }
+
+        await job.remove();
+
+        const applicantsUserIds = job.applicants.map((applicant) => applicant.userId);
+
+        const notifications = applicantsUserIds.map((applicantUserId) => ({
+            senderUser : user._id,
+            receiverUser : applicantUserId,
+            message : `The job you applied for "${job.position}" has been removed by ${user.name} 
+                        and is no longer accepting any applications.`
+        }));
+
+        await notifyModel.create(notifications);
+
+        return res.status(200).json({message : 'Job Deleted Successfully'});
 
     } catch (error) {
         next(error);

@@ -1,5 +1,9 @@
 import express from 'express';
-import { addEducation, addProfession, createJob, deleteEducation, deleteProfession, displayJobs, editEducation, editProfession, getEditData, getOwnPostedJobs } from '../../controllers/user/userDataController.js';
+import { 
+    addEducation, addProfession, createJob, deleteEducation, deleteJob, deleteProfession, 
+    displayJobs, editEducation, editJob, editProfession, getEditData, getOwnPostedJobs 
+    } 
+from '../../controllers/user/userDataController.js';
 const router = express.Router();
 import { verify } from '../../middlewares/userAuth.js';
 import { getIndustries } from '../../controllers/user/userController.js';
@@ -27,6 +31,10 @@ router.delete('/delete_pro/:professionId' ,verify, deleteProfession);
 router.get('/postedjobs' , verify , getOwnPostedJobs);       
 
 router.post('/postjob' ,verify, createJob);
+
+router.put('/editjob/:jobId' , verify , editJob);
+
+router.delete('/deletejob/:jobId' , verify , deleteJob);
 
 router.get('/jobs' , verify , displayJobs);
 
