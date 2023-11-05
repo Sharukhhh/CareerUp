@@ -42,10 +42,12 @@ export const ownProfile = async (req, res, next) => {
             if(!company){
                 return res.status(400).json({error : 'No user'})
             }
+            res.setHeader('Content-Type', 'application/json'); 
             return res.status(200).json({message: 'success' , user : company});
         }
 
-        res.status(200).json({message : 'success' , user})
+        res.setHeader('Content-Type', 'application/json'); 
+        res.status(200).json({message : 'success' , user});
         
     } catch (error) {
         next(error);

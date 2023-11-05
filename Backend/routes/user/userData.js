@@ -24,7 +24,7 @@ router.post('/add_pro/:id' ,verify, addProfession);
 
 router.put('/editpro/:professionId' ,verify, editProfession);
 
-router.delete('/delete_pro/:professionId' ,verify, deleteProfession);
+router.delete('/delete_pro/:professionId' ,verify, deleteProfession);                                                                                                                
 
 
 //routes-job posts of company

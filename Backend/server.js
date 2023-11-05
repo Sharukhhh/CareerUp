@@ -2,11 +2,19 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
-import {Server as SocketIoServer} from 'socket.io';
 import http from 'http';
+import nocache from 'nocache';
+import morgan from 'morgan';
 import path ,{ dirname } from 'path';
 import { fileURLToPath } from 'url';
-
+import authRoutes from './routes/auth/authRoutes.js'; 
+import userRoutes from './routes/user/user.js'; 
+import userDataRoutes from './routes/user/userData.js'
+import chatRoutes from './routes/user/chatRoutes.js';
+import adminRoutes from './routes/admin/admin.js'
+import { errorHandler } from './middlewares/errorHandler.js';
+import { connectDB } from './connection/databse.js';
+import {Server as SocketIoServer} from 'socket.io';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -32,6 +40,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(nocache());
+app.use(morgan('combined'));
 app.use(express.static(path.join(__dirname,"../Frontend/dist")));
 
 app.get("*", function (req, res) {
@@ -42,31 +52,24 @@ app.use(express.static('Backend/public/resumes'));
 app.use(express.json()); 
 app.use(express.urlencoded({extended : true})); 
 
-
 //user auth routes
-import authRoutes from './routes/auth/authRoutes.js'; 
 app.use('/auth' , authRoutes);
 
 //user routes
-import userRoutes from './routes/user/user.js';
 app.use('/' , userRoutes);
 
 //user-data routes
-import userDataRoutes from './routes/user/userData.js'
 app.use('/' , userDataRoutes);
 
 //chat routes
-import chatRoutes from './routes/user/chatRoutes.js';
 app.use('/' , chatRoutes);
 
 //admin routes
-import adminRoutes from './routes/admin/admin.js'
 app.use('/admin' , adminRoutes);
 
-import { errorHandler } from './middlewares/errorHandler.js';
+
 app.use(errorHandler); 
 
-import { connectDB } from './connection/databse.js';
 connectDB();
 
 

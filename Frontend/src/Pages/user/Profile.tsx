@@ -66,7 +66,7 @@ const Profile = () => {
     axiosInstance.get('/ownProfile')
     .then((res) => {
       if(res.data.message){
-        console.log(res.data.user , 'soyyave');
+        console.log(res.data.user);
         
         setUserData(res.data.user);
       }
@@ -117,7 +117,7 @@ const Profile = () => {
 
   useEffect(() => {
     if(id){
-      console.log(id, 'faa');
+      
       
       fetchProfileData(id);
       otherUserPostsFetch(id);

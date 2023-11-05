@@ -38,13 +38,15 @@ const UserFeed = () => {
     useEffect(() => {
       setIsLoading(true);
       axiosInstance.get(`/ownProfile`).then((res) => {
-      
-        if(res.data.message){
-          console.log(res.data, 'the data');
+        if(res.data){
+          console.log(res.data.user, 'the data');
           
           setUserData(res.data.user);
         }
-      }).catch((error) => console.log(error , 'axios')
+      }).catch((error) => {
+        console.log(error , 'axios')
+        // toast.error(error.response.data.message || error.response.data);
+      }
       ).finally(() => setIsLoading(false))
 
       axiosInstance.get('/getposts').then((res) => {

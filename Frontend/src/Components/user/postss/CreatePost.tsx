@@ -89,7 +89,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
                 setImage(null);
                 setVideo(null);
                 addNewPost(res.data.newPost)
-                console.log(res.data.newPost , 'ingu vannedi');
+                console.log(res.data.newPost );
                 
             }
 
