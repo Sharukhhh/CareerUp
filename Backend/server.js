@@ -41,7 +41,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(nocache());
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname,"../Frontend/dist")));
 
 app.get("*", function (req, res) {
