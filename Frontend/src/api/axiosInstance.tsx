@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 
 export const axiosInstance = axios.create({
     // baseURL :'http://localhost:3000'
-    baseURL :  'http://localhost:3000' 
+    baseURL :  'https://careerup.website' 
 });
 
 axiosInstance.interceptors.request.use((config) => {
