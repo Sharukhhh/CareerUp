@@ -30,13 +30,15 @@ const io = new SocketIoServer(server , {
     }
 });
 
+
+
 const corsOptions = {
     origin: [
         "http://localhost:5173",
         "https://careerup.website",
         "http://localhost:3000"
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,PUT,PATCH,POST,DELETE',
 };
 
 app.use(cors(corsOptions));
@@ -44,9 +46,6 @@ app.use(nocache());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname,"../Frontend/dist")));
 
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname,"../Frontend/dist/index.html"));
-});
 
 app.use(express.static('Backend/public/resumes')); 
 app.use(express.json()); 
@@ -67,7 +66,6 @@ app.use('/' , chatRoutes);
 //admin routes
 app.use('/admin' , adminRoutes);
 
-
 app.use(errorHandler); 
 
 connectDB();
@@ -77,7 +75,8 @@ io.on('connection' , (socket) => {
     console.log('connected');
 
     //chat related events starting
-    socket.on('start' , (userData) => { 
+    so
+    cket.on('start' , (userData) => { 
         socket.join(userData);   //starting a chat
         console.log(userData , 'ith login userinte id');
     });
@@ -110,6 +109,10 @@ io.on('connection' , (socket) => {
     });
 })
 
+
+app.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname,"../Frontend/dist/index.html"));
+  });
 
 const port = process.env.PORT || 3000;
 server.listen(port , () => {
