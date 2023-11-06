@@ -108,6 +108,8 @@ export const getPosts = async (req, res, next) => {
       }
     });
 
+    console.log(posts)
+
     if(!posts){
       return res.status(404).json({error : 'No posts found'});
     }
