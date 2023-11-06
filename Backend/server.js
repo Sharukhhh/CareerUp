@@ -110,9 +110,9 @@ io.on('connection' , (socket) => {
 })
 
 
-app.get("/", function (req, res) {
+app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname,"../Frontend/dist/index.html"));
-  });
+});
 
 const port = process.env.PORT || 3000;
 server.listen(port , () => {
