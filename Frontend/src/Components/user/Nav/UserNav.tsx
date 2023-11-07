@@ -1,5 +1,5 @@
 import React , {useEffect , useState , lazy , Suspense} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 // import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
 // import {BsMoon , BsSunFill} from 'react-icons/bs';
@@ -13,7 +13,6 @@ import toast from 'react-hot-toast';
 const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDown'));
 import { Spinner } from '@material-tailwind/react';
 import { axiosInstance } from '../../../api/axiosInstance';
-import notificationRootState from '../../../Redux/rootstate/NotifyRootState';
 
 interface UserNavProps {
 
@@ -22,12 +21,6 @@ interface UserNavProps {
 
 const UserNav:React.FC<UserNavProps> = () => {
   // const {theme} = useSelector((state : ThemeRootState) => state.theme);
-  
-
-  const notifcation = useSelector((state : notificationRootState) => state.notification.notificationCount);
-
-
-
   const [userData , setUserData] = useState<any>([]);
 
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
@@ -87,31 +80,33 @@ const UserNav:React.FC<UserNavProps> = () => {
 
       {/* Icons */}
       <div className='flex gap-3 md:gap-14 items-center text-ascent-1 text-md md:text-xl cursor-pointer'>
-            <NavLink to='/feed'>
-              <ImHome className='hover:scale-125'/>
+            <NavLink to='/feed' className={`hover:scale-125 ${window.location.pathname === '/feed' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`}>
+              <ImHome />
             </NavLink>
 
-            <NavLink to={`/explore`}>
-              <GiWireframeGlobe className='hover:scale-125'/>
+            <NavLink to={`/explore`} className={`hover:scale-125 ${window.location.pathname === '/explore' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`}>
+              <GiWireframeGlobe />
             </NavLink>
           
-            <NavLink to='/jobs'>
-              <BsBriefcaseFill className='hover:scale-125'/>
+            <NavLink to='/jobs' className={`hover:scale-125 ${window.location.pathname === '/jobs' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`}>
+              <BsBriefcaseFill />
             </NavLink>
 
-            <NavLink to='/notifications'>
-                <IoMdNotificationsOutline className='hover:scale-125'/>
-                {notifcation  && notifcation.notificationCount > 0 && (
-                  <span className='absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full'>
-                    {notifcation.notificationCount}
+            {/* <div className="relative"> */}
+              <NavLink to="/notifications" className={`hover:scale-125 ${window.location.pathname === '/notifications' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`}>
+                <IoMdNotificationsOutline  />
+                {/* {notificationCount && notificationCount.notificationCount > 0 && (
+                  <span className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    {notificationCount.notificationCount}
                   </span>
-                )}
-            </NavLink>
+                )} */}
+              </NavLink>
+            {/* </div> */}
 
           
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
             {userData?.profileImage ? (
-              <img src={userData?.profileImage} alt='' className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
+              <img src={userData?.profileImage} alt='' className={`w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125 `} />
             ) : (
               <img src={`https://cdn-icons-png.flaticon.com/512/3177/3177440.png`} alt="" className='w-6 h-6 md:w-8 md:h-8 rounded-full object-cover hover:scale-125' />
             )}

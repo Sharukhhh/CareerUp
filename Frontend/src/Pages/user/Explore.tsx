@@ -119,7 +119,7 @@ const Explore = () => {
                     <Spinner  className='h-24 w-24'/>
                 </span> 
             ) : (
-                <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10'>
+                <div className='w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-screen'>
                     <div className='flex-1 max-w-6xl mx-auto bg-white pt-5 pb-10 mb-10 flex flex-col rounded gap-6'>
                         <div className='flex items-center justify-between'>
                             <h1 className='font-bold text-2xl ml-4 ms-4'>Explore</h1>
@@ -220,8 +220,6 @@ const Explore = () => {
                                 )
                             ) : (
                                 <>   
-
-                                <hr className='border-2 mx-4 my-4' />
 
                                 <h1 className='font-bold text-xl ml-4 ms-6'>Candidates</h1>
                                 

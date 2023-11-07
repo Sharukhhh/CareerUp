@@ -102,7 +102,7 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
   return (
     <>
     {visible && (
-        <div className='fixed z-50 inset-0 overflow-y-auto'>
+        <div className='fixed z-50 inset-0 overflow-y-auto' onClick={closeEditModal} >
             <div className='flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
                 <div className='fixed inset-0 transition-opacity'>
                     <div className='absolute inset-0 bg-[#131313] bg-opacity-30 backdrop-blur-sm'>
@@ -112,7 +112,7 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
                             &#8203;
     
                         <div className='inline-block align-bottom bg-primary rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full'
-                                role='dialog' aria-modal = 'true' aria-labelledby='modal-headline'>
+                                role='dialog' aria-modal = 'true' aria-labelledby='modal-headline' onClick={(e) => e.stopPropagation()}>
                                 
                             <div className='flex justify-between px-6 pt-5 pb-2'>
                                     <label 

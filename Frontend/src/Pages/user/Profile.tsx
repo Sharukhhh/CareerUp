@@ -14,7 +14,6 @@ import {MdDelete} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 const DeleteBox = lazy(() => import('../../Components/user/modal/PermissionBox'));
-const EduConfirmBox = lazy(() => import('../../Components/user/modal/EduConfirmBox'));
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -24,13 +23,12 @@ const Profile = () => {
   const [updateUI , setUpdateUI] = useState<boolean>(false);
   const [loading ,setIsLoading] = useState<boolean>(true);
 
-  const [educationId , setEducationId] = useState<string>('');
-  const [professionId , setProfessionId] = useState<string>('');
+  const [deleteType, setDeleteType] = useState<'education' | 'profession' | 'job'>('education');
+  const [deleteId, setDeleteId] = useState<string>('');
 
   //modals
   const [showModal , setShowModal] = useState<boolean>(false);
   const [showBox , setShowBox] = useState<boolean>(false);
-  const [showEduBox , setShowEduBox] = useState<boolean>(false);
 
   const openEditModal = () => {
     setShowModal(true);
@@ -39,21 +37,15 @@ const Profile = () => {
     setShowModal(false);
   }
 
-  const openBox = (professionId : string) => {
-    setProfessionId(professionId);
+  const openBox = (type: 'education' | 'profession' | 'job', id: string) => {
+    setDeleteType(type);
+    setDeleteId(id);
     setShowBox(true);
   }
   const closeBox = () => {
     setShowBox(false);
   }
 
-  const openEduBox = (educationId : string) => {
-    setEducationId(educationId);
-    setShowEduBox(true);
-  }
-  const closeEduBox = () => {
-    setShowEduBox(false);
-  }
 
   const user = useSelector((state : RootState) => state.user.userCred);
 
@@ -201,7 +193,7 @@ const Profile = () => {
                             className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
                               <BiSolidEdit />
                             </button>
-                            <button onClick={() => openBox(item?._id)}
+                            <button onClick={() => openBox( 'profession' , item?._id)}
                             className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                               <MdDelete />
                             </button>
@@ -242,7 +234,7 @@ const Profile = () => {
                             className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                               <BiSolidEdit />
                             </button>
-                            <button onClick={() => openEduBox(item?._id)}
+                            <button onClick={() => openBox( 'education' , item?._id)}
                             className='bg-gray-300 text-sm p-1 rounded text-[#333030] hover:scale-125'>
                               <MdDelete />
                             </button>
@@ -284,7 +276,8 @@ const Profile = () => {
                               className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
                                 <BiSolidEdit/>
                               </button>
-                              <button className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
+                              <button onClick={() => openBox('job' , job?._id)}
+                              className='text-sm p-1 rounded text-[#333030] hover:scale-125'>
                                 <MdDelete/>
                               </button>
                             </div>
@@ -304,15 +297,20 @@ const Profile = () => {
       </div>
 
       <Suspense fallback={<Spinner/>}>
-        <DeleteBox setUpdateUI={setUpdateUI} visible={showBox} closeBox={closeBox} professionId={professionId} />
+        <DeleteBox 
+        setUpdateUI={setUpdateUI} 
+        visible={showBox} 
+        type={deleteType}
+        dataId={deleteId}
+        closeBox={closeBox} />
       </Suspense>
 
       <Suspense fallback={<Spinner/>}>
-        <EditProfile setUpdateUI={setUpdateUI} userData = {userData} visible={showModal} closeEditModal={closeEditModal} />
-      </Suspense>
-
-      <Suspense fallback={<Spinner/>}>
-        <EduConfirmBox setUpdateUI={setUpdateUI}  visible={showEduBox} closeEduBox={closeEduBox} educationId={educationId}   />
+        <EditProfile 
+        setUpdateUI={setUpdateUI} 
+        userData = {userData} 
+        visible={showModal} 
+        closeEditModal={closeEditModal} />
       </Suspense>
     </>  
   )

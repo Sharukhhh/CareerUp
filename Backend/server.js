@@ -23,13 +23,13 @@ const __dirname = dirname(__filename);
 const app = express(); 
 const server = http.createServer(app);  
 const io = new SocketIoServer(server , {
+    pingTimeout : 60000, //for 60sec if no user message interction and ends the connection 
     cors : {
         origin: "https://careerup.website",
         methods: ["GET", "POST"],
         credentials : true
     }
 });
-
 
 
 const corsOptions = {
@@ -72,32 +72,32 @@ connectDB();
 
 
 io.on('connection' , (socket) => {
-    console.log('connected');
 
     //chat related events starting
-    so
-    cket.on('start' , (userData) => { 
+    socket.on('start' , (userData) => { 
         socket.join(userData);   //starting a chat
         console.log(userData , 'ith login userinte id');
     });
 
     socket.on('join chat' , (chatRoom) => {
         socket.join(chatRoom);
-        console.log('joined the room' , chatRoom);
-
+        console.log('joined the room : '  + chatRoom);
     })
+    
 
     socket.on('new chat message' , (message) => {
+
+        console.log('here toooo');
         const chat = message.chat;
 
-        // console.log(chat , 'ith chat');
+        console.log(chat , 'ith chat');
 
         if(!chat.participants){
             // console.log('no participants');
         }
         chat.participants.forEach((user) => {
             if(user._id === message.sender._id){
-
+                return;
             }
 
             return socket.in(user._id).emit('message recieved' , message);

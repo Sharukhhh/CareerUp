@@ -39,8 +39,6 @@ const UserFeed = () => {
       setIsLoading(true);
       axiosInstance.get(`/ownProfile`).then((res) => {
         if(res.data){
-          console.log(res.data.user, 'the data');
-          
           setUserData(res.data.user);
         }
       }).catch((error) => {
@@ -52,8 +50,6 @@ const UserFeed = () => {
       axiosInstance.get('/getposts').then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
-          console.log(res.data.posts , 'aysheri');
-          
         }
       }).catch((err) => console.log(err, 'axios posts err')
       ).finally(() => setIsLoading(false))

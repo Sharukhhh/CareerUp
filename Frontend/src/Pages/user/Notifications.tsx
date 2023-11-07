@@ -8,8 +8,6 @@ import { Spinner } from '@material-tailwind/react';
 import moment from 'moment';
 
 const Notifications = () => {
-    
-
 
     const [notifcations , setNotifications] = useState<any[]>([]);
     const [clearanceMessage , setClearanceMessage] = useState<string>('');

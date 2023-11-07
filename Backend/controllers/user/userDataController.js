@@ -18,15 +18,13 @@ export const getEditData = async (req, res, next) => {
             if(user.role === 'Candidate'){
                 userData = await userModel.findById(user._id);
             } else if(user.role === 'Company'){
+                
                 companyJobData = await jobModel.findById(itemId).populate('postedBy')
                 .populate('industry');
 
                 if(companyJobData){
-                    if(companyJobData.postedBy.toString() === user._id.toString()){
-                        return res.status(200).json({message : 'job info success' , info : companyJobData});
-                    }
+                    return res.status(200).json({message : 'job info success' , info : companyJobData});
                 }
-
             }
         }
 
@@ -445,25 +443,28 @@ export const deleteJob = async (req, res, next) => {
         const user = req.user;
         const jobId = req.params.jobId;
 
-        const job = await jobModel.findOne({_id : jobId , postedBy : user._id});
+        let job = await jobModel.findOne({_id : jobId , postedBy : user._id})
+        .populate('applicants.userId');
 
         if(!job){
             return res.status(404).json({error : 'Job not found'});
         }
 
-        await job.remove();
-
         const applicantsUserIds = job.applicants.map((applicant) => applicant.userId);
 
-        const notifications = applicantsUserIds.map((applicantUserId) => ({
-            senderUser : user._id,
-            receiverUser : applicantUserId,
-            message : `The job you applied for "${job.position}" has been removed by ${user.name} 
-                        and is no longer accepting any applications.`
-        }));
+        if(applicantsUserIds.length > 0){
+            const notifications = applicantsUserIds.map((applicantUserId) => ({
+                senderUser : user._id,
+                receiverUser : applicantUserId,
+                message : `The job you applied for "${job.position}" has been removed by ${user.name} 
+                            and is no longer accepting any applications.`
+            }));
+        
+            await notifyModel.create(notifications);
+        }
 
-        await notifyModel.create(notifications);
-
+        await jobModel.deleteOne({_id : jobId , postedBy : user._id});
+    
         return res.status(200).json({message : 'Job Deleted Successfully'});
 
     } catch (error) {

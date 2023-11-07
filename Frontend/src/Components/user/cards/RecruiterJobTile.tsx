@@ -38,7 +38,7 @@ const RecruiterJobTile = () => {
         jobs?.map((job : any , index : number) => {
         return(
           <div className='border rounded-lg my-2 mx-4 shadow-md' key={job?._id}>
-              <div onClick={() => toggleAccordion(index)} className='border-b-2 bg-gray-50 px-4 py-5 cursor-pointer'>
+              <div onClick={() => toggleAccordion(index)} className='border-b-2 bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] px-4 py-5 cursor-pointer'>
                   <h3 className='text-xl text-gray-800 font-bold'>{job?.position}</h3>
               </div>
 

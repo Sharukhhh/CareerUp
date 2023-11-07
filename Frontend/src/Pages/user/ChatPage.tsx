@@ -8,8 +8,11 @@ import { BsFillChatLeftTextFill} from 'react-icons/bs';
 import { axiosInstance } from '../../api/axiosInstance';
 import { useSelector } from 'react-redux';
 import RootState from '../../Redux/rootstate/rootState';
-import { io , Socket } from "socket.io-client";
+import {io , Socket} from "socket.io-client";
 import toast, { Toaster } from 'react-hot-toast';
+
+
+var socket : Socket;
 
 const ChatPage = () => {
     const user = useSelector((state : RootState) => state.user.userCred);
@@ -20,25 +23,22 @@ const ChatPage = () => {
     const [chatId , setChatId] = useState<string | null>(null);
     const [updateUI , setUpdateUI] = useState<boolean>(false);
     const [socketConnection ,setSocketConnection] = useState<boolean>(false);
+    
+    useEffect(() => {
+            socket = io('https://careerup.website' ,{withCredentials: true});
+            socket.emit('start' , user?.userId);
+            socket.on('connection' , () => {
+                setSocketConnection(true);
+            })
+    },[user?.userId]);
 
     console.log(socketConnection);
-    
-
-    let socket : Socket | null = null;
-    useEffect(() => {
-        socket = io('http://careerup.website' ,{withCredentials: true});
-        socket?.emit('start' , user?.userId);
-        socket?.on('connection' , () => {
-            setSocketConnection(true);
-        })
-    },[user?.userId]);
 
 
     useEffect(() => {
         axiosInstance.get('/chatusers')
         .then((res) => {
             if(res.data.results){
-                
                 setChatUsers(res.data.results);
             }
         }).catch((error) => console.log(error)
@@ -53,9 +53,8 @@ const ChatPage = () => {
         axiosInstance.post('/chatSend', {content : inputMessage , chatId})
         .then((res) => {
             if(res.data.msg){
-                socket?.emit('new chat message' , res.data.message)
-                console.log(res.data.message, 'haha');
-                
+                    socket.emit('new chat message' , res.data.message)
+                    console.log('ethiyo');
                 setChatMessages([
                     ...chatMessages,
                     res.data.message
@@ -72,10 +71,9 @@ const ChatPage = () => {
             axiosInstance.get(`/viewMessages/${chatId}`)
             .then((res) => {
                 if(res.data){
-                    console.log(res.data.message , 'vandha idam en kaadu');
-                    
                     setChatMessages([...res.data.message])
-                    socket?.emit('join chat' , chatId);
+                    socket.emit('join chat' , chatId);
+                    console.log('join kaynjo');
                 }
             })
         } catch (error) {
@@ -92,14 +90,16 @@ const ChatPage = () => {
     }, [chatId]);
 
     useEffect(() => {
-        socket?.on('message recieved' , (newMessage) => {
-            if(!chatId || chatId !== newMessage?.chat?._id){
-                return;
-            } else {
-                setUpdateUI(prev => !prev);
-                setChatMessages([...chatMessages , newMessage]);
-            }
-        })
+            socket.on('message recieved' , (newMessage : any) => {
+                if(!chatId || chatId !== newMessage?.chat?._id){
+                    return;
+                } else {
+                    setUpdateUI(prev => !prev);
+                    setChatMessages([...chatMessages , newMessage]);
+                }
+            })
+            console.log('appurom poyo');
+            
     })
 
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -116,6 +116,7 @@ const ChatPage = () => {
     const closeModal = () => {
         setFindUserModal(false);
     }
+    
 
 
   return (
@@ -219,10 +220,11 @@ const ChatPage = () => {
                                         <>
                                             <div className='flex-grow ml-4'>
                                                 <div className='relative w-full sm:text-lg text-xs'>
-                                                    <input type="text" name="" value={inputMessage}
+                                                    <input 
+                                                    type="text" name="" value={inputMessage}
                                                     onChange={(e) => setInputMessage(e.target.value)} 
                                                     placeholder='Type here.....'
-                                                    // onKeyPress={(e) => e.key === 'Enter' && handleMessageSubmit()}
+                                                    onKeyDown={(e) => e.key === 'Enter' && handleMessageSubmit()}
                                                     className='flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10'/>
                                                     <button className='absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600'>
                                                         <BsEmojiSmile/>

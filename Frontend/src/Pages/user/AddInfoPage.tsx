@@ -192,24 +192,24 @@ const AddInfoPage = () => {
         }
       }).catch((error) => console.log(error , 'axios job edit err')
       )
+    } else {
+      axiosInstance.post(`/postjob` , {position, location , salaryPackage , industry : industry, requirements})
+      .then((res) => {
+        if(res.data.message){
+          toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
+  
+          setPosition('');
+          setJobLocation('');
+          setRequirements('');
+          setIndustry('');
+        }
+  
+        if(res.data.error){
+          toast.error(res.data.error);
+        }
+      }).catch((error) => console.log(error , 'axios job post err')
+      )
     }
-
-    axiosInstance.post(`/postjob` , {position, location , salaryPackage , industry : industry, requirements})
-    .then((res) => {
-      if(res.data.message){
-        toast.success(res.data.message , {icon : <BsFillSave2Fill/> });
-
-        setPosition('');
-        setJobLocation('');
-        setRequirements('');
-        setIndustry('');
-      }
-
-      if(res.data.error){
-        toast.error(res.data.error);
-      }
-    }).catch((error) => console.log(error , 'axios job post err')
-    )
   }
 
 
@@ -349,7 +349,7 @@ const AddInfoPage = () => {
                 </div>
 
                 <button type='submit' className='mt-2 px-4 py-2 bg-blue text-white rounded hover:bg-[#2a398fd2]'>
-                  Save 
+                  {isEdit ? 'Update' : 'Save'}
                 </button>
               </form>  
               </>

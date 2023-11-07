@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export const axiosInstance = axios.create({
-    // baseURL :'http://localhos/t:3000'
+    // baseURL :'http://localhost:3000'
     baseURL :  'https://careerup.website' 
 });
 
@@ -24,7 +24,6 @@ axiosInstance.interceptors.response.use(
             // Show error toast with errorMessage
             toast.error(errorMessage, { duration: 2000, style: { color: '#fff', background: 'black' } });
         } else {
-            // Handle other errors
             console.error('Axios error:', error);
         }
         return Promise.reject(error);
@@ -56,7 +55,6 @@ adminAxiosInstance.interceptors.response.use(
             // Show error toast with errorMessage
             toast.error(errorMessage, { duration: 2000, style: { color: '#fff', background: 'black' } });
         } else {
-            // Handle other errors
             console.error('Axios error:', error);
         }
         return Promise.reject(error);

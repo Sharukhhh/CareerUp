@@ -104,36 +104,27 @@ export const getCreatedChat = async (req, res, next) => {
     }
 }
 
-// export const createGroupChat = async (req, res, next) => {
-//     try {
-//         const {participants} = req.body;
 
-//         const chat = await chatModel.findOne({
-//             participants : {$all: participants},
-//             isGroupChat : true
-//         });
+export const showAllMessages = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const chatId =req.params.chatId;
 
-//         if(chat){
-//             return res.status(200).json({chatId : chat._id})
-//         }
+        const message = await messsageModel.find({chat : chatId})
+        .populate('sender' , 'name profileImage')
+        .populate('chat');
 
-//         const newChat = new chatModel.create({
-//             participants,
-//             isGroupChat : true
-//         });
+        if(!message){
+            return;
+        }
 
-//         if(!newChat){
-//             console.log('error');
-//             return;
-//         }
+        res.status(200).json({ message})
 
-//         await newChat.save();
-//         return res.status(200).json({chatId : newChat._id});
+    } catch (error) {
+        next(error);
+    }
+}
 
-//     } catch (error) {
-//         next(error);
-//     }
-// }
 
 export const submitMessage = async (req, res, next) => {
     try {
@@ -164,6 +155,8 @@ export const submitMessage = async (req, res, next) => {
             lastMessage : message
         } , {new : true});
 
+        console.log(message);
+
         return res.status(200).json({msg : 'Messsage sent' , message});
 
     } catch (error) {
@@ -172,22 +165,3 @@ export const submitMessage = async (req, res, next) => {
 } 
 
 
-export const showAllMessages = async (req, res, next) => {
-    try {
-        const user = req.user;
-        const chatId =req.params.chatId;
-
-        const message = await messsageModel.find({chat : chatId})
-        .populate('sender' , 'name profileImage')
-        .populate('chat');
-
-        if(!message){
-            return;
-        }
-
-        res.status(200).json({ message})
-
-    } catch (error) {
-        next(error);
-    }
-}
