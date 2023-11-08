@@ -79,14 +79,16 @@ export const addBasic = async (req, res, next) => {
         let resumeUrl = null;
         if(data && data.resume){
 
-            const resumeFile = data.resume[0];
-            resumeUrl = `public/resumes/${resumeFile.filename}`;
+            resumeUrl = data.resume[0].filename;
 
-            fs.rename(resumeFile.path , resumeUrl , (err) => {
-                if(err){
-                    return res.status(400).json({error : 'error while changing pathname'});
-                }
-            }); 
+            console.log(resumeUrl , 'resumeURL');
+            // resumeUrl = `public/resumes/${resumeFile.filename}`;
+
+            // fs.rename(resumeFile.path , resumeUrl , (err) => {
+            //     if(err){
+            //         return res.status(400).json({error : 'error while changing pathname'});
+            //     }
+            // }); 
             // const result = await cloudinary.uploader.upload(data.resume[0].path);
             // resumeUrl = result.secure_url;
         }

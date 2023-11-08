@@ -628,7 +628,11 @@ export const getApplicants = async (req, res, next) => {
     try {
         const jobId = req.params.jobId;
 
-        const job = await jobModel.findById(jobId).populate('applicants.userId');
+        const job = await jobModel.findById(jobId)
+        .populate({
+            path : 'applicants.userId',
+            select : 'name profileImage email resume _id'
+        });
 
         if(!job){
             return res.status(404).json({error : 'Job not Found'});

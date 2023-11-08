@@ -48,9 +48,11 @@ export const register = async (req, res , next) => {
         if (!phoneNumberPattern.test(phone)) {
             return res.status(401).json({ error: 'Invalid phone number' });
         }
+        console.log(phone);
+
         client.verify.v2       
         .services(serviceSid)
-        .verifications.create({ to: `+91${phone}`  , channel: "sms" })
+        .verifications.create({ to:`+91${phone}`  , channel: "sms" })
         .then((verification) =>{
             console.log('da');
             res.status(201).json({message : 'OTP send , Verify!'});

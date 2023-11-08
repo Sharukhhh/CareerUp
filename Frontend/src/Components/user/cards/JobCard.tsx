@@ -1,7 +1,7 @@
 import React , {useState } from 'react';
 import {BiDownArrowCircle} from 'react-icons/bi';
 import { axiosInstance } from '../../../api/axiosInstance';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 
@@ -47,7 +47,6 @@ const JobCard : React.FC<JobCardProps> = ({jobs , selectedIndustry , setUpdateUI
 
   return (
     <>
-    <Toaster position='top-center'/>
         {filteredJobs?.length > 0 ? (
           filteredJobs?.map((job : any , index : number) => {
             const hasApplied = job?.applicants?.some((applicant : any) => applicant?.userId?.toString() === user?.userId?.toString());

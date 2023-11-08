@@ -25,22 +25,22 @@ const upload = multer({
         },
 
         filename : async (req, file, cb) => {
-            async function getUniqueFileName() {
-                try {
-                    const user = await userModel.findById(req.user._id);
+            // async function getUniqueFileName() {
+            //     try {
+            //         const user = await userModel.findById(req.user._id);
         
-                    if (!user) {
-                    return cb(new Error('User not found'));
-                    }
+            //         if (!user) {
+            //         return cb(new Error('User not found'));
+            //         }
         
-                    const uniqueFileName = `${user.name}_${file.fieldname}_${Date.now()}-${file.originalname}`;
-                    cb(null, uniqueFileName);
-                } catch (err) {
-                    return cb(err);
-                }
-            }
+            //         const uniqueFileName = `${user.name}_${file.fieldname}_${Date.now()}-${file.originalname}`;
+                    cb(null, `${Date.now()}-${file.originalname}`);
+            //     } catch (err) {
+            //         return cb(err);
+            //     }
+            // }
 
-            getUniqueFileName();
+            // getUniqueFileName();
         }
     }),
 
@@ -60,27 +60,3 @@ const upload = multer({
 
 export default upload;
 
-
-
-// const upload = multer({
-//     storage : multer.diskStorage({}) ,
-
-//     fileFilter : (req, file , cb) => {
-
-//         let ext = path.extname(file.originalname);
-//         const allowedExtensions = ['.jpg', '.jpeg', '.png', '.mp4', '.jfif', '.pdf' , '.svg'];
-
-//         if(!allowedExtensions.includes(ext.toLowerCase())) {
-
-//             const error = new multer.MulterError('Unsupported file type!');
-//             new Error("File type is not supported");
-//             error.status = 401;
-//             cb(error, false);
-//             return;
-//         }
-//         cb(null , true);
-//     } 
-// });
-
-// export {resumeUpload}
-// export default upload;
