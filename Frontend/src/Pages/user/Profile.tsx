@@ -53,6 +53,8 @@ const Profile = () => {
 
   const{ id } = useParams() ;
 
+  console.log(id, 'vannnnnnnnnnnnn');
+
   const getOwnProfileData = () => {
     setIsLoading(true);
     axiosInstance.get('/ownProfile')
@@ -109,21 +111,31 @@ const Profile = () => {
 
   useEffect(() => {
     if(id){
-      
-      
       fetchProfileData(id);
       otherUserPostsFetch(id);
-    }
-  } , [id  ]);
-
-  useEffect(() => {
-    if(!id){
-      console.log(id , 'here');
-      
+    } else {
       getOwnProfileData();
       fetchUserPosts();
     }
-  }, [updateUI ])
+  },[updateUI , id]);
+
+  // useEffect(() => {
+  //   if(id){
+      
+      
+  //     fetchProfileData(id);
+  //     otherUserPostsFetch(id);
+  //   }
+  // } , [id  ]);
+
+  // useEffect(() => {
+  //   if(!id){
+  //     console.log(id , 'here');
+      
+  //     getOwnProfileData();
+  //     fetchUserPosts();
+  //   }
+  // }, [updateUI ])
 
   useEffect(() => {
     if(isCompany){

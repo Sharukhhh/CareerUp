@@ -76,7 +76,6 @@ const userSchema = mongoose.Schema({
         postId : {
             type : mongoose.Schema.Types.ObjectId,
             ref : 'posts',
-            required : true
         },
 
         addedAt : {

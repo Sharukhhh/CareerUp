@@ -1,9 +1,7 @@
-import jwt from 'jsonwebtoken';
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js'; 
 import postModel from '../../models/posts.js';
 import categoryModel from '../../models/category.js';
-import cloudinary from '../../utils/cloudinary.js';
 import jobModel from '../../models/jobs.js';
 import notifyModel from '../../models/notificationModel.js';
 import mongoose from 'mongoose';
@@ -13,7 +11,7 @@ export const ownProfile = async (req, res, next) => {
         
         const loggedUser = req.user;
         const user = await userModel.findById(loggedUser._id)
-        .select('name headline profileImage connections education profession location') // Only select the necessary fields
+        .select('name headline profileImage connections education profession location savedPosts') // Only select the necessary fields
         .populate({
             path: 'connections.userId',
             select: 'name profileImage _id',
@@ -22,6 +20,7 @@ export const ownProfile = async (req, res, next) => {
             path: 'followingCompanies.company',
             select: 'name headline profileImage', 
         })
+        .populate('savedPosts.postId')
         .exec();
 
         if(!user){
@@ -30,14 +29,15 @@ export const ownProfile = async (req, res, next) => {
                 path: 'followingCompanies.company',
                 select: 'name headline profileImage', 
             })
-            .populate({
+            .populate({ 
                 path : 'followers.user',
                 select : 'name headline profileImage'
             })
             .populate({
                 path : 'followers.company',
                 select : 'name headline profileImage'
-            });
+            })
+            .populate('savedPosts.postId');
 
             if(!company){
                 return res.status(400).json({error : 'No user'})

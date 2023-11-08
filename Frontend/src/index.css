@@ -137,7 +137,7 @@ z-index: 49;
 
 
 .notification-removing {
-  animation: slideOut 2s forwards ease-in-out;
+  animation: slideOut 4s forwards ease-in-out;
 }
 
 @keyframes slideOut {

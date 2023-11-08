@@ -4,12 +4,11 @@ import {FaRegBookmark , FaBookmark} from 'react-icons/fa';
 import {MdOutlineDeleteOutline, MdOutlineReportProblem , MdDeleteSweep} from 'react-icons/md';
 import {Link} from 'react-router-dom';
 import { Spinner } from '@material-tailwind/react';
-import { axiosInstance } from '../../../api/axiosInstance';
-import toast from 'react-hot-toast';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 import CommentForm from '../comment/CommentForm';
+import { deleteTheComment, deleteThePost, likeAndDislikePost , saveAndUnsavePost } from '../../../api/postsApiService';
 const ReportBox = lazy(() => import('../modal/ReportModal'));
 
 interface PostCardProps { 
@@ -38,7 +37,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
 
   const filteredPosts = showAllposts
   ? posts
-  : posts.filter((post: any) => post?.user?._id === user?.userId);
+  : posts.filter((post: any) => post?.user?._id || post?.company?._id === user?.userId);
 
     // Function to toggle showAll state for a specific post
     const toggleShowAll = (postId: string) => {
@@ -49,60 +48,39 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
     };
 
     const likeAndDislike = (postId : string) => {
-      axiosInstance.get(`/like/${postId}`)
-      .then((res) =>{
-        if(res.data.message){
-          toast.success(res.data.message);
-
-          setUpdateUI((prev :boolean) => !prev);
+      likeAndDislikePost(postId)
+      .then((success) => {
+        if(success){
+          setUpdateUI((prev : boolean)=> !prev);
         }
-
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((err) => console.log(err , 'err occured liking')
-      )
+      })
     }
 
     const saveAndUnsave = (postId : string) => {
-      axiosInstance.get(`/save/${postId}`)
-      .then((res) => {
-        if(res.data.message){
-          toast.success(res.data.message);
+      saveAndUnsavePost(postId)
+      .then((success) => {
+        if(success){
           setUpdateUI((prev : boolean)=> !prev);
         }
-
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((err) => console.log(err , 'err occured saving')
-      )
+      })
     }
 
     const deletePost = (postId : string) => {
-      axiosInstance.patch(`/deletepost/${postId}`)
-      .then((res) => {
-        if(res.data.message){
-          toast.success(res.data.message);
-          setUpdateUI((prev : boolean) => !prev);
+      deleteThePost(postId)
+      .then((success) => {
+        if(success){
+          setUpdateUI((prev : boolean)=> !prev);
         }
-
-        if(res.data.error){
-          toast.error(res.data.error);
-        }
-      }).catch((err) => console.log(err , 'err occured post delete')
-      )
+      })
     }
 
     const deleteComment = (commentId : string) => {
-      axiosInstance.delete(`/delete-comment/${commentId}`)
-      .then((res) => {
-        if(res.data.message){
-          toast.success(res.data.message);
-          setUpdateUI((prev : boolean) => !prev);
+      deleteTheComment(commentId)
+      .then((success) =>{
+        if(success){
+          setUpdateUI((prev : boolean)=> !prev);
         }
-      }).catch((error) => console.log(error)
-      )
+      })
     }
 
   return (
@@ -192,7 +170,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               )}
 
               <p className='flex gap-2 items-center text-base cursor-pointer'>
-                  {userData?.savedPosts?.some((saved : any )=> saved?.postId === post?._id) ? (
+                  {userData?.savedPosts?.some((saved : any )=> saved?.postId?._id.toString() === post?._id.toString()) ? (
                     <span onClick={() => saveAndUnsave(post?._id)} >
                       <FaBookmark size={20} />
                     </span>

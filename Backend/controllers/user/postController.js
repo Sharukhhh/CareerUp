@@ -106,7 +106,8 @@ export const getPosts = async (req, res, next) => {
         path : 'userId companyId',
         select : 'name profileImage headline'
       }
-    });
+    })
+    .populate();
 
     if(!posts){
       return res.status(404).json({error : 'No posts found'});
@@ -125,17 +126,24 @@ export const getIndividualPosts = async (req, res, next) => {
     const userObjectId = new mongoose.Types.ObjectId(userId); 
     
     let posts = await postModel.find({user : userObjectId , isDeleted : false})
-    .populate('user');
+    .populate('user')
+    .populate({
+      path : 'comments',
+      populate : {
+        path : 'userId companyId',
+        select : 'name profileImage headline'
+      }
+    });
 
     if(!posts){
 
-      posts = await postModel.find({company : userObjectId , isDeleted : false});
+      // posts = await postModel.find({company : userObjectId , isDeleted : false});
 
-      if(!posts){
+      // if(!posts){
         return res.status(404).json({error : 'Users post not found'});
-      }
+      // }
 
-      return res.status(200).json({message : 'Posts avaialable' , posts});
+      // return res.status(200).json({message : 'Posts avaialable' , posts});
     }
 
     return res.status(200).json({message : 'Posts avaialable' , posts});
@@ -256,9 +264,9 @@ export const saveandUnsavePosts = async (req, res, next) => {
       return res.status(404).json({error : 'Post Not Found'});
     }
 
-    const isSaved = user.savedPosts.some((savedPosts) => savedPosts.postId.toString() === savedPosts.postId.toString())
+    const isSaved = user.savedPosts.some((savedPosts) => savedPosts.postId.toString() === postId.toString());
     if(isSaved){
-      user.savedPosts = user.savedPosts.filter((savedPosts) => savedPosts.postId.toString() !== savedPosts.postId.toString());
+      user.savedPosts = user.savedPosts.filter((savedPosts) => savedPosts.postId.toString() !== postId.toString());
 
       await user.save();
       return res.json({message : 'Post Unsaved !'});
@@ -268,7 +276,7 @@ export const saveandUnsavePosts = async (req, res, next) => {
       user.savedPosts.push({postId : post._id});
       await user.save();
 
-      return res.json({message : 'Post Saved !'});
+      return res.json({message : 'Post Saved !' });
     }
 
 

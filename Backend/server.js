@@ -87,10 +87,10 @@ io.on('connection' , (socket) => {
 
     socket.on('new chat message' , (message) => {
 
-        console.log('here toooo');
+        // console.log('here toooo');
         const chat = message.chat;
 
-        console.log(chat , 'ith chat');
+        // console.log(chat , 'ith chat');
 
         if(!chat.participants){
             // console.log('no participants');

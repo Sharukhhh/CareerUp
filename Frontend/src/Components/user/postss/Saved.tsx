@@ -1,20 +1,33 @@
 import React , {useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BiComment, BiLike } from 'react-icons/bi';
-import {FaRegBookmark } from 'react-icons/fa';
-import {MdOutlineReportProblem} from 'react-icons/md';
-// import moment from 'moment';
+import { BiComment, BiLike , BiSolidLike } from 'react-icons/bi';
+import {FaRegBookmark  ,FaBookmark } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
+import { axiosInstance } from '../../../api/axiosInstance';
+import { likeAndDislikePost, saveAndUnsavePost } from '../../../api/postsApiService';
 
 interface SavedPostProps {
   savedPosts : any[];
+  setUpdateUI :(data: any) => void;
 }
 
-const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
+const Saved: React.FC<SavedPostProps> = ({savedPosts , setUpdateUI}) => {
   const user = useSelector((state : RootState) => state.user.userCred);
 
+  const [userData , setUserData] = useState<any>([]);
+
   const [showAll , setShowAll] = useState<{ [postId: string]: boolean }>({});
+
+      axiosInstance.get(`/ownProfile`).then((res) => {
+        if(res.data){
+          setUserData(res.data.user);
+        }
+      }).catch((error) => {
+        console.log(error , 'axios')
+        // toast.error(error.response.data.message || error.response.data);
+      }
+      )
 
       // Function to toggle showAll state for a specific post
       const toggleShowAll = (postId: string) => {
@@ -23,6 +36,24 @@ const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
           [postId]: !prevShowAll[postId],
         }));
       };
+
+      const likeAndDislike = (postId : string) => {
+        likeAndDislikePost(postId)
+        .then((success) => {
+          if(success){
+            setUpdateUI((prev : boolean)=> !prev);
+          }
+        })
+      }
+
+      const saveAndUnsave = (postId : string) => {
+        saveAndUnsavePost(postId)
+        .then((success)=> {
+          if(success){
+            setUpdateUI((prev : boolean)=> !prev);
+          }
+        })
+      }
 
   return (
     <>
@@ -77,15 +108,15 @@ const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
 
                 <div className='mt-4 flex justify-between items-center px-3 py-2 text-ascent-2 text-base border-t border-[#66666645]'>
                   <p className='flex gap-2 items-center text-base cursor-pointer'>
-                    {/* {post?.savedPosts?.postId?.likes?.includes(user?.userId) ? ( */}
-                      {/* <span onClick={() => likeAndDislike(post?.savedPosts?.postId)}> */}
-                        {/* <BiSolidLike size={20} className='text-blue' /> */}
-                      {/* </span> */}
-                    {/* ) : ( */}
-                      {/* <span onClick={() =>likeAndDislike(post?.savedPosts?.postId)}> */}
+                    {post?.likes?.includes(user?.userId) ? (
+                      <span onClick={() => likeAndDislike(post?._id)}> 
+                        <BiSolidLike size={20} className='text-blue' />
+                      </span> 
+                    ) : (
+                      <span onClick={() =>likeAndDislike(post?._id)}> 
                         <BiLike size={20} className='text-blue' />
-                      {/* </span> */}
-                    {/* )} */}
+                      </span> 
+                    )} 
                     {post?.likes?.length} 
                   </p>
 
@@ -95,19 +126,18 @@ const Saved: React.FC<SavedPostProps> = ({savedPosts}) => {
                   </p>
 
                   <p className='flex gap-2 items-center text-base cursor-pointer'>
-                    <FaRegBookmark size={20} />
-                  </p>
-
-                  <p className='flex gap-2 items-center text-base cursor-pointer'>
-                    <MdOutlineReportProblem size={20} />
+                    {userData?.savedPosts?.some((saved : any )=> saved?.postId?._id.toString() === post?._id.toString()) ? (
+                      <span onClick={() => saveAndUnsave(post?._id)} >
+                        <FaBookmark size={20} />
+                      </span>
+                    ) : (
+                      <span onClick={() => saveAndUnsave(post?._id)} >
+                        <FaRegBookmark size={20}/>
+                      </span>
+                    )}
                   </p>
                 </div>
-    {/* 
-                {showComments === post?._id && ( */}
-                  <div className='w-full mt-4 border-t border-[#66666645] pt-4'>
-                    {/* <CommentForm id={post?._id} /> */}
-                  </div>
-                {/* )} */}
+
         </div>
           )
           })}

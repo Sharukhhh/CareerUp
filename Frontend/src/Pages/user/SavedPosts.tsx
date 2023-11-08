@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 
 const SavedPosts = () => {
   const [savedPosts , setSavedPosts] = useState<any[]>([]);
+  const [updateUI , setUpdateUI] = useState<boolean>(false);
 
   useEffect(() => {
     axiosInstance.get('/savedposts')
@@ -19,11 +20,11 @@ const SavedPosts = () => {
         toast.error(res.data.error);
       }
     })
-  } ,[]);
+  } ,[updateUI]);
   return (
     <>
         {/* <UserNav /> */}
-        <div className='container mx-auto py-4 px-8 bg-blue-gray-50'>
+        <div className='container mx-auto max-w-5xl py-4 px-8 bg-blue-gray-50'>
           <div className='flex justify-between'>
             <h1 className='text-3xl font-bold mt-5 mb-4'>Saved Items</h1>
             <div className='flex'>
@@ -34,7 +35,7 @@ const SavedPosts = () => {
           </div>
           <hr className='border border-black mb-3' />
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                <Saved savedPosts={savedPosts} />
+                <Saved savedPosts={savedPosts} setUpdateUI={setUpdateUI}  />
             </div>
         </div>
     </>

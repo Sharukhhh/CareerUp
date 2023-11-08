@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
 
 
 export const adminAxiosInstance = axios.create({
-    // baseURL :  'http://localhost:3000' 
+    // baseURL :  'http://localhost:3000/admin' 
     baseURL :  'https://careerup.website/admin' 
 
 });

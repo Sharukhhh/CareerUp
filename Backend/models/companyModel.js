@@ -52,7 +52,19 @@ const companySchema = mongoose.Schema({
     profileImage : {
         type : String,
         default : 'https://icons.veryicon.com/png/o/miscellaneous/zr_icon/company-23.png'
-    },                 
+    },
+    
+    savedPosts : [{
+        postId : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : 'posts',
+        },
+
+        addedAt : {
+            type : Date,
+            default : Date.now,
+        }
+    }],
 
     followers : [{
         user : {

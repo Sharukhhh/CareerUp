@@ -1,18 +1,16 @@
 import React , {useEffect , useState , lazy , Suspense} from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
-// import ThemeRootState from '../../../Redux/rootstate/themeRootstate';
-// import {BsMoon , BsSunFill} from 'react-icons/bs';
 import {IoMdNotificationsOutline} from 'react-icons/io';
-import {BsBriefcaseFill} from 'react-icons/bs';
+import {BsBriefcaseFill , BsChatSquareTextFill} from 'react-icons/bs';
 import {GiWireframeGlobe} from 'react-icons/gi';
 import {ImHome} from 'react-icons/im';
-// import {SetThemepayload , setTheme } from '../../../Redux/slices/theme';
 import { logout } from '../../../Redux/slices/slice';
 import toast from 'react-hot-toast';
 const LazyProfileDropDown = lazy(() => import('../../../Pages/user/ProfileDropDown'));
 import { Spinner } from '@material-tailwind/react';
 import { axiosInstance } from '../../../api/axiosInstance';
+import RootState from '../../../Redux/rootstate/rootState';
 
 interface UserNavProps {
 
@@ -20,7 +18,8 @@ interface UserNavProps {
 
 
 const UserNav:React.FC<UserNavProps> = () => {
-  // const {theme} = useSelector((state : ThemeRootState) => state.theme);
+
+  const user = useSelector((state : RootState) => state.user.userCred);
   const [userData , setUserData] = useState<any>([]);
 
   const [openDropProfile , setOpenDropProfile] = useState<boolean>(false);
@@ -92,6 +91,12 @@ const UserNav:React.FC<UserNavProps> = () => {
               <BsBriefcaseFill />
             </NavLink>
 
+            {user?.role === 'Candidate' && (
+              <NavLink to='/message' className={`hover:scale-125 ${window.location.pathname === '/message' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`} >
+                <BsChatSquareTextFill/>
+              </NavLink>
+            )}
+
             {/* <div className="relative"> */}
               <NavLink to="/notifications" className={`hover:scale-125 ${window.location.pathname === '/notifications' ? 'bg-gradient-to-tl from-[#9facfc] to-[#e9eaec] rounded-full p-3' : ''}`}>
                 <IoMdNotificationsOutline  />
@@ -102,7 +107,6 @@ const UserNav:React.FC<UserNavProps> = () => {
                 )} */}
               </NavLink>
             {/* </div> */}
-
           
           <span onClick={() => setOpenDropProfile((prev) => !prev)}>
             {userData?.profileImage ? (
