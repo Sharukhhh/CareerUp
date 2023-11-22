@@ -7,7 +7,7 @@ import {  getProfile, jobApplication, getApplicants, listAllUsers, search, listC
 from '../../controllers/user/userController.js';
 import { addBasic } from '../../controllers/user/userDataController.js';
 import { addComment, createPost , deletePost, getPosts, getIndividualPosts,  
-getSavedPosts,  likeandDislikePost, saveandUnsavePosts,  reportPost, deleteComment } 
+getSavedPosts,  likeandDislikePost, saveandUnsavePosts,  reportPost, deleteComment, getPostsForFeed } 
 from '../../controllers/user/postController.js';
 import upload from '../../utils/multerSetup.js';
 
@@ -33,6 +33,8 @@ router.post('/addPost' , verify, upload.array('image' , 'video'), createPost);
 
 router.patch('/deletepost/:postId' , verify, deletePost); 
 
+router.get('/feedposts' , verify, getPostsForFeed);
+
 router.get('/getposts' , verify,  getPosts);
 
 router.get('/userposts/:id' , verify , getIndividualPosts);
@@ -45,7 +47,7 @@ router.get('/save/:postId' , verify , saveandUnsavePosts);
 
 router.post('/postcomment/:postId' , verify , addComment);
 
-router.delete('/delete-comment/commentId' , verify, deleteComment);
+router.delete('/delete-comment/:commentId' , verify, deleteComment);
 
 router.patch('/report/:postId' , verify , reportPost )
 

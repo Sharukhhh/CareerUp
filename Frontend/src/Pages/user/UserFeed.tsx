@@ -47,7 +47,7 @@ const UserFeed = () => {
       }
       ).finally(() => setIsLoading(false))
 
-      axiosInstance.get('/getposts').then((res) => {
+      axiosInstance.get('/feedposts').then((res) => {
         if(res.data.message){
           setPosts(res.data.posts);
         }

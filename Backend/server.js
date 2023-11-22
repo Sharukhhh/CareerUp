@@ -45,8 +45,6 @@ app.use(cors(corsOptions));
 app.use(nocache());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname,"../Frontend/dist")));
-
-
 app.use(express.static('Backend/public/resumes')); 
 app.use(express.json()); 
 app.use(express.urlencoded({extended : true})); 

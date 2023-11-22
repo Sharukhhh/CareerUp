@@ -2,7 +2,7 @@ import  {useEffect , useState} from 'react'
 import TopBar from '../../Components/admin/TopBar'
 import { adminAxiosInstance } from '../../api/axiosInstance'
 import {AiFillDelete} from 'react-icons/ai';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Pagination from '../../Components/Pagination';
 
 const PostTable = () => {
@@ -45,7 +45,6 @@ const PostTable = () => {
   return (
     <>
         <TopBar/>
-        <Toaster position='top-center' />
         <div className='mt-10 max-w-7xl mx-auto p-6'>
             <table className='w-full min-w-min border-2 rounded-lg'>
                 <thead className='bg-[#323232] text-white'>
@@ -78,12 +77,12 @@ const PostTable = () => {
                         </td>
                         <td className='min-w-[150px] border-white/0 py-3 pr-4'>
                         {post?.media ? (
-                            <div className='flex flex-col items-center '>
+                            <div className='flex flex-col items-center break-words'>
                                 <img src={post?.media} alt="" className='w-10 h-10 rounded-lg mb-2' />
-                                <p className='text-center text-ascent-1'>{post?.description}</p>
+                                <p className='text-center text-ascent-1 break-words'>{post?.description}</p>
                             </div>
                         ) : (
-                            <p className='text-center mt-2 text-sm text-ascent-1'>{post?.description}</p>
+                            <p className='text-center mt-2 text-sm text-ascent-1 break-words'>{post?.description}</p>
                         )}
                         </td>
                         <td className='min-w-[150px] border-white/0 py-3 pr-4'>

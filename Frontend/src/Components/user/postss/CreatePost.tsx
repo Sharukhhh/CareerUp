@@ -118,7 +118,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
                         <textarea rows={2} name="description"
                         value={content} onChange={(e) => setContent(e.target.value)}
                         className="rounded-lg border border-[#66666645] outline-none text-sm 
-                        text-ascent-1 resize-none px-4 bg-gray-100 py-4 w-full placeholder:text-[#666]" placeholder="Add a Post!" 
+                        text-ascent-1 resize-none px-4 bg-gray-100 py-4 w-full placeholder:text-[#666] break-words" placeholder="Add a Post!" 
                         />
                     </div>
                 </div>

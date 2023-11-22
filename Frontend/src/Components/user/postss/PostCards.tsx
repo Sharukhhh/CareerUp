@@ -122,7 +122,7 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
               </div>
             </div>
 
-            <div>
+            <div className='max-w-full overflow-hidden overflow-ellipsis'>
               <p className='text-ascent-2'>
               {isShowAll ? post?.description : post?.description?.slice(0, 300)}
                   {post?.description?.length > 301 && (
@@ -216,11 +216,13 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
                       <div className='ml-12'>
                         <p className='text-ascent-2'>{comment?.text}</p>
 
+                      {post?.user?._id === user?.userId && (
                         <div className='mt-2 flex gap-6'>
                           <span title='Delete this Comment' onClick={() => deleteComment(comment?._id)} className='text-blue hover:bg-[#3b509c2b] px-2 cursor-pointer'>
                             <MdDeleteSweep size={22}/>
                           </span>
                         </div>
+                      )}  
                       </div>
                     </div>
                     )

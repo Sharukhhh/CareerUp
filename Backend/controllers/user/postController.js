@@ -95,38 +95,12 @@ export const deletePost = async (req, res , next) => {
 // *********************************************************************************
 // *********************************************************************************
 
-export const getPosts = async (req, res, next) => {
+
+export const getPostsForFeed = async (req, res, next) => {
   try {
-    const posts = await postModel.find({ isDeleted: false })
+    const posts = await postModel.find({isDeleted : false})
     .populate('user')
     .populate('company')
-    .populate({
-      path : 'comments',
-      populate : {
-        path : 'userId companyId',
-        select : 'name profileImage headline'
-      }
-    })
-    .populate();
-
-    if(!posts){
-      return res.status(404).json({error : 'No posts found'});
-    }
-
-    res.status(200).json({message : 'Posts available' , posts});
-  } catch (error) {
-    next(error);
-  }
-}
-
-export const getIndividualPosts = async (req, res, next) => {
-  try {
-    const userId = req.params.id;
-
-    const userObjectId = new mongoose.Types.ObjectId(userId); 
-    
-    let posts = await postModel.find({user : userObjectId , isDeleted : false})
-    .populate('user')
     .populate({
       path : 'comments',
       populate : {
@@ -136,17 +110,112 @@ export const getIndividualPosts = async (req, res, next) => {
     });
 
     if(!posts){
-
-      // posts = await postModel.find({company : userObjectId , isDeleted : false});
-
-      // if(!posts){
-        return res.status(404).json({error : 'Users post not found'});
-      // }
-
-      // return res.status(200).json({message : 'Posts avaialable' , posts});
+      return res.status(404).json({error : 'Not Found'});
     }
 
-    return res.status(200).json({message : 'Posts avaialable' , posts});
+    res.status(200).json({message : 'Posts available' , posts});
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getPosts = async (req, res, next) => {
+  try {
+
+    const user = req.user;
+
+    const userId = new mongoose.Types.ObjectId(user._id);
+
+    if(user.role === 'Candidate'){
+      const posts = await postModel.find({user : userId , isDeleted: false })
+      .populate('user')
+      .populate('company')
+      .populate({
+        path : 'comments',
+        populate : {
+          path : 'userId companyId',
+          select : 'name profileImage headline'
+        }
+      })
+      .populate();
+  
+      if(!posts){
+        return res.status(404).json({error : 'No posts found'});
+      }
+  
+      res.status(200).json({message : 'Posts available' , posts});
+
+    } else if(user.role === 'Company'){
+
+      const posts = await postModel.find({company : userId ,  isDeleted: false })
+      .populate('user')
+      .populate('company')
+      .populate({
+        path : 'comments',
+        populate : {
+          path : 'userId companyId',
+          select : 'name profileImage headline'
+        }
+      })
+      .populate();
+  
+      if(!posts){
+        return res.status(404).json({error : 'No posts found'});
+      }
+  
+      res.status(200).json({message : 'Posts available' , posts});
+    }
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getIndividualPosts = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+
+    const user = req.user;
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    
+    if(user.role === 'Candidate'){
+      let posts = await postModel.find({user : userObjectId , isDeleted : false})
+      .populate('user')
+      .populate({
+        path : 'comments',
+        populate : {
+          path : 'userId companyId',
+          select : 'name profileImage headline'
+        }
+      });
+
+      if(!posts){
+        return res.status(404).json({error : 'Post not found'});
+      }
+
+      return res.status(200).json({message : 'Posts avaialable' , posts});
+
+
+    } else if (user.role === 'Company'){
+
+      let posts = await postModel.find({company : userObjectId , isDeleted : false})
+      .populate('company')
+      .populate({
+        path : 'comments',
+        populate : {
+          path : 'userId companyId',
+          select : 'name profileImage headline'
+        }
+      });
+
+      if(!posts){
+        return res.status(404).json({error : 'Post not found'});
+      }
+
+      return res.status(200).json({message : 'Posts avaialable' , posts});
+    }
     
   } catch (error) {
     next(error);
