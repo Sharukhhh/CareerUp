@@ -100,7 +100,7 @@ io.on('connection' , (socket) => {
 
             return socket.in(user._id).emit('message recieved' , message);
         })
-    });
+    });   
 
     socket.on('disconnect' , () => {
         // console.log('disconnected');

@@ -5,11 +5,15 @@ dotenv.config();
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js';
 import twilio from 'twilio';
+import { sendVerificationEmail } from '../../utils/verificationMail.js';
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-const serviceSid = process.env.TWILIO_SERVICE_SID;
-const client = twilio(accountSid , authToken);
+// const accountSid = process.env.TWILIO_ACCOUNT_SID;
+// const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const serviceSid = process.env.TWILIO_SERVICE_SID;
+// const client = twilio(accountSid , authToken);
+
+
+let otpValue = 0 ;
 
 
 const hashPassword = async (password) => {
@@ -34,13 +38,11 @@ export const register = async (req, res , next) => {
             existingMobile = await companyModel.findOne({phone});
 
             if(existingMobile){
-                console.log('ba'); 
                 return res.status(401).json({error : 'Account already exists'});
             }
         }
 
         if(existingUser || existingCompany || existingMobile){
-            
             return res.status(401).json({error : 'Account already exists'});
         }
 
@@ -48,19 +50,21 @@ export const register = async (req, res , next) => {
         if (!phoneNumberPattern.test(phone)) {
             return res.status(401).json({ error: 'Invalid phone number' });
         }
-        console.log(phone);
 
-        client.verify.v2       
-        .services(serviceSid)
-        .verifications.create({ to:`+91${phone}`  , channel: "sms" })
-        .then((verification) =>{
-            console.log('da');
-            res.status(201).json({message : 'OTP send , Verify!'});
-        })
-        .catch((error) => {
-            console.error("Error sending verification request:", error);
-            res.status(500).json({ error: 'Failed to send OTP verification' });
-        });
+        const userData = {
+            name , email , phone , role , password
+        };
+
+        if(userData){
+            const returningOtpValue =  sendVerificationEmail(email, res);
+            otpValue = returningOtpValue;
+
+            console.log(otpValue , 'ithaan mail ayacha otp');
+
+            if(otpValue){
+                return res.json({message : 'Check email for OTP Verification'})
+            }
+        }
 
     } catch (error) {
         next(error);
@@ -94,40 +98,33 @@ export const otpRegister = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid phone number' });
         }
 
-        client.verify.v2
-        .services(serviceSid)
-        .verificationChecks.create({ to : '+91' + phone , code : otp})
-        .then( async (response) => {
-            if(response.status === 'approved'){
-                const bcryptedpassword = await hashPassword(password);
+        if(otp === otpValue) {
 
-                if(role === 'Candidate'){
-                    const user = new userModel({
-                        name , email , role , phone, password : bcryptedpassword
-                    })
-        
-                    await user.save(); 
-                    console.log(user);
-        
-                    res.status(201).json({user ,message : 'Verification success!'});
-        
-                } else {
-                    const company = new companyModel({
-                        name , email , role , phone, password : bcryptedpassword
-                    })
-        
-                    await company.save();
-                    console.log(company);
-        
-                    res.status(201).json({company ,message : 'Verification Success!'});
-                }
+            const bcryptedpassword = await hashPassword(password);
+
+            if(role === 'Candidate'){
+                const user = new userModel({
+                    name , email , role , phone, password : bcryptedpassword
+                })
+    
+                await user.save(); 
+                console.log(user);
+    
+                res.status(201).json({user ,message : 'Verification success!'});
+    
             } else {
-                return res.status(400).json({error : 'Invalid OTP'});
+                const company = new companyModel({
+                    name , email , role , phone, password : bcryptedpassword
+                })
+    
+                await company.save();
+                console.log(company);
+    
+                res.status(201).json({company ,message : 'Verification Success!'});
             }
-        }).catch((error) => {
-            console.log(error , 'otp verify error');
-            res.status(400).json({error : 'Invalid OTP'});
-        })
+        } else {
+            return res.json({error : 'Invalid OTP'});
+        }
         
     } catch (error) {
         next(error);
@@ -193,17 +190,17 @@ export const login = async (req, res , next) => {
 }
 
 
-export const resendOTP = async (req, res, next) => {
-    try {
-        let {name , email , phone, role , password} = req.body;
-        phone = Number(phone);
+// export const resendOTP = async (req, res, next) => {
+//     try {
+//         let {name , email , phone, role , password} = req.body;
+//         phone = Number(phone);
 
 
 
-    } catch (error) {
-        next(error);
-    }
-}
+//     } catch (error) {
+//         next(error);
+//     }
+// }
 
 
 // *********************************************************************************
