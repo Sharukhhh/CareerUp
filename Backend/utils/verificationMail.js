@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendVerificationEmail = (userEmailId , res) => {
 
-    const otpValue = parseInt((Math.random() * 100000).toString() , 10);
+    const otpValue = parseInt(Math(Math.random() * 1000000).toString() , 10);
 
     const mailContent = {
         from : 'msharuk.b10@gmail.com',

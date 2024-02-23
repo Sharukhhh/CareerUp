@@ -1,10 +1,11 @@
-import {Link , useNavigate} from 'react-router-dom';
-import {useState} from 'react';
+import {Link , useNavigate } from 'react-router-dom';
+import {useEffect, useState} from 'react';
 import { axiosInstance } from '../../api/axiosInstance';
 import { toast , Toaster} from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../../Redux/slices/slice';
 import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
+
 
 
 const Login = () => {
@@ -44,6 +45,15 @@ const Login = () => {
     }).then((error) => console.log(error ,'axios catch error while login')
     )
   }
+
+  useEffect(() => {
+    const isAuthorized = localStorage.getItem('userToken');
+
+    if(isAuthorized) {
+      navigate('/feed');
+    }
+  }, []);
+
 
   return (
     <>

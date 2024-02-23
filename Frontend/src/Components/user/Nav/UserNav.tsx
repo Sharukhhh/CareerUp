@@ -37,17 +37,15 @@ const UserNav:React.FC<UserNavProps> = () => {
     )
   },[]);
 
+  const token = localStorage.getItem('userToken');
+
+
   useEffect(() => {
-    const token = localStorage.getItem('userToken');
+
     if(!token){
       navigate('/login');
     }
-  }, []);
-
-  // const handleTheme = () => {
-  //   const themeValue = theme === 'light' ? 'dark' : 'light';
-  //   dispatch(setTheme({ theme: themeValue } as SetThemepayload));
-  // };     
+  }, [])
 
 
   const handleLogout = () => {
