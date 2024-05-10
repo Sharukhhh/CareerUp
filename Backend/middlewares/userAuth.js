@@ -5,7 +5,7 @@ import companyModel from '../models/companyModel.js';
 
 export const verify = async (req, res , next) => {     
     try {
-
+        console.log(req.header('authorization') , 'headers vannu');
         let token = req.header('authorization').split(' ')[1];
         // console.log(token , '@@@@@@'); 
         
@@ -14,10 +14,10 @@ export const verify = async (req, res , next) => {
         } 
 
         token = token.replaceAll('"', '');
-
+        console.log(token , '@@@@@@'); 
         const decoded = jwt.verify(token , process.env.JWT_SECRET);
-        // console.log(decoded, 'XXXXXXXXXXXXXXXXXXXX');
-        // console.log(decoded.role ,decoded.userId , 'OKKKKKKKKKKKKKKKKKKKKKKK');
+        console.log(decoded, 'XXXXXXXXXXXXXXXXXXXX');
+        console.log(decoded.role ,decoded.userId , 'OKKKKKKKKKKKKKKKKKKKKKKK');
 
         const userId = decoded.userId;
 

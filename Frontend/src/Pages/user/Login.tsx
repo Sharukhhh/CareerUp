@@ -10,7 +10,8 @@ import { GoogleLogin ,GoogleOAuthProvider } from '@react-oauth/google';
 
 const Login = () => {
   const [email , setEmail] = useState<string>('');
-  const [password , setPassword] = useState<string>('');
+  const [password , setPassword] = useState<string>('');  
+  const [buttonState, setButtonstate] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const Login = () => {
   const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setButtonstate((prev) => !prev);
     axiosInstance.post('/auth/login' , {email , password}).then((res) => {
 
       if(res.data.userData){
@@ -44,6 +46,9 @@ const Login = () => {
       }
     }).then((error) => console.log(error ,'axios catch error while login')
     )
+    .finally(() => {
+      setButtonstate((prev) => !prev);
+    })
   }
 
   useEffect(() => {
@@ -123,12 +128,12 @@ const Login = () => {
                 </div>
 
                 <div>
-                  <button
-                    type="submit"
-                    className="flex w-full justify-center rounded-md bg-blue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    Login
-                  </button>
+                    <button
+                      disabled={buttonState}
+                      className="flex w-full justify-center rounded-md bg-blue px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      {buttonState ? 'Loading.....' : 'Login'}
+                    </button>
                 </div>
 
                 <p className='lg:text-lg font-semibold text-center py-1 text-black'>OR</p>

@@ -14,6 +14,7 @@ const Register = () => {
     const [password , setPassword] = useState<string>('');
     const [otp , setOtp] = useState<string>('');
     
+    const [disabled, isDisabled] = useState<boolean>(false);
     const [passwordStrength , SetPasswordstrength] = useState<string>('');
     const [showOtpModal , setShowOtpModal] = useState<boolean>(false);
     const [waitingForOtp , setWaitingForOtp] = useState<boolean>(false);
@@ -34,14 +35,15 @@ const Register = () => {
         e.preventDefault();
 
         setWaitingForOtp(true);
+        isDisabled((prev) => !prev);
         
         axiosInstance.post('/auth/register' , {name , email , phone: mobNumber, role , password})
         .then((res) => {
           
           if(res.data.message){
             toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-
             openOtpModal()
+
           } 
 
           if(res.data.error) {
@@ -50,6 +52,7 @@ const Register = () => {
         }).catch((err) => {
           console.log(err);
         }).finally(() => {
+          isDisabled((prev) => !prev);
           setWaitingForOtp(false);
         });
     }
@@ -57,6 +60,7 @@ const Register = () => {
     const otpSubmit = (e : React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
+      isDisabled((prev) => !prev);
       axiosInstance.post('/auth/otpregister', {name , email , phone: mobNumber, role , password , otp})
       .then((res) => {
         if(res.data.message){
@@ -74,7 +78,8 @@ const Register = () => {
 
       }).catch((error) => {
         console.log(error , 'axios otp submit err');
-        
+      }).finally(() => {
+        isDisabled((prev) => !prev);
       })
     }
 
@@ -309,10 +314,10 @@ const Register = () => {
 
             <div>
               <button
-                type="submit"
+                type="submit" disabled={disabled}
                 className="flex w-full justify-center rounded-md bg-blue hover:bg-light-blue-700 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-violet-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign Up
+                {disabled ? '' : 'Signup'}
               </button>
             </div>
             <p className='lg:text-lg font-semibold text-center py-1 dark:text-black'>OR</p>
@@ -390,7 +395,7 @@ const Register = () => {
                   </div>
 
                 <div className='text-center'>
-                  <button  className='px-5 py-2 text-white rounded bg-blue'>
+                  <button disabled={disabled}  className='px-5 py-2 text-white rounded bg-blue'>
                     Submit
                   </button>
                 </div>
