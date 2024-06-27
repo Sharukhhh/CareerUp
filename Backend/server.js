@@ -23,7 +23,7 @@ const __dirname = dirname(__filename);
 const app = express(); 
 const server = http.createServer(app);  
 const io = new SocketIoServer(server , {
-    pingTimeout : 60000, //for 60sec if no user message interction and ends the connection  
+    pingTimeout : 60000,  
     cors : {
         origin: " https://careerup-sm48.onrender.com",
         methods: ["GET", "POST"],

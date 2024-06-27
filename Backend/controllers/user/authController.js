@@ -13,8 +13,6 @@ import { sendVerificationEmail } from '../../utils/verificationMail.js';
 // const client = twilio(accountSid , authToken);
 
 
-let otpValue = 0 ;
-
 
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10); 
@@ -56,13 +54,15 @@ export const register = async (req, res , next) => {
         };
 
         if(userData){
-            const returningOtpValue =  sendVerificationEmail(email, res);
-            otpValue = returningOtpValue;
+            const {otpValue , result} =  sendVerificationEmail(email);
 
             console.log(otpValue , 'ithaan mail ayacha otp');
 
-            if(otpValue){
+            if(otpValue && result){
                 return res.json({message : 'Check email for OTP Verification'})
+
+            } else if(!result || !otpValue) {
+                return res.status(500).json({error : 'Verification email failed to send'})
             }
         }
 

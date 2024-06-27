@@ -16,9 +16,10 @@ const transporter = nodemailer.createTransport({
 })
 
 
-export const sendVerificationEmail = (userEmailId , res) => {
+export const sendVerificationEmail = (userEmailId ) => {
 
-    const otpValue = parseInt(Math(Math.random() * 1000000).toString() , 10);
+    let result = true;
+    const otpValue = parseInt(Math.floor((Math.random() * 1000000)).toString() , 10);
 
     const mailContent = {
         from : 'msharuk.b10@gmail.com',
@@ -30,14 +31,13 @@ export const sendVerificationEmail = (userEmailId , res) => {
             '<h1>' + otpValue + '<h1>' ,
     }
 
-
     transporter.sendMail(mailContent , (error) => {
         if(error){
-            return res.json({error : 'Verification email failed to send'})
-        } else {
-            res.sjon({message : 'Verification Email send successfully'});
-        }
+            result = false;
+        } 
     })
 
-    return otpValue;
+    return {
+        otpValue , result
+    }
 };
