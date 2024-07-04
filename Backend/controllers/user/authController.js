@@ -4,14 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import userModel from '../../models/userModel.js';
 import companyModel from '../../models/companyModel.js';
-import twilio from 'twilio';
 import { sendVerificationEmail } from '../../utils/verificationMail.js';
-
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// const serviceSid = process.env.TWILIO_SERVICE_SID;
-// const client = twilio(accountSid , authToken);
-
 
 
 const hashPassword = async (password) => {
@@ -22,10 +15,17 @@ const hashPassword = async (password) => {
     return hash;
 }  
 
+let globalStored = null;
+
+/*
+    description: 'User Regsiter before OTP Verfiication'
+    method: POST,
+    path: '/auth/register'
+*/
 export const register = async (req, res , next) => {
     try {
 
-        let {name , email , phone, role , password} = req.body;
+        let {username , email , phone, role , password} = req.body.userData;
         phone = Number(phone);
 
         const existingUser = await userModel.findOne({email});
@@ -50,12 +50,12 @@ export const register = async (req, res , next) => {
         }
 
         const userData = {
-            name , email , phone , role , password
+            username , email , phone , role , password
         };
 
         if(userData){
             const {otpValue , result} =  sendVerificationEmail(email);
-
+            globalStored = otpValue;
             console.log(otpValue , 'ithaan mail ayacha otp');
 
             if(otpValue && result){
@@ -72,9 +72,18 @@ export const register = async (req, res , next) => {
     }
 }
 
+
+/*
+    description: 'User Regsiter after OTP Verfiication'
+    method: POST,
+    path: '/auth/otpregister'
+*/
 export const otpRegister = async (req, res, next) => {
     try {
-        let {name , email , phone, role , password , otp} = req.body;
+        console.log(req.body);
+        console.log(globalStored)
+        let {username , email , phone, role , password } = req.body.userData;
+        let otp = req.body;
         otp = Number(otp);
 
         const existingUser = await userModel.findOne({email});
@@ -98,13 +107,13 @@ export const otpRegister = async (req, res, next) => {
             return res.status(401).json({ error: 'Invalid phone number' });
         }
 
-        if(otp === otpValue) {
+        if(otp === globalStored) {
 
             const bcryptedpassword = await hashPassword(password);
 
             if(role === 'Candidate'){
                 const user = new userModel({
-                    name , email , role , phone, password : bcryptedpassword
+                    name: username , email , role , phone, password : bcryptedpassword
                 })
     
                 await user.save(); 
@@ -114,7 +123,7 @@ export const otpRegister = async (req, res, next) => {
     
             } else {
                 const company = new companyModel({
-                    name , email , role , phone, password : bcryptedpassword
+                    name: username , email , role , phone, password : bcryptedpassword
                 })
     
                 await company.save();
@@ -123,7 +132,7 @@ export const otpRegister = async (req, res, next) => {
                 res.status(201).json({company ,message : 'Verification Success!'});
             }
         } else {
-            return res.json({error : 'Invalid OTP'});
+            return res.status(500).json({error : 'Invalid OTP'});
         }
         
     } catch (error) {
@@ -132,9 +141,15 @@ export const otpRegister = async (req, res, next) => {
 }
 
 
+
+/*
+    description: 'User Login'
+    method: POST,
+    path: '/auth/login'
+*/
 export const login = async (req, res , next) => {
     try {
-        const {email , password} = req.body;
+        const {email , password} = req.body.userData;
 
         const user = await userModel.findOne({email});
 
@@ -206,6 +221,11 @@ export const login = async (req, res , next) => {
 // *********************************************************************************
 // *********************************************************************************
 
+/*
+    description: 'User Regsiter using Google '
+    method: POST,
+    path: '/auth/google'
+*/
 export const googleSignup = async (req, res , next) => {
     try {
         const token = req.body.credential;
@@ -234,6 +254,11 @@ export const googleSignup = async (req, res , next) => {
 }
 
 
+/*
+    description: 'User Login using Google '
+    method: POST,
+    path: '/auth/google/login'
+*/
 export const googleLogin = async (req, res , next) => {
     try {
         const token = req.body.credential;

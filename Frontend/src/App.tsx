@@ -1,8 +1,8 @@
 import {Routes , Route} from 'react-router-dom';
 // import './index.css';
 import Home from './Pages/intro/Home';
-import Register from './Pages/user/Register';
-import Login from './Pages/user/Login';
+// import Register from './Pages/user/Register';
+// import Login from './Pages/user/Login';
 import Profile from './Pages/user/Profile';
 import UserFeed from './Pages/user/UserFeed';
 import AddInfoPage from './Pages/user/AddInfoPage';
@@ -24,6 +24,7 @@ import NotFound from './Pages/intro/NotFound';
 import Explore from './Pages/user/Explore';
 import ChatPage from './Pages/user/ChatPage';
 import { Toaster } from 'react-hot-toast';
+import Auth from './Pages/auth-pages/Auth';
 
 
 function App() {
@@ -35,8 +36,10 @@ function App() {
     <>
       <Routes>
         <Route index path='/' element={<Home/>} />
-        <Route path='/register' element={<Register/>} />
-        <Route path='/login' element={<Login/>} />
+        {/* <Route path='/register' element={<Register/>} />
+        <Route path='/login' element={<Login/>} /> */}
+        <Route path='/login' element={<Auth isLogin={true}/>}/>
+        <Route path='/register' element={<Auth isLogin={false}/>}/>
 
         <Route element={<PrivatePages isUser={true}/>}>
           <Route path='/account' element={<Profile/>} />
