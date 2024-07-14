@@ -92,20 +92,24 @@ const Auth: React.FC<AuthProps> = ({isLogin}) => {
                         <p className='text-gray-600 mb-4'>
                             {isLogin ? 'Login to Continue' : 'Sign up to explore new opportunities'}
                         </p>
-                        {isLogin ? (
+                        {!isLoading && (
+                            <>
+                            {isLogin ? (
+                                <p className='mt-10 text-center text-sm text-gray-500"'>
+                                    Do not have an Account?  
+                                    <Link to={'/register'} className='font-semibold leading-6 text-violet-900 hover:text-indigo-500'>
+                                        Register
+                                    </Link>
+                                </p>
+                            ) : (
                             <p className='mt-10 text-center text-sm text-gray-500"'>
-                                Do not have an Account?  
-                                <Link to={'/register'} className='font-semibold leading-6 text-violet-900 hover:text-indigo-500'>
-                                    Register
+                                Already a user? 
+                                <Link to={'/login'} className='font-semibold leading-6 text-violet-900 hover:text-indigo-500'>
+                                    Sign in
                                 </Link>
                             </p>
-                        ) : (
-                        <p className='mt-10 text-center text-sm text-gray-500"'>
-                            Already a user? 
-                            <Link to={'/login'} className='font-semibold leading-6 text-violet-900 hover:text-indigo-500'>
-                                Sign in
-                            </Link>
-                        </p>
+                            )}
+                            </>
                         )}
                     </div>
 
