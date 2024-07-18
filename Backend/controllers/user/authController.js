@@ -54,9 +54,8 @@ export const register = async (req, res , next) => {
         };
 
         if(userData){
-            const {otpValue , result} =  sendVerificationEmail(email);
+            const {otpValue , result} =  await sendVerificationEmail(email);
             globalStored = otpValue;
-            console.log(otpValue , 'ithaan mail ayacha otp');
 
             if(otpValue && result){
                 return res.json({message : 'Check email for OTP Verification'})
@@ -65,7 +64,6 @@ export const register = async (req, res , next) => {
                 return res.status(500).json({error : 'Verification email failed to send'})
             }
         }
-
     } catch (error) {
         next(error);
         
@@ -83,7 +81,7 @@ export const otpRegister = async (req, res, next) => {
         console.log(req.body);
         console.log(globalStored)
         let {username , email , phone, role , password } = req.body.userData;
-        let otp = req.body;
+        let otp = req.body.otp;
         otp = Number(otp);
 
         const existingUser = await userModel.findOne({email});
@@ -115,7 +113,6 @@ export const otpRegister = async (req, res, next) => {
                 const user = new userModel({
                     name: username , email , role , phone, password : bcryptedpassword
                 })
-    
                 await user.save(); 
                 console.log(user);
     
@@ -125,7 +122,6 @@ export const otpRegister = async (req, res, next) => {
                 const company = new companyModel({
                     name: username , email , role , phone, password : bcryptedpassword
                 })
-    
                 await company.save();
                 console.log(company);
     
@@ -134,7 +130,6 @@ export const otpRegister = async (req, res, next) => {
         } else {
             return res.status(500).json({error : 'Invalid OTP'});
         }
-        
     } catch (error) {
         next(error);
     }

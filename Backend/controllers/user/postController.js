@@ -22,8 +22,6 @@ export const createPost = async (req, res, next) => {
       }
     }
 
-    console.log(cloudimage, "this is my cloud image");
-
     if(user.role === 'Candidate'){
       const newPostData = {
         user: user._id,
@@ -41,7 +39,7 @@ export const createPost = async (req, res, next) => {
 
       await newPost.populate('user');
   
-      res.json({ message: 'New Post Added', newPost });
+      return res.status(201).json({ message: 'New Post Added', newPost });
 
     } else {
 
@@ -61,7 +59,7 @@ export const createPost = async (req, res, next) => {
 
       await newPost.populate('company');
   
-      res.json({ message: 'New Post Added', newPost });
+      return res.status(201).json({ message: 'New Post Added', newPost });
     }
 
 

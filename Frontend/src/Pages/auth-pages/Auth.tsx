@@ -83,8 +83,8 @@ const Auth: React.FC<AuthProps> = ({isLogin}) => {
     return (
         <>  
             <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
-            <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
-                <div className='bg-white shadow-md rounded-lg overflow-hidden w-full max-w-3xl mx-auto md:flex'>
+            <div className='flex flex-col items-center justify-center min-h-screen bg-gradient-to-bl from-[#eef2f3] to-[#8e9eab] p-4'>
+                <div className='bg-white shadow-xl rounded-lg overflow-hidden w-full max-w-3xl mx-auto md:flex'>
                     <div className='w-full md:w-1/2 p-8 flex flex-col justify-center items-center border-b md:border-b-0 md:border-r border-gray-300'>
                         <h2 className='text-2xl font-bold mb-4'>
                             {isLogin ? 'Welcome Back!' : 'Join CareerUP'}
@@ -192,51 +192,51 @@ const Auth: React.FC<AuthProps> = ({isLogin}) => {
                                 {   isLogin ? 'Login' : 'Signup'}
                                 </button>
                             )}
-
-                            
                             <p className='lg:text-lg font-semibold text-center py-1 text-black'>OR</p>
 
-                            <GoogleLogin
-                            onSuccess={ credRes  => {
-                                if(!isLogin) {
-                                    axiosInstance.post('/auth/google' , credRes).then((res) => {
-                                        if(res.data){
-                                            toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-                                            setTimeout(() => {
-                                                navigate('/login');
-                                            }, 3000);
-                                        }
-                                    }).catch((err) => console.log(err, 'axios catch err google signup')
-                                    )
-                                } else {
-                                    axiosInstance.post('/auth/google/login' , credRes).then((res) => {
+                            <div className='flex justify-center items-center'>
+                                <GoogleLogin
+                                onSuccess={ credRes  => {
+                                    if(!isLogin) {
+                                        axiosInstance.post('/auth/google' , credRes).then((res) => {
+                                            if(res.data){
+                                                toast.success(res.data.message, {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+                                                setTimeout(() => {
+                                                    navigate('/login');
+                                                }, 3000);
+                                            }
+                                        }).catch((err) => console.log(err, 'axios catch err google signup')
+                                        )
+                                    } else {
+                                        axiosInstance.post('/auth/google/login' , credRes).then((res) => {
 
-                                        if(res.data.message){
-                                            dispatch(setUserInfo(res.data.userData));
-                                            localStorage.setItem('userToken' , JSON.stringify(res.data.token));
-                                            toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
-                                            setTimeout(() => {
-                                                navigate('/feed');
-                                            }, 3000);
-                                        } else if(res.data.error){
-                                            toast.error(res.data.error);
-                                        }
-                                    }).catch((err) => console.log(err , 'axio catch err g login')
-                                    )
-                                }
-                            } }
-                            onError={() => {
-                                errorPopAlert('Google authentication failed! Please Try Later');
-                                return;
-                            }}
-                            type='standard'
-                            theme='filled_black'
-                            size='large'
-                            text='continue_with'
-                            shape='rectangular'
-                            logo_alignment='center'
-                            ux_mode='popup'
-                            />
+                                            if(res.data.message){
+                                                dispatch(setUserInfo(res.data.userData));
+                                                localStorage.setItem('userToken' , JSON.stringify(res.data.token));
+                                                toast.success(res.data.message , {duration : 2000 , style : {color : '#fff' , background : 'black'}});
+                                                setTimeout(() => {
+                                                    navigate('/feed');
+                                                }, 3000);
+                                            } else if(res.data.error){
+                                                toast.error(res.data.error);
+                                            }
+                                        }).catch((err) => console.log(err , 'axio catch err g login')
+                                        )
+                                    }
+                                } }
+                                onError={() => {
+                                    errorPopAlert('Google authentication failed! Please Try Later');
+                                    return;
+                                }}
+                                type='standard'
+                                theme='filled_black'
+                                size='large'
+                                text='continue_with'
+                                shape='rectangular'
+                                logo_alignment='center'
+                                ux_mode='popup'
+                                />
+                            </div>
                         </form>
                     </div>
                 </div>

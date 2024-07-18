@@ -2,6 +2,7 @@ import React , {useState} from 'react';
 import {BiImages, BiSend, BiSolidVideo } from 'react-icons/bi';
 import { axiosInstance } from '../../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import { errorPopAlert } from '../../../utils/alerts';
 interface CreatePostProps{
     userData : any;
     addNewPost: (newPost: any) => void;
@@ -59,6 +60,7 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
         e.preventDefault();
 
         if(!content && !image && !video){
+            errorPopAlert('Invalid Entry');
             return ;
         }
 
@@ -97,7 +99,9 @@ const CreatePost : React.FC<CreatePostProps> = ({userData , addNewPost }) => {
                 toast.error(res.data.error);
             }
         }).catch((err) => console.log(err , 'axios err')
-        )
+        ).finally(() => {
+            
+        })
     } 
 
   return (
