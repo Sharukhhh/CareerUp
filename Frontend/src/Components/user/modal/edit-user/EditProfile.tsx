@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import RootState from '../../../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import DotsLoader from '../../../loaders/DotsLoader';
 
 
 
@@ -26,6 +27,7 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
     const [resume , setResume] = useState<File | null>(null);
     const [profileImageError, setProfileImageError] = useState<string | null>(null);
     const [resumeError, setResumeError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const clearError = () => {
@@ -66,37 +68,37 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
         }
     }
 
-    const editSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+    const editSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if(!headline || !location || !profileImage ){
-            return toast.error('Provide Details' , {duration : 2000});
-        }
-        const formData = new FormData();
-
-        formData.append('headline' , headline);
-        formData.append('location' , location);
-
-        if(profileImage){
-            formData.append('profileImage' , profileImage);
-        }
-        if(resume){
-            formData.append('resume' , resume);
-        }
-        
-        axiosInstance.put(`/addBasic` , formData).then((res) => {
-
-            if(res.data.message){
-                setUpdateUI((prev : any) => !prev);
-
-                closeEditModal();
-
-                toast.success(res.data.message);
-            }else{
-                toast.error(res.data.error);
+        try {
+            setLoading(!loading);
+            if(!headline || !location || !profileImage ){
+                return toast.error('Provide Details' , {duration : 2000});
             }
-        }).catch((err) => console.log(err)
-        )
+
+            const formData = new FormData();
+            formData.append('headline' , headline);
+            formData.append('location' , location);
+            if(profileImage){
+                formData.append('profileImage' , profileImage);
+            }
+            if(resume){
+                formData.append('resume' , resume);
+            }
+
+            const response = await axiosInstance.put(`/addBasic` , formData);
+            if(response.data?.message) {
+                setUpdateUI((prev : any) => !prev);
+                closeEditModal();
+                toast.success(response.data.message);
+            }else{
+                toast.error(response.data.error);
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(!loading);
+        }
     }
 
   return (
@@ -182,10 +184,15 @@ const EditProfile: React.FC<EditProfileProps> = ({visible , closeEditModal , use
                                         </div>
                                         )}
                                     </div>
-
-                                    <button type='submit' className='inline-flex mt-4 justify-center rounded-md bg-blue px-8 py-3 mb-4 text-sm font-medium text-white outline-none'>
-                                        Save
-                                    </button>
+                                    {loading ? (
+                                        <div className='flex justify-center items-center'>
+                                            <DotsLoader/>
+                                        </div>
+                                    ) : (
+                                        <button type='submit' className='inline-flex mt-4 justify-center rounded-md bg-blue px-8 py-3 mb-4 text-sm font-medium text-white outline-none'>
+                                            Save
+                                        </button>
+                                    )}
                                 </form>
                         </div>
                     </div>
