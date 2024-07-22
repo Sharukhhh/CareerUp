@@ -16,3 +16,16 @@ export const passwordValidationAlert = () => {
 
     errorPopAlert(requirements);
 }
+
+
+export const confirmationBox = (message: string, btnText: string, callback: () => void) => {
+    Swal.fire({
+        title: message,
+        showCancelButton: true,
+        confirmButtonText: btnText,
+    }).then((result) => {
+        if(result.isConfirmed) {
+            callback();
+        }
+    })
+}

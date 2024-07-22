@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import RootState from '../../../Redux/rootstate/rootState';
 import CommentForm from '../comment/CommentForm';
 import { deleteTheComment, deleteThePost, likeAndDislikePost , saveAndUnsavePost } from '../../../api/postsApiService';
+import { confirmationBox } from '../../../utils/alerts';
 const ReportBox = lazy(() => import('../modal/ReportModal'));
 
 interface PostCardProps { 
@@ -66,20 +67,24 @@ const PostCards : React.FC<PostCardProps> = ({posts , showAllposts, userData  , 
     }
 
     const deletePost = (postId : string) => {
-      deleteThePost(postId)
-      .then((success) => {
-        if(success){
-          setUpdateUI((prev : boolean)=> !prev);
-        }
+      confirmationBox('Are you sure you want to delete this post?' , 'Delete' , () => {
+        deleteThePost(postId)
+        .then((success) => {
+          if(success){
+            setUpdateUI((prev : boolean)=> !prev);
+          }
+        })
       })
     }
 
     const deleteComment = (commentId : string) => {
-      deleteTheComment(commentId)
-      .then((success) =>{
-        if(success){
-          setUpdateUI((prev : boolean)=> !prev);
-        }
+      confirmationBox('Are you sure you want to delete this comment?' , 'Delete' , () => {
+        deleteTheComment(commentId)
+        .then((success) =>{
+          if(success){
+            setUpdateUI((prev : boolean)=> !prev);
+          }
+        })
       })
     }
 

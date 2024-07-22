@@ -53,15 +53,11 @@ const Profile = () => {
 
   const{ id } = useParams() ;
 
-  console.log(id, 'vannnnnnnnnnnnn');
-
   const getOwnProfileData = () => {
     setIsLoading(true);
     axiosInstance.get('/ownProfile')
     .then((res) => {
       if(res.data.message){
-        console.log(res.data.user);
-        
         setUserData(res.data.user);
       }
     }).catch((error) => console.log(error , 'axios')
@@ -119,23 +115,6 @@ const Profile = () => {
     }
   },[updateUI , id]);
 
-  // useEffect(() => {
-  //   if(id){
-      
-      
-  //     fetchProfileData(id);
-  //     otherUserPostsFetch(id);
-  //   }
-  // } , [id  ]);
-
-  // useEffect(() => {
-  //   if(!id){
-  //     console.log(id , 'here');
-      
-  //     getOwnProfileData();
-  //     fetchUserPosts();
-  //   }
-  // }, [updateUI ])
 
   useEffect(() => {
     if(isCompany){
