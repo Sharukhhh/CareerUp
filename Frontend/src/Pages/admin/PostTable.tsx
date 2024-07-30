@@ -4,6 +4,7 @@ import { adminAxiosInstance } from '../../api/axiosInstance'
 import {AiFillDelete} from 'react-icons/ai';
 import toast from 'react-hot-toast';
 import Pagination from '../../Components/Pagination';
+import { Helmet } from 'react-helmet-async';
 
 const PostTable = () => {
     const [posts , setPosts] = useState<any[]>([]);
@@ -44,6 +45,9 @@ const PostTable = () => {
     
   return (
     <>
+        <Helmet>
+            <title>Post Management - CareerUp Admin</title>
+        </Helmet>
         <TopBar/>
         <div className='mt-10 max-w-7xl mx-auto p-6'>
             <table className='w-full min-w-min border-2 rounded-lg'>

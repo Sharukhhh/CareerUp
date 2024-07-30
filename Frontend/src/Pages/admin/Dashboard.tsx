@@ -8,6 +8,7 @@ import {CgOrganisation} from 'react-icons/cg';
 import {BsBriefcaseFill} from 'react-icons/bs';
 import LineChart from '../../Components/admin/Dashboard/LineChart';
 import JobChart from '../../Components/admin/Dashboard/JobChart';
+import { Helmet } from 'react-helmet-async';
 
 
 const Dashboard = () => {
@@ -46,8 +47,10 @@ const Dashboard = () => {
 
   return (
     <>
+        <Helmet>
+            <title>Admin Dashboard - CareerUp</title>
+        </Helmet>
         <TopBar />
-
         <div className='flex max-w-6xl mx-auto flex-wrap justify-center mt-10'>
             <div className='w-full sm:w-1/2 p-4'>
                 <div className='bg-gradient-to-br from-[#2980B9] to-[#6DD5FA] to-[#FFFFFF] mx-auto border mr-6 mb-6 border-double 

@@ -7,6 +7,7 @@ import RootState from '../../Redux/rootstate/rootState';
 import { axiosInstance } from '../../api/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
 import {ImUserPlus , ImUserMinus} from 'react-icons/im';
+import { Helmet } from 'react-helmet-async';
 
 const Explore = () => {
 
@@ -110,6 +111,9 @@ const Explore = () => {
 
   return (
     <>
+        <Helmet>
+            <title>Explore - CareerUp</title>
+        </Helmet>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
             <Toaster position='top-right'/>

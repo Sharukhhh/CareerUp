@@ -4,6 +4,7 @@ import {IoArrowBackCircle} from 'react-icons/io5';
 import Saved from '../../Components/user/postss/Saved';
 import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
 
 const SavedPosts = () => {
   const [savedPosts , setSavedPosts] = useState<any[]>([]);
@@ -23,7 +24,9 @@ const SavedPosts = () => {
   } ,[updateUI]);
   return (
     <>
-        {/* <UserNav /> */}
+      <Helmet>
+        <title>Saved Items - CareerUp</title>
+      </Helmet>
         <div className='container mx-auto max-w-5xl py-4 px-8 bg-blue-gray-50'>
           <div className='flex justify-between'>
             <h1 className='text-3xl font-bold mt-5 mb-4'>Saved Items</h1>

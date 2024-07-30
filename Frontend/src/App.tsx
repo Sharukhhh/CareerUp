@@ -1,8 +1,5 @@
 import {Routes , Route} from 'react-router-dom';
-// import './index.css';
 import Home from './Pages/intro/Home';
-// import Register from './Pages/user/Register';
-// import Login from './Pages/user/Login';
 import Profile from './Pages/user/Profile';
 import UserFeed from './Pages/user/UserFeed';
 import AddInfoPage from './Pages/user/AddInfoPage';
@@ -36,8 +33,6 @@ function App() {
     <>
       <Routes>
         <Route index path='/' element={<Home/>} />
-        {/* <Route path='/register' element={<Register/>} />
-        <Route path='/login' element={<Login/>} /> */}
         <Route path='/login' element={<Auth isLogin={true}/>}/>
         <Route path='/register' element={<Auth isLogin={false}/>}/>
 

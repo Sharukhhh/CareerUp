@@ -12,10 +12,13 @@ import { BiSolidEdit} from 'react-icons/bi';
 import {BsBriefcase} from 'react-icons/bs';
 import {MdDelete} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 const DeleteBox = lazy(() => import('../../Components/user/modal/PermissionBox'));
 
 const Profile = () => {
+
+  const storedUserInfo = useSelector((state: RootState) => state.user.userCred);
   const navigate = useNavigate();
   const [userData , setUserData]  = useState<any>([]);
   const [posts, setPosts] = useState<any>([]);
@@ -134,8 +137,12 @@ const Profile = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {id ? `${userData?.name}` : `${storedUserInfo?.username}`}
+        </title>
+      </Helmet>
       <div className="home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden">
-        
         <UserNav />
 
         {loading ? (

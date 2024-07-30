@@ -12,6 +12,7 @@ import { otpHandler } from '../../utils/otpHandler';
 import { useDispatch } from 'react-redux';
 import { setUserInfo } from '../../Redux/slices/slice';
 import { axiosInstance } from '../../api/axiosInstance';
+import { Helmet } from 'react-helmet-async';
 
 
 interface AuthProps {
@@ -82,6 +83,9 @@ const Auth: React.FC<AuthProps> = ({isLogin}) => {
 
     return (
         <>  
+            <Helmet>
+                <title>{isLogin ? 'Login To CareerUp' : 'Get Started'}</title>
+            </Helmet>
             <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
             <div className='flex flex-col items-center justify-center min-h-screen bg-gradient-to-bl from-[#eef2f3] to-[#8e9eab] p-4'>
                 <div className='bg-white shadow-xl rounded-lg overflow-hidden w-full max-w-3xl mx-auto md:flex'>

@@ -4,6 +4,7 @@ import { axiosInstance } from '../../api/axiosInstance'
 import ProfileCard from '../../Components/user/Profile/ProfileCard'
 import RecruiterJobTile from '../../Components/user/cards/RecruiterJobTile'
 import EditProfile from '../../Components/user/modal/edit-user/EditProfile'
+import { Helmet } from 'react-helmet-async'
 
 const RecruiterJobsPage = () => {
   const [userData , setUserData] = useState<any>([]);
@@ -30,6 +31,9 @@ const RecruiterJobsPage = () => {
   } , [updateUI])
   return (
     <>
+      <Helmet>
+        <title>Jobs - CareerUp</title>
+      </Helmet>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 

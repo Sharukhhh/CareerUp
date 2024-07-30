@@ -3,6 +3,7 @@ import TopBar from '../../Components/admin/TopBar'
 import toast from 'react-hot-toast';
 import { adminAxiosInstance } from '../../api/axiosInstance';
 import IndustryTable from '../../Components/admin/IndustryTable';
+import { Helmet } from 'react-helmet-async';
 
 const CategoryAdd = () => {
     const [industry , setIndustry] = useState<string>('');
@@ -44,6 +45,9 @@ const CategoryAdd = () => {
     },[industry , updateUI]);
   return (
     <>
+        <Helmet>
+            <title>Category Management - CareerUp Admin</title>
+        </Helmet>
         <TopBar/>
         <div className="form border-solid flex min-h-full flex-1 flex-col justify-center mb-5 px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">

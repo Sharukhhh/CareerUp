@@ -5,6 +5,7 @@ import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
 import ProfileCard from '../../Components/user/Profile/ProfileCard';
 import EditProfile from '../../Components/user/modal/edit-user/EditProfile';
+import { Helmet } from 'react-helmet-async';
 
 const JobsPage = () => {
 
@@ -63,6 +64,9 @@ const JobsPage = () => {
   },[updateUI]);
   return (
     <>
+      <Helmet>
+        <title>Opportunities - CareerUp</title>
+      </Helmet>
       <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
         <UserNav/>
 

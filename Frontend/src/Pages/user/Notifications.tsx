@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import {MdMarkEmailRead} from 'react-icons/md';
 import { Spinner } from '@material-tailwind/react';
 import moment from 'moment';
+import { Helmet } from 'react-helmet-async';
 
 const Notifications = () => {
 
@@ -89,6 +90,9 @@ const Notifications = () => {
 
   return (
     <>
+        <Helmet>
+            <title>Notifications - CareerUp</title>
+        </Helmet>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
             {loading ? (

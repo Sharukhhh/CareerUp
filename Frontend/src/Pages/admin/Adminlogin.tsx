@@ -4,6 +4,7 @@ import { adminAxiosInstance } from '../../api/axiosInstance';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setAdminData } from '../../Redux/slices/adminSlice';
+import { Helmet } from 'react-helmet-async';
 
 const Adminlogin = () => {
     const [adminEmail , setAdminEmail] = useState<string>('');
@@ -35,6 +36,9 @@ const Adminlogin = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Admin - CareerUp</title>
+    </Helmet>
     <Toaster position='top-right'/>
     <div className=" border-solid flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">

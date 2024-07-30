@@ -10,6 +10,7 @@ import { Spinner } from '@material-tailwind/react';
 import CreatePost from '../../Components/user/postss/CreatePost';
 import toast from 'react-hot-toast';
 import { BsFillChatLeftTextFill} from 'react-icons/bs';
+import { Helmet } from 'react-helmet-async';
 const EditProfile = lazy(() => import('../../Components/user/modal/edit-user/EditProfile'));
 
 
@@ -77,7 +78,10 @@ const UserFeed = () => {
   }
 
   return (
-    <>
+    <> 
+      <Helmet>
+        <title>Feeds - CareerUp</title>
+      </Helmet>
         <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
             <UserNav/>
 

@@ -7,6 +7,7 @@ import { axiosInstance } from '../../api/axiosInstance';
 import toast from 'react-hot-toast';
 import {BsFillSave2Fill} from 'react-icons/bs';
 import {BiSolidError} from 'react-icons/bi';
+import { Helmet } from 'react-helmet-async';
 
 const AddInfoPage = () => {
 
@@ -215,6 +216,9 @@ const AddInfoPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{`${user?.username} - Details`}</title>
+      </Helmet>
         <div className='max-w-3xl mx-auto mt-8 p-6 bg-[#c3e3f7]  border: rounded-lg shadow-xl'>
             <div className='flex justify-between'>
               {user?.role === 'Candidate' ? (
