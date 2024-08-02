@@ -1,6 +1,6 @@
 # CareerUp - A Professional networking Web Application
 
-## Links
+## Links 
 
 - *Live* - [Careerup Live](https://careerup-sm48.onrender.com/)
 
